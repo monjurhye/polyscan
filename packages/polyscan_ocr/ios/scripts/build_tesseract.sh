@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Builds Leptonica + Tesseract as a static TesseractC.xcframework for iOS
-# (device arm64, simulator arm64 + x86_64). Runs on macOS only (Codemagic).
+# (device arm64, simulator arm64; set SIM_X86_64=1 to add an Intel simulator
+# slice). Runs on macOS only (Codemagic).
 #
 # Only the C API (capi.h) is exposed, so Swift can import it directly.
 # Leptonica is built without image codecs: the plugin hands Tesseract raw
@@ -80,7 +81,9 @@ build_slice() {
 
 build_slice device-arm64 iphoneos arm64
 build_slice sim-arm64 iphonesimulator arm64
-build_slice sim-x86_64 iphonesimulator x86_64
+if [[ "${SIM_X86_64:-0}" == 1 ]]; then
+  build_slice sim-x86_64 iphonesimulator x86_64
+fi
 
 # make_framework <dir> <static lib>
 make_framework() {
@@ -119,7 +122,11 @@ EOF
 }
 
 mkdir -p "$WORK/fw/device" "$WORK/fw/sim"
-lipo -create "$WORK/lib-sim-arm64.a" "$WORK/lib-sim-x86_64.a" -output "$WORK/lib-sim.a"
+if [[ -f "$WORK/lib-sim-x86_64.a" ]]; then
+  lipo -create "$WORK/lib-sim-arm64.a" "$WORK/lib-sim-x86_64.a" -output "$WORK/lib-sim.a"
+else
+  cp "$WORK/lib-sim-arm64.a" "$WORK/lib-sim.a"
+fi
 make_framework "$WORK/fw/device" "$WORK/lib-device-arm64.a"
 make_framework "$WORK/fw/sim" "$WORK/lib-sim.a"
 
