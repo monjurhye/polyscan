@@ -6,11 +6,7 @@ workflows:
     instance_type: mac_mini_m2
     max_build_duration: 60
     environment:
-      flutter: stable
       xcode: latest
-    cache:
-      cache_paths:
-        - $CM_BUILD_DIR/packages/polyscan_ocr/ios/polyscan_ocr/TesseractC.xcframework
     scripts:
       - name: Tool versions
         script: |
