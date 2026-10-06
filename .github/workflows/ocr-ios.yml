@@ -44,6 +44,7 @@ jobs:
           packages/polyscan_ocr/ios/scripts/build_tesseract.sh 2>&1 | tee tesseract-build.log
 
       - name: Run integration test on iOS simulator
+        timeout-minutes: 30
         run: |
           cd packages/polyscan_ocr/example
           flutter pub get
@@ -58,7 +59,10 @@ jobs:
                       print(d["udid"]); sys.exit()
           ')
           echo "Simulator: $DEVICE"
+          echo "SIM_DEVICE=$DEVICE" >> "$GITHUB_ENV"
           xcrun simctl boot "$DEVICE" || true
+          # Wait until the simulator has fully booted before Flutter installs the app.
+          xcrun simctl bootstatus "$DEVICE" -b
           set +e
           flutter test integration_test -d "$DEVICE" --reporter expanded 2>&1 | tee "$GITHUB_WORKSPACE/integration-test.log"
           STATUS=${PIPESTATUS[0]}
@@ -72,6 +76,15 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           exit $STATUS
 
+      - name: Collect simulator logs
+        if: always() && env.SIM_DEVICE != ''
+        run: |
+          xcrun simctl spawn "$SIM_DEVICE" log show --last 40m --style compact             --predicate 'process == "Runner" OR eventMessage CONTAINS[c] "polyscan"' > simulator.log 2>&1 || true
+          tail -n 200 simulator.log || true
+          mkdir -p crash-reports
+          cp ~/Library/Logs/DiagnosticReports/Runner* crash-reports/ 2>/dev/null || true
+          ls -la crash-reports
+
       - name: Upload logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -81,4 +94,6 @@ jobs:
             tesseract-build.log
             integration-test.log
             ocr-summary.txt
+            simulator.log
+            crash-reports/
           if-no-files-found: ignore
