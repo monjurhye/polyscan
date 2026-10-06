@@ -41,6 +41,22 @@ void main() {
     });
   }
 
+  testWidgets('Hindi numbers are re-read with eng', (tester) async {
+    const sample = OcrSample('assets/images/hin-clean.png', ['hin'], 'hin');
+    final before = await runSample(sample, tessdata, fixDigits: false);
+    final after = await runSample(sample, tessdata);
+    // ignore: avoid_print
+    print('OCR_RESULT digit fix: before ${(before.accuracy * 100).toStringAsFixed(1)}% '
+        'after ${(after.accuracy * 100).toStringAsFixed(1)}% (+${after.elapsed.inMilliseconds - before.elapsed.inMilliseconds} ms)');
+    // ignore: avoid_print
+    print('OCR_TEXT digit fix: ${after.result.text.replaceAll('\n', ' ⏎ ')}');
+
+    expect(after.result.text, contains('16 अक्टूबर'));
+    expect(after.result.text, contains('4471229018'));
+    expect(after.result.text, contains('2026'));
+    expect(after.accuracy, greaterThanOrEqualTo(before.accuracy));
+  });
+
   testWidgets('missing language fails with init_failed', (tester) async {
     final path = '${tessdata.replaceAll('/tessdata', '')}/eng-clean.png';
     await expectLater(

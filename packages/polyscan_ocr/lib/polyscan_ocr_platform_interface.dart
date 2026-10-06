@@ -30,4 +30,17 @@ abstract class PolyscanOcrPlatform extends PlatformInterface {
   }) {
     throw UnimplementedError('recognize() has not been implemented.');
   }
+
+  /// Reads each `[left, top, right, bottom]` region separately; returns
+  /// `{text, confidence}` maps in the same order.
+  Future<List<Map<String, dynamic>>> recognizeRegions({
+    required String imagePath,
+    required String tessdataDir,
+    required String languages,
+    required int pageSegMode,
+    required Map<String, String> variables,
+    required List<List<int>> regions,
+  }) {
+    throw UnimplementedError('recognizeRegions() has not been implemented.');
+  }
 }

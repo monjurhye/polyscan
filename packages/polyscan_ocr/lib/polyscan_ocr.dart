@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'polyscan_ocr_platform_interface.dart';
+import 'src/digit_fix.dart';
 
 /// One recognized word and where it sits in the image (pixels, top-left origin).
 class OcrWord {
@@ -76,6 +79,12 @@ class PolyscanOcr {
   ///
   /// [tessdataDir] is a folder holding `<lang>.traineddata` files, e.g. models
   /// downloaded on demand. [languages] are Tesseract codes such as `['ben', 'eng']`.
+  ///
+  /// With [fixDigits] (default), numbers made of Latin digits are re-read with
+  /// `eng` when a non-Latin model such as `hin` was used, because those models
+  /// often drop digits. This needs `eng.traineddata` in [tessdataDir] and is
+  /// skipped without it.
+  ///
   /// Throws a `PlatformException` with code `bad_image`, `init_failed` or
   /// `recognize_failed`.
   static Future<OcrResult> recognize({
@@ -84,6 +93,7 @@ class PolyscanOcr {
     required List<String> languages,
     int pageSegMode = PageSegMode.auto,
     Map<String, String> variables = const {},
+    bool fixDigits = true,
   }) async {
     if (languages.isEmpty) throw ArgumentError.value(languages, 'languages', 'must not be empty');
     final map = await PolyscanOcrPlatform.instance.recognize(
@@ -93,6 +103,54 @@ class PolyscanOcr {
       pageSegMode: pageSegMode,
       variables: variables,
     );
-    return OcrResult.fromMap(map);
+    final result = OcrResult.fromMap(map);
+    if (!fixDigits || !needsDigitFix(languages)) return result;
+    if (!File('$tessdataDir/eng.traineddata').existsSync()) return result;
+    return _fixDigits(result, imagePath, tessdataDir);
+  }
+
+  /// Reads each region (`[left, top, right, bottom]` in image pixels) on its own.
+  static Future<List<({String text, double confidence})>> recognizeRegions({
+    required String imagePath,
+    required String tessdataDir,
+    required List<String> languages,
+    required List<List<int>> regions,
+    int pageSegMode = PageSegMode.singleLine,
+    Map<String, String> variables = const {},
+  }) async {
+    if (regions.isEmpty) return const [];
+    final maps = await PolyscanOcrPlatform.instance.recognizeRegions(
+      imagePath: imagePath,
+      tessdataDir: tessdataDir,
+      languages: languages.join('+'),
+      pageSegMode: pageSegMode,
+      variables: variables,
+      regions: regions,
+    );
+    return [
+      for (final m in maps) (text: m['text'] as String, confidence: (m['confidence'] as num).toDouble()),
+    ];
+  }
+
+  static Future<OcrResult> _fixDigits(OcrResult result, String imagePath, String tessdataDir) async {
+    final candidates = digitCandidates(result);
+    if (candidates.isEmpty) return result;
+    final rereads = await recognizeRegions(
+      imagePath: imagePath,
+      tessdataDir: tessdataDir,
+      languages: const ['eng'],
+      regions: [
+        for (final i in candidates) paddedRegion(result.words[i], result.imageWidth, result.imageHeight),
+      ],
+      variables: const {'tessedit_char_whitelist': digitWhitelist},
+    );
+    final fixes = <int, String>{};
+    for (var k = 0; k < candidates.length && k < rereads.length; k++) {
+      final word = result.words[candidates[k]];
+      if (acceptReread(word, rereads[k].text, rereads[k].confidence)) {
+        fixes[candidates[k]] = rereads[k].text.trim();
+      }
+    }
+    return applyDigitFixes(result, fixes);
   }
 }

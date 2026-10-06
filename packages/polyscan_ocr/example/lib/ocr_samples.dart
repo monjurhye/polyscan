@@ -54,11 +54,12 @@ Future<String> _copyAsset(String asset) async {
   return file.path;
 }
 
-Future<SampleRun> runSample(OcrSample sample, String tessdataDir) async {
+Future<SampleRun> runSample(OcrSample sample, String tessdataDir, {bool fixDigits = true}) async {
   final truth = (jsonDecode(await rootBundle.loadString('assets/samples.json')) as Map)[sample.groundTruthKey]['text'] as String;
   final path = await _copyAsset(sample.asset);
   final watch = Stopwatch()..start();
-  final result = await PolyscanOcr.recognize(imagePath: path, tessdataDir: tessdataDir, languages: sample.languages);
+  final result = await PolyscanOcr.recognize(
+      imagePath: path, tessdataDir: tessdataDir, languages: sample.languages, fixDigits: fixDigits);
   watch.stop();
   return SampleRun(sample, result, accuracy(result.text, truth), watch.elapsed);
 }
