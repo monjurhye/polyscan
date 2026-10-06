@@ -7,25 +7,20 @@ import 'package:polyscan_ocr/polyscan_ocr_method_channel.dart';
 import 'package:polyscan_ocr/polyscan_ocr_platform_interface.dart';
 
 class _FakePlatform with MockPlatformInterfaceMixin implements PolyscanOcrPlatform {
-  String? languages;
-  Map<String, dynamic>? result;
-  List<Map<String, dynamic>> rereads = const [];
-  List<List<int>>? askedRegions;
-  Map<String, String>? regionVariables;
+  /// Result per language string; [defaultResult] for anything else.
+  final Map<String, Map<String, dynamic>> results = {};
+  final List<String> calls = [];
 
-  @override
-  Future<List<Map<String, dynamic>>> recognizeRegions({
-    required String imagePath,
-    required String tessdataDir,
-    required String languages,
-    required int pageSegMode,
-    required Map<String, String> variables,
-    required List<List<int>> regions,
-  }) async {
-    askedRegions = regions;
-    regionVariables = variables;
-    return rereads;
-  }
+  static const defaultResult = <String, dynamic>{
+    'text': 'নমস্কার world\n',
+    'meanConfidence': 91,
+    'words': [
+      {'text': 'নমস্কার', 'left': 10, 'top': 20, 'right': 110, 'bottom': 50, 'confidence': 93.5},
+      {'text': 'world', 'left': 120, 'top': 20, 'right': 200, 'bottom': 50, 'confidence': 88},
+    ],
+    'imageWidth': 400,
+    'imageHeight': 100,
+  };
 
   @override
   Future<String> tesseractVersion() async => '5.5.3';
@@ -38,20 +33,20 @@ class _FakePlatform with MockPlatformInterfaceMixin implements PolyscanOcrPlatfo
     required int pageSegMode,
     required Map<String, String> variables,
   }) async {
-    this.languages = languages;
-    if (result != null) return result!;
-    return {
-      'text': 'নমস্কার world\n',
-      'meanConfidence': 91,
-      'words': [
-        {'text': 'নমস্কার', 'left': 10, 'top': 20, 'right': 110, 'bottom': 50, 'confidence': 93.5},
-        {'text': 'world', 'left': 120, 'top': 20, 'right': 200, 'bottom': 50, 'confidence': 88},
-      ],
-      'imageWidth': 400,
-      'imageHeight': 100,
-    };
+    calls.add(languages);
+    return results[languages] ?? defaultResult;
   }
 }
+
+Map<String, dynamic> _result(String text, List<(String, int, int, double)> words) => {
+      'text': text,
+      'meanConfidence': 86,
+      'words': [
+        for (final (t, l, r, c) in words) {'text': t, 'left': l, 'top': 10, 'right': r, 'bottom': 50, 'confidence': c},
+      ],
+      'imageWidth': 300,
+      'imageHeight': 60,
+    };
 
 void main() {
   test('default platform is the method channel', () {
@@ -68,7 +63,7 @@ void main() {
       languages: ['ben', 'eng'],
     );
 
-    expect(fake.languages, 'ben+eng');
+    expect(fake.calls.first, 'ben+eng');
     expect(result.meanConfidence, 91);
     expect(result.words, hasLength(2));
     expect(result.words.first.text, 'নমস্কার');
@@ -83,59 +78,52 @@ void main() {
     );
   });
 
-  group('digit re-read', () {
+  group('digit fix', () {
     late Directory tessdata;
     late _FakePlatform fake;
 
     setUp(() {
       tessdata = Directory.systemTemp.createTempSync('tessdata');
       File('${tessdata.path}/eng.traineddata').writeAsStringSync('x');
-      fake = _FakePlatform()
-        ..result = {
-          'text': 'तिथि 6 अक्टूबर\n',
-          'meanConfidence': 86,
-          'words': [
-            {'text': 'तिथि', 'left': 0, 'top': 10, 'right': 50, 'bottom': 50, 'confidence': 90},
-            {'text': '6', 'left': 60, 'top': 10, 'right': 100, 'bottom': 50, 'confidence': 70},
-            {'text': 'अक्टूबर', 'left': 110, 'top': 10, 'right': 200, 'bottom': 50, 'confidence': 90},
-          ],
-          'imageWidth': 300,
-          'imageHeight': 60,
-        }
-        ..rereads = [
-          {'text': '16', 'confidence': 93.0},
-        ];
+      fake = _FakePlatform();
+      fake.results['hin'] = _result('तिथि 6 अक्टूबर\n', [
+        ('तिथि', 0, 50, 90),
+        ('6', 75, 100, 0),
+        ('अक्टूबर', 110, 200, 90),
+      ]);
+      fake.results['eng'] = _result('fefer 16 3teapar\n', [
+        ('fefer', 0, 50, 40),
+        ('16', 60, 100, 93),
+        ('3teapar', 110, 200, 30),
+      ]);
       PolyscanOcrPlatform.instance = fake;
     });
 
     tearDown(() => tessdata.deleteSync(recursive: true));
 
-    test('re-reads Latin numbers with eng and a digit whitelist', () async {
+    test('a second eng pass fixes numbers the main model got wrong', () async {
       final result = await PolyscanOcr.recognize(imagePath: '/x.png', tessdataDir: tessdata.path, languages: ['hin']);
 
-      expect(fake.askedRegions, [
-        [52, 0, 108, 60],
-      ]);
-      expect(fake.regionVariables, {'tessedit_char_whitelist': digitWhitelistForTest});
+      expect(fake.calls, ['hin', 'eng']);
       expect(result.text, 'तिथि 16 अक्टूबर\n');
       expect(result.words[1].text, '16');
     });
 
-    test('is skipped when turned off, for Latin-only runs, or without eng', () async {
+    test('is skipped when turned off, for Latin-only runs, without digits, or without eng', () async {
       final off = await PolyscanOcr.recognize(
           imagePath: '/x.png', tessdataDir: tessdata.path, languages: ['hin'], fixDigits: false);
       expect(off.words[1].text, '6');
-      expect(fake.askedRegions, isNull);
 
       await PolyscanOcr.recognize(imagePath: '/x.png', tessdataDir: tessdata.path, languages: ['eng']);
-      expect(fake.askedRegions, isNull);
+
+      fake.results['ben'] = _result('নমস্কার\n', [('নমস্কার', 0, 80, 90)]);
+      await PolyscanOcr.recognize(imagePath: '/x.png', tessdataDir: tessdata.path, languages: ['ben']);
 
       File('${tessdata.path}/eng.traineddata').deleteSync();
       final noEng = await PolyscanOcr.recognize(imagePath: '/x.png', tessdataDir: tessdata.path, languages: ['hin']);
       expect(noEng.words[1].text, '6');
-      expect(fake.askedRegions, isNull);
+
+      expect(fake.calls, ['hin', 'eng', 'ben', 'hin']);
     });
   });
 }
-
-const digitWhitelistForTest = '0123456789.,:/-+%()';

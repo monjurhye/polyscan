@@ -29,24 +29,4 @@ class MethodChannelPolyscanOcr extends PolyscanOcrPlatform {
     });
     return result!;
   }
-
-  @override
-  Future<List<Map<String, dynamic>>> recognizeRegions({
-    required String imagePath,
-    required String tessdataDir,
-    required String languages,
-    required int pageSegMode,
-    required Map<String, String> variables,
-    required List<List<int>> regions,
-  }) async {
-    final result = await methodChannel.invokeListMethod<Map<dynamic, dynamic>>('recognizeRegions', {
-      'imagePath': imagePath,
-      'tessdataDir': tessdataDir,
-      'languages': languages,
-      'pageSegMode': pageSegMode,
-      'variables': variables,
-      'regions': regions,
-    });
-    return [for (final m in result!) m.cast<String, dynamic>()];
-  }
 }

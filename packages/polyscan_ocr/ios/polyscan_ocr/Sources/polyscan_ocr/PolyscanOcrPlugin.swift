@@ -14,7 +14,7 @@ public class PolyscanOcrPlugin: NSObject, FlutterPlugin {
     switch call.method {
     case "tesseractVersion":
       result(String(cString: TessVersion()))
-    case "recognize", "recognizeRegions":
+    case "recognize":
       guard let args = call.arguments as? [String: Any],
             let imagePath = args["imagePath"] as? String,
             let tessdataDir = args["tessdataDir"] as? String,
@@ -27,18 +27,11 @@ public class PolyscanOcrPlugin: NSObject, FlutterPlugin {
         imagePath: imagePath, tessdataDir: tessdataDir, languages: languages,
         pageSegMode: args["pageSegMode"] as? Int ?? 3,
         variables: args["variables"] as? [String: String] ?? [:])
-      let regions = (args["regions"] as? [[Int]]) ?? []
-      let method = call.method
       queue.async {
-        let outcome: Result<Any, OcrError>
-        if method == "recognize" {
-          outcome = Self.recognize(config).map { $0 as Any }
-        } else {
-          outcome = Self.recognizeRegions(config, regions: regions).map { $0 as Any }
-        }
+        let outcome = Self.recognize(config)
         DispatchQueue.main.async {
           switch outcome {
-          case .success(let value): result(value)
+          case .success(let map): result(map)
           case .failure(let error): result(FlutterError(code: error.code, message: error.message, details: nil))
           }
         }
@@ -135,32 +128,6 @@ public class PolyscanOcrPlugin: NSObject, FlutterPlugin {
         "imageWidth": width,
         "imageHeight": height,
       ])
-    }
-  }
-
-  /// Reads each [left, top, right, bottom] region on its own. Used to re-read numbers.
-  static func recognizeRegions(_ config: EngineConfig, regions: [[Int]]) -> Result<[[String: Any]], OcrError> {
-    withEngine(config) { api, width, height in
-      var results: [[String: Any]] = []
-      for region in regions where region.count == 4 {
-        let left = max(0, region[0]), top = max(0, region[1])
-        let right = min(width, region[2]), bottom = min(height, region[3])
-        guard right > left, bottom > top else {
-          results.append(["text": "", "confidence": 0.0])
-          continue
-        }
-        TessBaseAPISetRectangle(api, Int32(left), Int32(top), Int32(right - left), Int32(bottom - top))
-        var text = ""
-        if let cText = TessBaseAPIGetUTF8Text(api) {
-          text = String(cString: cText)
-          TessDeleteText(cText)
-        }
-        results.append([
-          "text": text.trimmingCharacters(in: .whitespacesAndNewlines),
-          "confidence": Double(TessBaseAPIMeanTextConf(api)),
-        ])
-      }
-      return .success(results)
     }
   }
 
