@@ -1,0 +1,50 @@
+workflows:
+  # Builds Tesseract for iOS and runs the polyscan_ocr plugin's integration
+  # test (real OCR on bundled samples) on an iOS simulator. No signing needed.
+  ocr-plugin-ios-test:
+    name: OCR plugin – iOS simulator test
+    instance_type: mac_mini_m2
+    max_build_duration: 120
+    environment:
+      flutter: stable
+      xcode: latest
+    cache:
+      cache_paths:
+        - $CM_BUILD_DIR/packages/polyscan_ocr/ios/polyscan_ocr/TesseractC.xcframework
+    scripts:
+      - name: Tool versions
+        script: |
+          flutter --version
+          xcodebuild -version
+          cmake --version || true
+      - name: Build Tesseract xcframework
+        script: |
+          set -o pipefail
+          chmod +x packages/polyscan_ocr/ios/scripts/build_tesseract.sh
+          packages/polyscan_ocr/ios/scripts/build_tesseract.sh 2>&1 | tee tesseract-build.log
+      - name: Run integration test on iOS simulator
+        script: |
+          cd packages/polyscan_ocr/example
+          flutter pub get
+          DEVICE=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          for runtime in sorted(devices, reverse=True):
+              if "iOS" not in runtime:
+                  continue
+              for d in devices[runtime]:
+                  if d["name"].startswith("iPhone"):
+                      print(d["udid"]); sys.exit()
+          ')
+          echo "Simulator: $DEVICE"
+          xcrun simctl boot "$DEVICE" || true
+          set +e
+          flutter test integration_test -d "$DEVICE" --reporter expanded 2>&1 | tee "$CM_BUILD_DIR/integration-test.log"
+          STATUS=${PIPESTATUS[0]}
+          echo "===== OCR summary"
+          grep -E "OCR_RESULT|OCR_TEXT" "$CM_BUILD_DIR/integration-test.log" | tee "$CM_BUILD_DIR/ocr-summary.txt"
+          exit $STATUS
+    artifacts:
+      - tesseract-build.log
+      - integration-test.log
+      - ocr-summary.txt

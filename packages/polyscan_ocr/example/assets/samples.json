@@ -1,0 +1,8 @@
+{
+  "eng": {"font": "NotoSans", "rtl": false, "text": "The quick brown fox jumps over the lazy dog. Invoice No. 4471, dated 02/10/2026. Total amount due: 1,684.00. Please pay before the due date to avoid a late fee."},
+  "ben": {"font": "NotoSansBengali", "rtl": false, "text": "আমাদের দেশের নাম বাংলাদেশ। বিদ্যুৎ বিল পরিশোধের শেষ তারিখ ১৬ অক্টোবর ২০২৬। গ্রাহক নম্বর ৪৪৭১২২৯০। স্বাস্থ্য, শিক্ষা ও কৃষি মন্ত্রণালয়ের যৌথ বিজ্ঞপ্তি অনুযায়ী ক্ষতিগ্রস্ত পরিবারকে সাহায্য দেওয়া হবে।"},
+  "hin": {"font": "NotoSansDevanagari", "rtl": false, "text": "बिजली बिल की देय तिथि 16 अक्टूबर 2026 है। उपभोक्ता संख्या 4471229018 है। स्वास्थ्य, शिक्षा और कृषि मंत्रालय की संयुक्त अधिसूचना के अनुसार प्रभावित परिवारों को सहायता दी जाएगी।"},
+  "ara": {"font": "NotoSansArabic", "rtl": true, "text": "آخر موعد لدفع فاتورة الكهرباء هو ١٦ أكتوبر ٢٠٢٦. رقم المشترك ٤٤٧١٢٢٩٠. ستقدم الوزارة المساعدة للأسر المتضررة وفقا للإشعار المشترك."},
+  "tha": {"font": "NotoSansThai", "rtl": false, "text": "วันครบกำหนดชำระค่าไฟฟ้าคือวันที่ 16 ตุลาคม 2569 หมายเลขผู้ใช้ 4471229018 กระทรวงสาธารณสุขและกระทรวงศึกษาธิการจะให้ความช่วยเหลือแก่ครอบครัวที่ได้รับผลกระทบ"},
+  "ben+eng": {"font": "NotoSansBengali", "rtl": false, "text": "Invoice নম্বর INV-2026-0042: মোট টাকা ৳ ১,২৫০.০০ (One thousand two hundred fifty Taka)। যোগাযোগ: info@example.com, ফোন ০১৭১১-২২৩৩৪৪"}
+}
