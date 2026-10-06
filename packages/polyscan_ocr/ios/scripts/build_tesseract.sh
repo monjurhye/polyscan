@@ -63,8 +63,13 @@ build_slice() {
   lept_dir="$(dirname "$(find "$prefix" -name 'LeptonicaConfig.cmake' | head -1)")"
 
   echo "=== Tesseract ($name)"
+  # Cross-compiling: answer the checks that would need to run or link on iOS.
+  # LEPT_TIFF_RESULT=1 means "Leptonica has no TIFF"; feenableexcept does not
+  # exist on iOS but the static-library try_compile would wrongly find it.
   cmake -S "$WORK/src/tesseract" -B "$WORK/build/$name/tesseract" "${common[@]}" \
     -DLeptonica_DIR="$lept_dir" \
+    -DLEPT_TIFF_RESULT=1 -DLEPT_TIFF_RESULT__TRYRUN_OUTPUT= \
+    -DHAVE_FEENABLEEXCEPT=0 \
     -DSW_BUILD=OFF -DBUILD_TRAINING_TOOLS=OFF -DBUILD_TESTS=OFF \
     -DGRAPHICS_DISABLED=ON -DDISABLED_LEGACY_ENGINE=ON -DENABLE_LTO=OFF \
     -DOPENMP_BUILD=OFF -DDISABLE_ARCHIVE=ON -DDISABLE_CURL=ON -DDISABLE_TIFF=ON \
