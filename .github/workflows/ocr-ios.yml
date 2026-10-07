@@ -31,6 +31,8 @@ jobs:
           flutter --version
           xcodebuild -version
           cmake --version || true
+          xcrun simctl list runtimes
+          echo "::notice title=versions::$(flutter --version | head -1) / $(xcodebuild -version | head -1) $(xcodebuild -version | tail -1)"
 
       - name: Cache Tesseract xcframework
         uses: actions/cache@v4
@@ -60,12 +62,38 @@ jobs:
           ')
           echo "Simulator: $DEVICE"
           echo "SIM_DEVICE=$DEVICE" >> "$GITHUB_ENV"
-          xcrun simctl boot "$DEVICE" || true
-          # Wait until the simulator has fully booted before Flutter installs the app.
-          xcrun simctl bootstatus "$DEVICE" -b
+          echo "::notice title=simulator::$(xcrun simctl list devices | grep "$DEVICE")"
+          boot() {
+            xcrun simctl boot "$DEVICE" || true
+            # Wait until the simulator has fully booted before Flutter installs the app.
+            xcrun simctl bootstatus "$DEVICE" -b
+          }
+          # The app sometimes never reports back after "Xcode build done" and flutter test
+          # hangs until the step times out. Cap each attempt; retry once on a wiped simulator.
+          run_test() {
+            # No tee: children left behind by a killed flutter would keep the pipe open.
+            local log="$GITHUB_WORKSPACE/integration-test.log" start
+            start=$(wc -l < "$log" 2>/dev/null || echo 0)
+            perl -e 'alarm shift; exec @ARGV' 720 \
+              flutter test integration_test -d "$DEVICE" --reporter expanded >> "$log" 2>&1
+            local status=$?
+            tail -n +$((start + 1)) "$log"
+            return $status
+          }
+          boot
           set +e
-          flutter test integration_test -d "$DEVICE" --reporter expanded 2>&1 | tee "$GITHUB_WORKSPACE/integration-test.log"
-          STATUS=${PIPESTATUS[0]}
+          run_test
+          STATUS=$?
+          if [ $STATUS -eq 142 ]; then
+            echo "::warning title=retry::flutter test hung for 12 min; erasing the simulator and retrying once"
+            echo "===== RETRY on a wiped simulator" | tee -a "$GITHUB_WORKSPACE/integration-test.log"
+            pkill -f "flutter_tools" || true
+            xcrun simctl shutdown "$DEVICE" || true
+            xcrun simctl erase "$DEVICE"
+            boot
+            run_test
+            STATUS=$?
+          fi
           echo "===== OCR summary"
           grep -E "OCR_RESULT|OCR_TEXT" "$GITHUB_WORKSPACE/integration-test.log" | tee "$GITHUB_WORKSPACE/ocr-summary.txt"
           {
@@ -91,6 +119,7 @@ jobs:
         run: |
           xcrun simctl spawn "$SIM_DEVICE" log show --last 40m --style compact             --predicate 'process == "Runner" OR eventMessage CONTAINS[c] "polyscan"' > simulator.log 2>&1 || true
           tail -n 200 simulator.log || true
+          echo "::notice title=simulator.log tail::$(tail -n 30 simulator.log | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", substr($0,1,200)}')"
           mkdir -p crash-reports
           cp ~/Library/Logs/DiagnosticReports/Runner* crash-reports/ 2>/dev/null || true
           ls -la crash-reports
