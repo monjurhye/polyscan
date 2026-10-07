@@ -68,6 +68,8 @@ jobs:
         if: always()
         run: |
           grep -E "OCR_RESULT|OCR_TEXT" integration-test.log | tee ocr-summary.txt || true
+          # Annotations are readable without signing in (step summaries are not).
+          grep -oE "OCR_RESULT .*" integration-test.log | sed 's/^/::notice title=OCR::/' || true
           {
             echo '## OCR summary'
             echo '```'
