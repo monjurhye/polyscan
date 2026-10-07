@@ -93,7 +93,9 @@ jobs:
           script: |
             adb logcat -c
             bash -c 'adb logcat -v time > "$GITHUB_WORKSPACE/logcat.txt" 2>&1 &'
-            bash -c 'set -o pipefail; timeout 600 flutter test integration_test -d emulator-5554 --reporter expanded 2>&1 | tee "$GITHUB_WORKSPACE/integration-test.log"'
+            # flutter test sometimes hangs right after installing the app (2 of 3 runs on
+            # 2026-10-07, no app change in between); retry once after a timeout.
+            bash -c 'set -o pipefail; for try in 1 2; do timeout 600 flutter test integration_test -d emulator-5554 --reporter expanded 2>&1 | tee -a "$GITHUB_WORKSPACE/integration-test.log"; s=$?; [ $s -eq 124 ] && [ $try -eq 1 ] && { echo "::warning title=retry::flutter test hung for 10 min; retrying once"; continue; }; exit $s; done'
 
       - name: Report results as annotations
         if: always()
