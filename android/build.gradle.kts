@@ -2,6 +2,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // Tesseract4Android (used by polyscan_ocr) is published on JitPack only.
+        maven("https://jitpack.io")
     }
 }
 

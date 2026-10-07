@@ -111,21 +111,34 @@ class _LanguageTile extends StatelessWidget {
         ),
       LanguageStatus.available => TextButton.icon(
           onPressed: () {
-            if (state.canDownloadMore) {
-              state.downloadLanguage(lang);
+            if (state.canDownload(lang)) {
+              _download(context, state, lang);
             } else {
               Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProScreen()));
             }
           },
-          icon: Icon(state.canDownloadMore ? Icons.download_outlined : Icons.lock_outline, size: 18),
+          icon: Icon(state.canDownload(lang) ? Icons.download_outlined : Icons.lock_outline, size: 18),
           label: Text('${lang.sizeMb.toStringAsFixed(1)} MB'),
         ),
     };
 
+    final subtitle = [
+      if (lang.nativeName != lang.name) lang.name,
+      if (lang.free && lang.status == LanguageStatus.available && !state.isPro) 'Free',
+    ].join(' · ');
     return ListTile(
       title: Text(lang.nativeName),
-      subtitle: lang.nativeName == lang.name ? null : Text(lang.name),
+      subtitle: subtitle.isEmpty ? null : Text(subtitle),
       trailing: trailing,
     );
+  }
+
+  Future<void> _download(BuildContext context, AppState state, OcrLanguage lang) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await state.downloadLanguage(lang);
+    } on Exception catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('${lang.name} did not download. Check the connection and try again. ($e)')));
+    }
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../data/mock_data.dart';
 import '../models/document.dart';
 import '../widgets/page_preview.dart';
 import 'flows.dart';
@@ -34,8 +33,10 @@ class _ScanReviewScreenState extends State<ScanReviewScreen> {
     _controller.animateToPage(index, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
   }
 
-  void _addPage() {
-    setState(() => _pages.add(MockData.newPages(1).first));
+  Future<void> _addPage(ScanSource source) async {
+    final added = await pickPages(context, source);
+    if (added.isEmpty || !mounted) return;
+    setState(() => _pages.addAll(added));
     WidgetsBinding.instance.addPostFrameCallback((_) => _goTo(_pages.length - 1));
   }
 
@@ -88,7 +89,18 @@ class _ScanReviewScreenState extends State<ScanReviewScreen> {
           leading: IconButton(icon: const Icon(Icons.close), tooltip: 'Discard', onPressed: _discard),
           title: Text('Page ${_current + 1} of ${_pages.length}'),
           actions: [
-            TextButton.icon(onPressed: _addPage, icon: const Icon(Icons.add_a_photo_outlined), label: const Text('Add')),
+            PopupMenuButton<ScanSource>(
+              tooltip: 'Add pages',
+              onSelected: _addPage,
+              itemBuilder: (_) => const [
+                PopupMenuItem(value: ScanSource.camera, child: ListTile(leading: Icon(Icons.photo_camera_outlined), title: Text('Camera'))),
+                PopupMenuItem(value: ScanSource.photos, child: ListTile(leading: Icon(Icons.photo_library_outlined), title: Text('Photos'))),
+              ],
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: Row(children: [Icon(Icons.add_a_photo_outlined), SizedBox(width: 6), Text('Add')]),
+              ),
+            ),
           ],
         ),
         body: Column(

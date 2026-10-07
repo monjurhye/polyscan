@@ -6,6 +6,10 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Polyscan uses the camera to scan documents. Scans stay on this iPhone.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Polyscan imports photos of documents you pick. They stay on this iPhone.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Polyscan</string>
 	<key>CFBundleExecutable</key>

@@ -6,7 +6,10 @@ import 'screens/onboarding_screen.dart';
 import 'theme.dart';
 
 void main() {
-  runApp(PolyscanApp(state: AppState()));
+  WidgetsFlutterBinding.ensureInitialized();
+  final state = AppState();
+  state.load();
+  runApp(PolyscanApp(state: state));
 }
 
 class PolyscanApp extends StatelessWidget {

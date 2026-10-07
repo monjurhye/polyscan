@@ -1,17 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../data/app_state.dart';
-import '../data/mock_data.dart';
 import '../models/document.dart';
 import 'languages_screen.dart';
 import 'scan_review_screen.dart';
 
-/// Opens the review screen with demo pages until the camera scanner is wired in.
-void startScan(BuildContext context, ScanSource source) {
-  final pages = MockData.newPages(source == ScanSource.camera ? 3 : 1);
+/// Gets page images from [source]; shows an error and returns an empty list on failure.
+Future<List<ScanPage>> pickPages(BuildContext context, ScanSource source) async {
+  final messenger = ScaffoldMessenger.of(context);
+  try {
+    return await AppScope.read(context).importer.pick(source);
+  } on PlatformException catch (e) {
+    messenger.showSnackBar(SnackBar(
+      content: Text(e.code.contains('denied') || e.code.contains('access')
+          ? 'Polyscan needs permission for ${source == ScanSource.camera ? 'the camera' : 'your photos'}. Allow it in Settings.'
+          : 'Could not open ${source.name}: ${e.message ?? e.code}'),
+    ));
+    return [];
+  }
+}
+
+/// Picks pages, then opens the review screen.
+Future<void> startScan(BuildContext context, ScanSource source) async {
+  final pages = await pickPages(context, source);
+  if (pages.isEmpty || !context.mounted) return;
   Navigator.of(context).push(
     MaterialPageRoute(fullscreenDialog: true, builder: (_) => ScanReviewScreen(pages: pages)),
   );
+}
+
+/// Shows a modal progress dialog; call the returned function to close it.
+VoidCallback showBusy(BuildContext context, String message) {
+  final navigator = Navigator.of(context, rootNavigator: true);
+  var open = true;
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    useRootNavigator: true,
+    builder: (_) => PopScope(
+      canPop: false,
+      child: AlertDialog(
+        content: Row(children: [
+          const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2.5)),
+          const SizedBox(width: 20),
+          Expanded(child: Text(message)),
+        ]),
+      ),
+    ),
+  ).whenComplete(() => open = false);
+  // Safe to call more than once.
+  return () {
+    if (!open) return;
+    open = false;
+    navigator.pop();
+  };
+}
+
+/// Runs OCR on [doc] behind a progress dialog and reports failures.
+Future<void> readText(BuildContext context, ScanDocument doc, List<String> codes) async {
+  final state = AppScope.read(context);
+  final messenger = ScaffoldMessenger.of(context);
+  final done = showBusy(context, 'Reading text…');
+  try {
+    await state.recognize(doc, codes);
+  } on Exception catch (e) {
+    messenger.showSnackBar(SnackBar(content: Text('Could not read the text: $e')));
+  } finally {
+    done();
+  }
 }
 
 void showImportSheet(BuildContext context) {
@@ -33,7 +90,7 @@ void showImportSheet(BuildContext context) {
           ListTile(
             leading: const Icon(Icons.folder_open_outlined),
             title: const Text('From Files'),
-            subtitle: const Text('Images or PDF'),
+            subtitle: const Text('Image files'),
             onTap: () {
               Navigator.pop(sheet);
               startScan(context, ScanSource.files);

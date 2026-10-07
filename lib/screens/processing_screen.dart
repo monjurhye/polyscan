@@ -5,8 +5,7 @@ import '../models/document.dart';
 import '../widgets/page_preview.dart';
 import 'document_screen.dart';
 
-/// Shows progress while pages are enhanced, read and turned into a PDF.
-/// Steps are timed fakes until the real pipeline exists.
+/// Prepares the pages (rotation, filter) and reads their text, showing progress.
 class ProcessingScreen extends StatefulWidget {
   const ProcessingScreen({super.key, required this.pages, required this.languageCodes});
 
@@ -20,28 +19,58 @@ class ProcessingScreen extends StatefulWidget {
 class _ProcessingScreenState extends State<ProcessingScreen> with SingleTickerProviderStateMixin {
   late final _scanLine = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400))..repeat(reverse: true);
   int _step = 0;
+  int _page = 0;
 
-  List<String> get _steps => [
-        'Enhancing pages',
-        if (widget.languageCodes.isNotEmpty) 'Reading text',
-        'Building PDF',
-      ];
+  bool get _reads => widget.languageCodes.isNotEmpty;
+
+  List<String> get _steps => ['Enhancing pages', if (_reads) 'Reading text'];
 
   @override
   void initState() {
     super.initState();
-    _run();
+    // _run calls setState, which isn't allowed before the first frame.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _run());
   }
 
   Future<void> _run() async {
-    for (var i = 0; i < _steps.length; i++) {
-      await Future<void>.delayed(const Duration(milliseconds: 900));
+    final state = AppScope.read(context);
+    var readFailed = false;
+    try {
+      for (var i = 0; i < widget.pages.length; i++) {
+        setState(() => _page = i);
+        await state.renderer.render(widget.pages[i]);
+      }
       if (!mounted) return;
-      setState(() => _step = i + 1);
+      setState(() => _step = 1);
+      if (_reads) {
+        try {
+          await state.ocr.recognizePages(widget.pages, widget.languageCodes, onPage: (i) {
+            if (mounted) setState(() => _page = i);
+          });
+        } on Exception catch (e) {
+          readFailed = true;
+          if (mounted) await _showError('Could not read the text', e);
+        }
+        if (mounted) setState(() => _step = 2);
+      }
+    } on Exception catch (e) {
+      if (mounted) await _showError('Could not open this image', e);
+      if (mounted) Navigator.of(context).pop();
+      return;
     }
-    final doc = AppScope.read(context).addDocument(widget.pages, widget.languageCodes);
+    if (!mounted) return;
+    final doc = state.addDocument(widget.pages, readFailed ? const [] : widget.languageCodes);
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => DocumentScreen(doc: doc)));
   }
+
+  Future<void> _showError(String title, Exception error) => showDialog<void>(
+        context: context,
+        builder: (c) => AlertDialog(
+          title: Text(title),
+          content: Text('$error'),
+          actions: [TextButton(onPressed: () => Navigator.pop(c), child: const Text('OK'))],
+        ),
+      );
 
   @override
   void dispose() {
@@ -105,7 +134,10 @@ class _ProcessingScreenState extends State<ProcessingScreen> with SingleTickerPr
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            _steps[i] == 'Reading text' ? 'Reading text ($names)' : _steps[i],
+                            [
+                              _steps[i] == 'Reading text' ? 'Reading text ($names)' : _steps[i],
+                              if (i == _step && widget.pages.length > 1) ' · page ${_page + 1} of ${widget.pages.length}',
+                            ].join(),
                             style: theme.textTheme.bodyLarge?.copyWith(
                               color: i <= _step ? null : theme.colorScheme.onSurfaceVariant,
                             ),

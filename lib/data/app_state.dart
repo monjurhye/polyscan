@@ -1,21 +1,37 @@
-import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 
 import '../models/document.dart';
 import '../models/ocr_language.dart';
-import 'mock_data.dart';
+import '../services/exporter.dart';
+import '../services/model_store.dart';
+import '../services/ocr_service.dart';
+import '../services/page_importer.dart';
+import '../services/page_renderer.dart';
+import 'languages.dart';
 
-/// In-memory app state. Persistence, purchases and real downloads come later.
+/// App state. Documents are kept in memory for now; saving them across launches comes next.
 class AppState extends ChangeNotifier {
-  AppState()
-      : documents = MockData.documents(),
-        languages = MockData.languages();
+  AppState({ModelStore? models, PageRenderer? renderer, PageImporter? importer})
+      : models = models ?? ModelStore(),
+        renderer = renderer ?? PageRenderer(),
+        importer = importer ?? PageImporter(),
+        languages = languageCatalog() {
+    ocr = OcrService(this.models, this.renderer);
+    exporter = Exporter(this.renderer);
+  }
 
-  /// Placeholder rule: free users can add this many downloaded languages.
+  /// Placeholder rule: free users can add this many paid-tier languages.
   static const freeDownloadLimit = 2;
 
-  final List<ScanDocument> documents;
+  final ModelStore models;
+  final PageRenderer renderer;
+  final PageImporter importer;
+  late final OcrService ocr;
+  late final Exporter exporter;
+
+  final List<ScanDocument> documents = [];
   final List<OcrLanguage> languages;
   final Map<String, double> downloadProgress = {};
 
@@ -25,14 +41,25 @@ class AppState extends ChangeNotifier {
   ExportFormat defaultExport = ExportFormat.pdf;
   List<String> lastLanguageCodes = ['eng'];
 
-  int _nextId = 100;
+  int _nextId = 1;
+
+  /// Marks the models already on the phone as downloaded.
+  Future<void> load() async {
+    final installed = await models.installed();
+    for (final lang in languages) {
+      if (lang.status == LanguageStatus.builtIn) continue;
+      lang.status = installed.contains(lang.code) ? LanguageStatus.downloaded : LanguageStatus.available;
+    }
+    notifyListeners();
+  }
 
   List<OcrLanguage> get readyLanguages => languages.where((l) => l.isReady).toList();
 
+  /// Downloaded languages that count toward the free limit.
   int get downloadedCount =>
-      languages.where((l) => l.status == LanguageStatus.downloaded).length;
+      languages.where((l) => l.status == LanguageStatus.downloaded && !l.free).length;
 
-  bool get canDownloadMore => isPro || downloadedCount < freeDownloadLimit;
+  bool canDownload(OcrLanguage lang) => isPro || lang.free || downloadedCount < freeDownloadLimit;
 
   OcrLanguage? language(String code) {
     for (final l in languages) {
@@ -49,7 +76,6 @@ class AppState extends ChangeNotifier {
       createdAt: now,
       pages: pages,
       languageCodes: codes,
-      recognizedText: codes.isEmpty ? null : MockData.sampleText(codes),
     );
     documents.insert(0, doc);
     if (codes.isNotEmpty) lastLanguageCodes = codes;
@@ -57,9 +83,10 @@ class AppState extends ChangeNotifier {
     return doc;
   }
 
-  void recognize(ScanDocument doc, List<String> codes) {
+  /// Runs OCR on every page of [doc]. Throws a PlatformException if Tesseract fails.
+  Future<void> recognize(ScanDocument doc, List<String> codes, {void Function(int page)? onPage}) async {
+    await ocr.recognizePages(doc.pages, codes, onPage: onPage);
     doc.languageCodes = codes;
-    doc.recognizedText = MockData.sampleText(codes);
     lastLanguageCodes = codes;
     notifyListeners();
   }
@@ -71,6 +98,10 @@ class AppState extends ChangeNotifier {
 
   void deleteDocument(ScanDocument doc) {
     documents.remove(doc);
+    for (final page in doc.pages) {
+      final file = File(page.imagePath);
+      if (file.existsSync()) file.deleteSync();
+    }
     notifyListeners();
   }
 
@@ -99,25 +130,25 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Simulates a model download so the progress UI can be reviewed.
-  void downloadLanguage(OcrLanguage lang) {
+  /// Downloads the model; progress shows in [downloadProgress]. Rethrows download errors.
+  Future<void> downloadLanguage(OcrLanguage lang) async {
     if (downloadProgress.containsKey(lang.code)) return;
     downloadProgress[lang.code] = 0;
     notifyListeners();
-    Timer.periodic(const Duration(milliseconds: 120), (timer) {
-      final next = (downloadProgress[lang.code] ?? 0) + 0.08;
-      if (next >= 1) {
-        timer.cancel();
-        downloadProgress.remove(lang.code);
-        lang.status = LanguageStatus.downloaded;
-      } else {
-        downloadProgress[lang.code] = next;
-      }
+    try {
+      await models.download(lang.code, onProgress: (p) {
+        downloadProgress[lang.code] = p;
+        notifyListeners();
+      });
+      lang.status = LanguageStatus.downloaded;
+    } finally {
+      downloadProgress.remove(lang.code);
       notifyListeners();
-    });
+    }
   }
 
-  void removeLanguage(OcrLanguage lang) {
+  Future<void> removeLanguage(OcrLanguage lang) async {
+    await models.remove(lang.code);
     lang.status = LanguageStatus.available;
     lastLanguageCodes.remove(lang.code);
     notifyListeners();

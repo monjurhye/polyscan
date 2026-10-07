@@ -11,6 +11,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Polyscan'), findsOneWidget);
-    expect(find.text('Rental agreement'), findsOneWidget);
+    expect(find.text('No scans yet'), findsOneWidget);
   });
 }

@@ -41,7 +41,7 @@ class _PageViewerScreenState extends State<PageViewerScreen> {
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: PagePreview(page: widget.doc.pages[i], elevated: false, radius: 2),
+              child: PagePreview(page: widget.doc.pages[i], elevated: false, radius: 2, fullPage: true),
             ),
           ),
         ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../data/app_state.dart';
-import '../data/mock_data.dart';
 import '../models/document.dart';
 import '../widgets/page_preview.dart';
 import 'flows.dart';
@@ -25,7 +24,7 @@ class DocumentScreen extends StatelessWidget {
             PopupMenuButton<String>(
               onSelected: (v) => switch (v) {
                 'rename' => _rename(context),
-                'add' => AppScope.read(context).addPages(doc, MockData.newPages(1)),
+                'add' => _addPages(context),
                 'delete' => _delete(context),
                 _ => null,
               },
@@ -70,6 +69,13 @@ class DocumentScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _addPages(BuildContext context) async {
+    final pages = await pickPages(context, ScanSource.photos);
+    if (pages.isEmpty || !context.mounted) return;
+    AppScope.read(context).addPages(doc, pages);
+    if (doc.languageCodes.isNotEmpty) await readText(context, doc, doc.languageCodes);
   }
 
   Future<void> _rename(BuildContext context) async {
@@ -132,17 +138,15 @@ class DocumentScreen extends StatelessWidget {
                 title: Text(f.label),
                 subtitle: Text(switch (f) {
                   ExportFormat.pdf => doc.hasText ? 'Text is selectable and searchable' : 'Image-only (recognize text first to search it)',
-                  ExportFormat.word => 'Editable text',
+                  ExportFormat.word => 'Coming soon',
                   ExportFormat.txt => 'Just the text',
                   ExportFormat.jpg => 'One image per page',
                 }),
                 trailing: f == state.defaultExport ? const Chip(label: Text('Default')) : null,
-                enabled: doc.hasText || f == ExportFormat.pdf || f == ExportFormat.jpg,
+                enabled: f != ExportFormat.word && (doc.hasText || f == ExportFormat.pdf || f == ExportFormat.jpg),
                 onTap: () {
                   Navigator.pop(sheet);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${f.label} ready — no watermark')),
-                  );
+                  _export(context, doc, f);
                 },
               ),
             const SizedBox(height: 8),
@@ -150,6 +154,24 @@ class DocumentScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Future<void> _export(BuildContext context, ScanDocument doc, ExportFormat format) async {
+  final state = AppScope.read(context);
+  final messenger = ScaffoldMessenger.of(context);
+  final size = MediaQuery.sizeOf(context);
+  // Bottom centre, near the Share button; the iPad popover needs an anchor.
+  final origin = Rect.fromLTWH(size.width / 2 - 1, size.height - 80, 2, 2);
+  final done = showBusy(context, 'Preparing ${format.label}…');
+  try {
+    final files = await state.exporter.write(doc, format);
+    done();
+    await state.exporter.share(doc, files, origin: origin);
+  } on Exception catch (e) {
+    messenger.showSnackBar(SnackBar(content: Text('Could not export: $e')));
+  } finally {
+    done();
   }
 }
 
@@ -195,6 +217,11 @@ class _TextTab extends StatelessWidget {
 
   final ScanDocument doc;
 
+  Future<void> _reread(BuildContext context) async {
+    final codes = await pickRecognitionLanguages(context);
+    if (codes != null && codes.isNotEmpty && context.mounted) await readText(context, doc, codes);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -218,12 +245,7 @@ class _TextTab extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               FilledButton.icon(
-                onPressed: () async {
-                  final codes = await pickRecognitionLanguages(context);
-                  if (codes != null && codes.isNotEmpty && context.mounted) {
-                    AppScope.read(context).recognize(doc, codes);
-                  }
-                },
+                onPressed: () => _reread(context),
                 icon: const Icon(Icons.text_fields),
                 label: const Text('Recognize text'),
               ),
@@ -247,15 +269,7 @@ class _TextTab extends StatelessWidget {
                 label: Text(state.language(code)?.nativeName ?? code),
                 visualDensity: VisualDensity.compact,
               ),
-            TextButton(
-              onPressed: () async {
-                final codes = await pickRecognitionLanguages(context);
-                if (codes != null && codes.isNotEmpty && context.mounted) {
-                  AppScope.read(context).recognize(doc, codes);
-                }
-              },
-              child: const Text('Re-read'),
-            ),
+            TextButton(onPressed: () => _reread(context), child: const Text('Re-read')),
           ],
         ),
         const SizedBox(height: 12),
