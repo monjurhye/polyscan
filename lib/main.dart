@@ -5,10 +5,13 @@ import 'screens/home_shell.dart';
 import 'screens/onboarding_screen.dart';
 import 'theme.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final state = AppState();
-  state.load();
+  // Load before the first frame so returning users don't see onboarding flash by.
+  await state.load();
+  // Write pending changes right away when the app is backgrounded; it may be killed there.
+  AppLifecycleListener(onPause: state.save, onHide: state.save);
   runApp(PolyscanApp(state: state));
 }
 

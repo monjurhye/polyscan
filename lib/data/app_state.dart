@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -10,13 +11,15 @@ import '../services/ocr_service.dart';
 import '../services/page_importer.dart';
 import '../services/page_renderer.dart';
 import 'languages.dart';
+import 'library_store.dart';
 
-/// App state. Documents are kept in memory for now; saving them across launches comes next.
+/// App state. Documents and settings are saved to [LibraryStore] shortly after each change.
 class AppState extends ChangeNotifier {
-  AppState({ModelStore? models, PageRenderer? renderer, PageImporter? importer})
+  AppState({ModelStore? models, PageRenderer? renderer, PageImporter? importer, LibraryStore? library})
       : models = models ?? ModelStore(),
         renderer = renderer ?? PageRenderer(),
         importer = importer ?? PageImporter(),
+        library = library ?? LibraryStore(),
         languages = languageCatalog() {
     ocr = OcrService(this.models, this.renderer);
     exporter = Exporter(this.renderer);
@@ -28,6 +31,7 @@ class AppState extends ChangeNotifier {
   final ModelStore models;
   final PageRenderer renderer;
   final PageImporter importer;
+  final LibraryStore library;
   late final OcrService ocr;
   late final Exporter exporter;
 
@@ -36,21 +40,47 @@ class AppState extends ChangeNotifier {
   final Map<String, double> downloadProgress = {};
 
   bool isPro = false;
-  bool onboardingDone = false;
-  ThemeMode themeMode = ThemeMode.system;
-  ExportFormat defaultExport = ExportFormat.pdf;
-  List<String> lastLanguageCodes = ['eng'];
+  Settings settings = Settings();
 
-  int _nextId = 1;
+  bool get onboardingDone => settings.onboardingDone;
+  ThemeMode get themeMode => settings.themeMode;
+  ExportFormat get defaultExport => settings.defaultExport;
+  List<String> get lastLanguageCodes => settings.lastLanguageCodes;
 
-  /// Marks the models already on the phone as downloaded.
+  Timer? _saveTimer;
+  Future<void> _lastSave = Future.value();
+
+  /// Loads saved documents and settings, and marks the models already on the phone as downloaded.
   Future<void> load() async {
+    final saved = await library.load();
+    settings = saved.settings;
+    documents
+      ..clear()
+      ..addAll(saved.documents);
     final installed = await models.installed();
     for (final lang in languages) {
       if (lang.status == LanguageStatus.builtIn) continue;
       lang.status = installed.contains(lang.code) ? LanguageStatus.downloaded : LanguageStatus.available;
     }
+    settings.lastLanguageCodes.removeWhere((c) => !(language(c)?.isReady ?? false));
     notifyListeners();
+    unawaited(library.deleteUnusedPages(documents).catchError((Object e) => debugPrint('Page cleanup failed: $e')));
+  }
+
+  /// Notifies listeners and saves soon; quick successive changes are written once.
+  void _changed() {
+    notifyListeners();
+    _saveTimer?.cancel();
+    _saveTimer = Timer(const Duration(milliseconds: 400), save);
+  }
+
+  /// Writes the library now (waits for any save already running). Saves run one at a time.
+  Future<void> save() {
+    _saveTimer?.cancel();
+    final snapshot = Library(settings: settings, documents: List.of(documents));
+    return _lastSave = _lastSave.then((_) => library.save(snapshot)).catchError((Object e) {
+      debugPrint('Saving the library failed: $e');
+    });
   }
 
   List<OcrLanguage> get readyLanguages => languages.where((l) => l.isReady).toList();
@@ -71,15 +101,15 @@ class AppState extends ChangeNotifier {
   ScanDocument addDocument(List<ScanPage> pages, List<String> codes) {
     final now = DateTime.now();
     final doc = ScanDocument(
-      id: 'd${_nextId++}',
+      id: 'd${now.microsecondsSinceEpoch}',
       title: 'Scan ${formatDate(now)} ${_two(now.hour)}:${_two(now.minute)}',
       createdAt: now,
       pages: pages,
       languageCodes: codes,
     );
     documents.insert(0, doc);
-    if (codes.isNotEmpty) lastLanguageCodes = codes;
-    notifyListeners();
+    if (codes.isNotEmpty) settings.lastLanguageCodes = codes;
+    _changed();
     return doc;
   }
 
@@ -87,13 +117,13 @@ class AppState extends ChangeNotifier {
   Future<void> recognize(ScanDocument doc, List<String> codes, {void Function(int page)? onPage}) async {
     await ocr.recognizePages(doc.pages, codes, onPage: onPage);
     doc.languageCodes = codes;
-    lastLanguageCodes = codes;
-    notifyListeners();
+    settings.lastLanguageCodes = codes;
+    _changed();
   }
 
   void renameDocument(ScanDocument doc, String title) {
     doc.title = title;
-    notifyListeners();
+    _changed();
   }
 
   void deleteDocument(ScanDocument doc) {
@@ -102,12 +132,12 @@ class AppState extends ChangeNotifier {
       final file = File(page.imagePath);
       if (file.existsSync()) file.deleteSync();
     }
-    notifyListeners();
+    _changed();
   }
 
   void addPages(ScanDocument doc, List<ScanPage> pages) {
     doc.pages.addAll(pages);
-    notifyListeners();
+    _changed();
   }
 
   void setPro(bool value) {
@@ -116,18 +146,18 @@ class AppState extends ChangeNotifier {
   }
 
   void setOnboardingDone(bool value) {
-    onboardingDone = value;
-    notifyListeners();
+    settings.onboardingDone = value;
+    _changed();
   }
 
   void setThemeMode(ThemeMode mode) {
-    themeMode = mode;
-    notifyListeners();
+    settings.themeMode = mode;
+    _changed();
   }
 
   void setDefaultExport(ExportFormat format) {
-    defaultExport = format;
-    notifyListeners();
+    settings.defaultExport = format;
+    _changed();
   }
 
   /// Downloads the model; progress shows in [downloadProgress]. Rethrows download errors.
@@ -150,8 +180,8 @@ class AppState extends ChangeNotifier {
   Future<void> removeLanguage(OcrLanguage lang) async {
     await models.remove(lang.code);
     lang.status = LanguageStatus.available;
-    lastLanguageCodes.remove(lang.code);
-    notifyListeners();
+    settings.lastLanguageCodes.remove(lang.code);
+    _changed();
   }
 }
 

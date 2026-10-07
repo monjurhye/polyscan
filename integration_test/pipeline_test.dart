@@ -62,5 +62,15 @@ void main() {
     // ignore: avoid_print
     print('PIPELINE_RESULT pdf ${bytes.length} bytes, ${page.ocr!.words.length} words in the text layer');
     expect(String.fromCharCodes(bytes.take(4)), '%PDF');
+
+    // Saved to the phone's documents folder and back, as after an app restart.
+    await step('save', state.save);
+    final reopened = AppState();
+    await step('reload', reopened.load);
+    final restored = reopened.documents.firstWhere((d) => d.id == doc.id);
+    expect(restored.recognizedText, doc.recognizedText);
+    expect(File(restored.pages.single.imagePath).existsSync(), isTrue);
+    reopened.deleteDocument(restored);
+    await reopened.save();
   }, timeout: const Timeout(Duration(minutes: 12)));
 }
