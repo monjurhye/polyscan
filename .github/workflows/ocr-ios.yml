@@ -76,6 +76,16 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           exit $STATUS
 
+      - name: Report results as annotations
+        if: always()
+        run: |
+          # Annotations are readable without signing in (logs and step summaries are not).
+          [ -f integration-test.log ] || exit 0
+          grep -oE "OCR_RESULT .*" integration-test.log | sed 's/^/::notice title=OCR::/' || true
+          if [ "${{ job.status }}" != "success" ]; then
+            echo "::warning title=integration-test.log tail::$(tail -n 40 integration-test.log | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", substr($0,1,200)}')"
+          fi
+
       - name: Collect simulator logs
         if: always() && env.SIM_DEVICE != ''
         run: |

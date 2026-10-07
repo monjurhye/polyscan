@@ -82,6 +82,10 @@ jobs:
         run: |
           for f in build.log unit-test.log integration-test.log; do
             [ -f "$f" ] || continue
+            echo "::warning title=$f tail::$(tail -n 40 "$f" | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", substr($0,1,200)}')"
+          done
+          for f in build.log unit-test.log integration-test.log; do
+            [ -f "$f" ] || continue
             { echo "## $f (last 80 lines)"; echo '```'; tail -n 80 "$f"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           done
 
