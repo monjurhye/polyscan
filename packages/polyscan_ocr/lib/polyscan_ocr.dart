@@ -78,7 +78,8 @@ class PolyscanOcr {
   /// Reads the text in [imagePath].
   ///
   /// [tessdataDir] is a folder holding `<lang>.traineddata` files, e.g. models
-  /// downloaded on demand. [languages] are Tesseract codes such as `['ben', 'eng']`.
+  /// downloaded on demand; it must be named `tessdata` (Android requires it).
+  /// [languages] are Tesseract codes such as `['ben', 'eng']`.
   ///
   /// With [fixDigits] (default), when a non-Latin model such as `hin` was used
   /// and the text contains Latin digits, a second `eng` pass reads the numbers

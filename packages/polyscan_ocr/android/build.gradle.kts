@@ -18,6 +18,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // Tesseract4Android is published on JitPack only.
+        maven("https://jitpack.io")
     }
 }
 
@@ -72,6 +74,8 @@ kotlin {
 }
 
 dependencies {
+    implementation("cz.adaptech.tesseract4android:tesseract4android:4.9.0")
+    implementation("androidx.exifinterface:exifinterface:1.4.1")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.mockito:mockito-core:5.0.0")
 }
