@@ -50,12 +50,18 @@ jobs:
         run: |
           cd packages/polyscan_ocr/example
           flutter pub get
-          DEVICE=$(xcrun simctl list devices available -j | python3 -c '
-          import json, sys
+          # Prefer a runtime that matches the selected Xcode's SDK: with Xcode 16.4 the
+          # newest runtime was iOS 26 and the first test attempt hung.
+          SDK=$(xcrun --sdk iphonesimulator --show-sdk-version)
+          DEVICE=$(xcrun simctl list devices available -j | SDK="$SDK" python3 -c '
+          import json, os, re, sys
           devices = json.load(sys.stdin)["devices"]
-          for runtime in sorted(devices, reverse=True):
-              if "iOS" not in runtime:
-                  continue
+          major = os.environ["SDK"].split(".")[0]
+          def version(runtime):
+              return [int(n) for n in re.findall(r"\d+", runtime.split("iOS")[-1])]
+          runtimes = sorted((r for r in devices if "iOS" in r), key=version, reverse=True)
+          matching = [r for r in runtimes if version(r)[:1] == [int(major)]]
+          for runtime in matching + runtimes:
               for d in devices[runtime]:
                   if d["name"].startswith("iPhone"):
                       print(d["udid"]); sys.exit()
