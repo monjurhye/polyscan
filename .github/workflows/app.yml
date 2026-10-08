@@ -65,17 +65,18 @@ jobs:
           channel: stable
           cache: true
 
-      # Same cache key as ocr-ios.yml, so the xcframework is usually restored.
+      # `flutter build ios --simulator` links arm64 and x86_64, so this job needs the
+      # Intel simulator slice too (ocr-ios.yml runs on one arch and builds arm64 only).
       - name: Cache Tesseract xcframework
         uses: actions/cache@v4
         with:
           path: packages/polyscan_ocr/ios/polyscan_ocr/TesseractC.xcframework
-          key: tesseract-${{ runner.os }}-${{ hashFiles('packages/polyscan_ocr/ios/scripts/build_tesseract.sh') }}
+          key: tesseract-x86sim-${{ runner.os }}-${{ hashFiles('packages/polyscan_ocr/ios/scripts/build_tesseract.sh') }}
 
       - name: Build Tesseract xcframework
         run: |
           chmod +x packages/polyscan_ocr/ios/scripts/build_tesseract.sh
-          packages/polyscan_ocr/ios/scripts/build_tesseract.sh 2>&1 | tee tesseract-build.log
+          SIM_X86_64=1 packages/polyscan_ocr/ios/scripts/build_tesseract.sh 2>&1 | tee tesseract-build.log
 
       - name: Build for the iOS simulator
         run: |
