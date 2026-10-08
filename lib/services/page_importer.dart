@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:polyscan_scanner/polyscan_scanner.dart';
 
 import '../models/document.dart';
 
@@ -20,10 +22,7 @@ class PageImporter {
     // which package:image can't decode.
     const quality = 92;
     final paths = switch (source) {
-      // Plain camera photo until the edge-detecting document scanner is wired in.
-      ScanSource.camera => [
-          if (await _picker.pickImage(source: ImageSource.camera, imageQuality: quality) case final x?) x.path,
-        ],
+      ScanSource.camera => await _scanOrPhoto(quality),
       ScanSource.photos => [for (final x in await _picker.pickMultiImage(imageQuality: quality)) x.path],
       ScanSource.files => [
           for (final f in await FilePicker.pickFiles(type: FileType.image))
@@ -31,6 +30,28 @@ class PageImporter {
         ],
     };
     return [for (final p in paths) ScanPage(imagePath: await _keep(p))];
+  }
+
+  /// The phone's document scanner (edge detection, crop, several pages); a plain
+  /// camera photo where there is none (iOS simulator, Android without Play services).
+  Future<List<String>> _scanOrPhoto(int quality) async {
+    if (await _scannerAvailable()) {
+      try {
+        return await PolyscanScanner.scan();
+      } on PlatformException catch (e) {
+        if (e.code != 'unavailable') rethrow;
+      }
+    }
+    final photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: quality);
+    return [if (photo != null) photo.path];
+  }
+
+  Future<bool> _scannerAvailable() async {
+    try {
+      return await PolyscanScanner.isAvailable();
+    } on MissingPluginException {
+      return false;
+    }
   }
 
   Future<String> _keep(String path) async {

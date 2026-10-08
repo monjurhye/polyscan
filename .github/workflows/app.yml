@@ -50,6 +50,47 @@ jobs:
             echo "::warning title=$f tail::$(tail -n 40 "$f" | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", substr($0,1,200)}')"
           done
 
+  # Compiles the app for the iOS simulator (no signing), so the Swift plugins build.
+  ios-build:
+    runs-on: macos-15
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Same cache key as ocr-ios.yml, so the xcframework is usually restored.
+      - name: Cache Tesseract xcframework
+        uses: actions/cache@v4
+        with:
+          path: packages/polyscan_ocr/ios/polyscan_ocr/TesseractC.xcframework
+          key: tesseract-${{ runner.os }}-${{ hashFiles('packages/polyscan_ocr/ios/scripts/build_tesseract.sh') }}
+
+      - name: Build Tesseract xcframework
+        run: |
+          chmod +x packages/polyscan_ocr/ios/scripts/build_tesseract.sh
+          packages/polyscan_ocr/ios/scripts/build_tesseract.sh 2>&1 | tee tesseract-build.log
+
+      - name: Build for the iOS simulator
+        run: |
+          flutter pub get
+          flutter build ios --simulator --debug 2>&1 | tee build.log
+
+      - name: Log tails on failure
+        if: failure()
+        run: |
+          for f in tesseract-build.log build.log; do
+            [ -f "$f" ] || continue
+            echo "::warning title=$f errors::$(grep -E "error:|Error|failed" "$f" | head -n 30 | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", substr($0,1,220)}')"
+            echo "::warning title=$f tail::$(tail -n 30 "$f" | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", substr($0,1,220)}')"
+          done
+
   # The real pipeline (render, Tesseract, searchable PDF) on an Android emulator.
   pipeline-android:
     runs-on: ubuntu-latest
