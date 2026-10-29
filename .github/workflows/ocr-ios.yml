@@ -115,7 +115,9 @@ jobs:
         run: |
           # Annotations are readable without signing in (logs and step summaries are not).
           [ -f integration-test.log ] || exit 0
-          grep -oE "OCR_RESULT .*" integration-test.log | sed 's/^/::notice title=OCR::/' || true
+          grep -oE "OCR_RESULT .*" integration-test.log | grep -v "OCR_RESULT vision [a-z]" | sed 's/^/::notice title=OCR::/' || true
+          # A step shows at most 10 annotations, so the per-language Vision lines go in one.
+          echo "::notice title=Vision per language::$(grep -oE "OCR_RESULT vision [a-z].*" integration-test.log | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", $0}')"
           if [ "${{ job.status }}" != "success" ]; then
             echo "::warning title=integration-test.log tail::$(tail -n 40 integration-test.log | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", substr($0,1,200)}')"
           fi

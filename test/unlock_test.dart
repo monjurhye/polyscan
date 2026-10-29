@@ -13,13 +13,24 @@ import 'fake_unlock_store.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late Directory tmp;
+  final states = <AppState>[];
 
   setUp(() => tmp = Directory.systemTemp.createTempSync('polyscan_unlock'));
-  tearDown(() => tmp.deleteSync(recursive: true));
+  // Finish pending saves first: a store event schedules one, and on CI it once wrote
+  // into the folder while it was being deleted.
+  tearDown(() async {
+    for (final state in states) {
+      await state.save();
+      state.dispose();
+    }
+    states.clear();
+    tmp.deleteSync(recursive: true);
+  });
 
   Future<AppState> loadedState(FakeUnlockStore store) async {
     final state = AppState(
         library: LibraryStore(baseDir: () async => tmp), models: ModelStore(baseDir: () async => tmp), store: store);
+    states.add(state);
     await state.load();
     return state;
   }
