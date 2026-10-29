@@ -39,7 +39,15 @@ jobs:
         run: flutter test 2>&1 | tee test.log
 
       - name: Build Android APK
-        run: flutter build apk --debug 2>&1 | tee build.log
+        # Gradle downloads the NDK on first use, and that download sometimes arrives
+        # corrupt ("Error on ZipFile unknown archive"); one retry gets a fresh copy.
+        run: |
+          set -o pipefail
+          flutter build apk --debug 2>&1 | tee build.log || {
+            echo "::warning title=APK build::first attempt failed, retrying once"
+            rm -rf "$ANDROID_HOME/ndk/"*.partial "$ANDROID_HOME/.temp" 2>/dev/null || true
+            flutter build apk --debug 2>&1 | tee build.log
+          }
 
       - name: Log tails on failure
         if: failure()
