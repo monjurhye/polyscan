@@ -61,11 +61,12 @@ public class PolyscanOcrPlugin: NSObject, FlutterPlugin {
     }
   }
 
-  /// Tesseract codes and the Apple Vision languages that read the same text.
+  /// Tesseract codes and the Apple Vision languages that read the same text. Vietnamese is
+  /// left to Tesseract: on a phone-quality page Vision read 62%, Tesseract 100% (iOS 18, 2026-10-29).
   static let visionLanguages: [String: String] = [
     "eng": "en-US", "spa": "es-ES", "fra": "fr-FR", "deu": "de-DE", "por": "pt-BR", "ita": "it-IT",
     "nld": "nl-NL", "pol": "pl-PL", "ces": "cs-CZ", "dan": "da-DK", "nor": "nb-NO", "swe": "sv-SE",
-    "ron": "ro-RO", "tur": "tr-TR", "ind": "id-ID", "msa": "ms-MY", "vie": "vi-VT", "rus": "ru-RU",
+    "ron": "ro-RO", "tur": "tr-TR", "ind": "id-ID", "msa": "ms-MY", "rus": "ru-RU",
     "ukr": "uk-UA", "tha": "th-TH", "ara": "ar-SA", "chi_sim": "zh-Hans", "chi_tra": "zh-Hant",
     "jpn": "ja-JP", "kor": "ko-KR",
   ]

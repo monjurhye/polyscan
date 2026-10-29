@@ -25,7 +25,7 @@ const ocrSamples = [
 /// phone-quality page in each.
 const visionSamples = [
   'eng', 'spa', 'fra', 'deu', 'por', 'ita', 'nld', 'pol', 'ces', 'dan', 'nor', 'swe', 'ron', //
-  'tur', 'ind', 'msa', 'vie', 'rus', 'ukr', 'tha', 'ara', 'chi_sim', 'chi_tra', 'jpn', 'kor',
+  'tur', 'ind', 'msa', 'rus', 'ukr', 'tha', 'ara', 'chi_sim', 'chi_tra', 'jpn', 'kor',
 ];
 
 class SampleRun {
