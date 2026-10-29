@@ -127,9 +127,15 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Build
+        # Same corrupt-NDK-download retry as the app job.
         run: |
+          set -o pipefail
           flutter pub get
-          flutter build apk --debug --target-platform android-x64 2>&1 | tee build.log
+          flutter build apk --debug --target-platform android-x64 2>&1 | tee build.log || {
+            echo "::warning title=APK build::first attempt failed, retrying once"
+            rm -rf "$ANDROID_HOME/ndk/"*.partial "$ANDROID_HOME/.temp" 2>/dev/null || true
+            flutter build apk --debug --target-platform android-x64 2>&1 | tee build.log
+          }
 
       - name: Run pipeline test on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
@@ -150,6 +156,9 @@ jobs:
       - name: Report results as annotations
         if: always()
         run: |
+          if [ "${{ job.status }}" != "success" ] && [ -f build.log ] && [ ! -f integration-test.log ]; then
+            echo "::warning title=build.log tail::$(tail -n 40 build.log | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", substr($0,1,200)}')"
+          fi
           [ -f integration-test.log ] || exit 0
           grep -oE "PIPELINE_RESULT .*" integration-test.log | sed 's/^/::notice title=pipeline::/' || true
           if [ "${{ job.status }}" != "success" ]; then
