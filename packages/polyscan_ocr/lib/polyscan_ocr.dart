@@ -72,6 +72,9 @@ class OcrResult {
 /// Page segmentation modes used by the app (subset of Tesseract's PSM values).
 abstract final class PageSegMode {
   static const auto = 3;
+
+  /// A block of vertical text (top to bottom, columns right to left).
+  static const singleBlockVertical = 5;
   static const singleBlock = 6;
   static const singleLine = 7;
   static const sparseText = 11;
@@ -119,6 +122,10 @@ class PolyscanOcr {
     if (preferSystem && (debugOnIOS ?? Platform.isIOS)) {
       final system = await PolyscanOcrPlatform.instance.recognizeSystem(imagePath: imagePath, languages: languages);
       if (system != null) return OcrResult.fromMap(system);
+    }
+    // Vertical CJK models read nothing in auto mode (0% in our test, 90–100% in mode 5).
+    if (pageSegMode == PageSegMode.auto && languages.any((l) => l.endsWith('_vert'))) {
+      pageSegMode = PageSegMode.singleBlockVertical;
     }
     final map = await PolyscanOcrPlatform.instance.recognize(
       imagePath: imagePath,

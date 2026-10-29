@@ -1,7 +1,8 @@
 import '../models/ocr_language.dart';
 
 /// Languages offered for OCR: every tessdata_fast model except `equ` (math), `osd`
-/// (page orientation) and the empty `frk`. English ships with the app; the rest are
+/// (page orientation), the empty `frk` and `tat`, whose model returns Latin letters
+/// for Tatar's Cyrillic text (0% in our 2026-10-29 test). English ships with the app; the rest are
 /// downloaded on demand. Sizes in MB are the tessdata_fast file sizes (checked 2026-10-29).
 List<OcrLanguage> languageCatalog() => [
       OcrLanguage(code: 'eng', name: 'English', nativeName: 'English', sizeMb: 3.9, status: LanguageStatus.builtIn),
@@ -43,7 +44,7 @@ List<OcrLanguage> languageCatalog() => [
       OcrLanguage(code: 'fra', name: 'French', nativeName: 'Français', sizeMb: 1.1),
       OcrLanguage(code: 'glg', name: 'Galician', nativeName: 'Galego', sizeMb: 2.4),
       OcrLanguage(code: 'kat', name: 'Georgian', nativeName: 'ქართული', sizeMb: 2.4),
-      OcrLanguage(code: 'kat_old', name: 'Georgian (old)', nativeName: 'ძველი ქართული', sizeMb: 0.4),
+      OcrLanguage(code: 'kat_old', name: 'Georgian (old script)', nativeName: 'ძველი ქართული', sizeMb: 0.4),
       OcrLanguage(code: 'deu', name: 'German', nativeName: 'Deutsch', sizeMb: 1.5),
       OcrLanguage(code: 'deu_latf', name: 'German (Fraktur)', nativeName: 'Deutsch (Fraktur)', sizeMb: 6.1),
       OcrLanguage(code: 'ell', name: 'Greek', nativeName: 'Ελληνικά', sizeMb: 1.4),
@@ -110,7 +111,6 @@ List<OcrLanguage> languageCatalog() => [
       OcrLanguage(code: 'syr', name: 'Syriac', nativeName: 'ܣܘܪܝܝܐ', sizeMb: 2.1),
       OcrLanguage(code: 'tgk', name: 'Tajik', nativeName: 'Тоҷикӣ', sizeMb: 2.5),
       OcrLanguage(code: 'tam', name: 'Tamil', nativeName: 'தமிழ்', sizeMb: 3.1),
-      OcrLanguage(code: 'tat', name: 'Tatar', nativeName: 'Татарча', sizeMb: 1.0),
       OcrLanguage(code: 'tel', name: 'Telugu', nativeName: 'తెలుగు', sizeMb: 2.6),
       OcrLanguage(code: 'tha', name: 'Thai', nativeName: 'ไทย', sizeMb: 1.0),
       OcrLanguage(code: 'bod', name: 'Tibetan', nativeName: 'བོད་ཡིག', sizeMb: 1.9),

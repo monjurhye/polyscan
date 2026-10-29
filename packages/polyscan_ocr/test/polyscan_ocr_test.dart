@@ -35,6 +35,8 @@ class _FakePlatform with MockPlatformInterfaceMixin implements PolyscanOcrPlatfo
   @override
   Future<String> tesseractVersion() async => '5.5.3';
 
+  final List<int> modes = [];
+
   @override
   Future<Map<String, dynamic>> recognize({
     required String imagePath,
@@ -44,6 +46,7 @@ class _FakePlatform with MockPlatformInterfaceMixin implements PolyscanOcrPlatfo
     required Map<String, String> variables,
   }) async {
     calls.add(languages);
+    modes.add(pageSegMode);
     return results[languages] ?? defaultResult;
   }
 }
@@ -175,5 +178,15 @@ void main() {
       expect(fake.systemCalls, isEmpty);
       expect(fake.calls, ['eng', 'eng']);
     });
+  });
+
+  test('vertical CJK models read in vertical block mode', () async {
+    final fake = _FakePlatform();
+    PolyscanOcrPlatform.instance = fake;
+    await PolyscanOcr.recognize(imagePath: 'p.png', tessdataDir: '/t', languages: ['jpn_vert']);
+    await PolyscanOcr.recognize(imagePath: 'p.png', tessdataDir: '/t', languages: ['jpn']);
+    await PolyscanOcr.recognize(
+        imagePath: 'p.png', tessdataDir: '/t', languages: ['jpn_vert'], pageSegMode: PageSegMode.singleLine);
+    expect(fake.modes, [PageSegMode.singleBlockVertical, PageSegMode.auto, PageSegMode.singleLine]);
   });
 }
