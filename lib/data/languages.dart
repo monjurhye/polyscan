@@ -2,7 +2,9 @@ import '../models/ocr_language.dart';
 
 /// Languages offered for OCR: every tessdata_fast model except `equ` (math), `osd`
 /// (page orientation), the empty `frk` and `tat`, whose model returns Latin letters
-/// for Tatar's Cyrillic text (0% in our 2026-10-29 test). English ships with the app; the rest are
+/// for Tatar's Cyrillic text (0% in our 2026-10-29 test). Dhivehi stays, flagged: its model
+/// drops vowel marks (about 55% with a print font, no better with tessdata_best or other
+/// page modes). English ships with the app; the rest are
 /// downloaded on demand. Sizes in MB are the tessdata_fast file sizes (checked 2026-10-29).
 List<OcrLanguage> languageCatalog() => [
       OcrLanguage(code: 'eng', name: 'English', nativeName: 'English', sizeMb: 3.9, status: LanguageStatus.builtIn),
@@ -33,7 +35,8 @@ List<OcrLanguage> languageCatalog() => [
       OcrLanguage(code: 'hrv', name: 'Croatian', nativeName: 'Hrvatski', sizeMb: 3.9),
       OcrLanguage(code: 'ces', name: 'Czech', nativeName: 'Čeština', sizeMb: 3.6),
       OcrLanguage(code: 'dan', name: 'Danish', nativeName: 'Dansk', sizeMb: 2.5),
-      OcrLanguage(code: 'div', name: 'Dhivehi', nativeName: 'ދިވެހި', sizeMb: 1.7),
+      OcrLanguage(code: 'div', name: 'Dhivehi', nativeName: 'ދިވެހި', sizeMb: 1.7,
+          note: 'Low accuracy: often misses vowel marks'),
       OcrLanguage(code: 'nld', name: 'Dutch', nativeName: 'Nederlands', sizeMb: 5.8),
       OcrLanguage(code: 'dzo', name: 'Dzongkha', nativeName: 'རྫོང་ཁ', sizeMb: 0.4),
       OcrLanguage(code: 'epo', name: 'Esperanto', nativeName: 'Esperanto', sizeMb: 4.5),
@@ -118,7 +121,8 @@ List<OcrLanguage> languageCatalog() => [
       OcrLanguage(code: 'ton', name: 'Tongan', nativeName: 'Lea faka-Tonga', sizeMb: 0.9),
       OcrLanguage(code: 'tur', name: 'Turkish', nativeName: 'Türkçe', sizeMb: 4.3),
       OcrLanguage(code: 'ukr', name: 'Ukrainian', nativeName: 'Українська', sizeMb: 3.6),
-      OcrLanguage(code: 'urd', name: 'Urdu', nativeName: 'اردو', sizeMb: 1.3),
+      OcrLanguage(code: 'urd', name: 'Urdu', nativeName: 'اردو', sizeMb: 1.3,
+          note: 'Nastaliq print reads less accurately than Naskh'),
       OcrLanguage(code: 'uig', name: 'Uyghur', nativeName: 'ئۇيغۇرچە', sizeMb: 2.7),
       OcrLanguage(code: 'uzb', name: 'Uzbek', nativeName: 'Oʻzbek', sizeMb: 6.2),
       OcrLanguage(code: 'uzb_cyrl', name: 'Uzbek (Cyrillic)', nativeName: 'Ўзбек', sizeMb: 1.5),

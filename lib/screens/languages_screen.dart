@@ -101,9 +101,11 @@ class _LanguageTile extends StatelessWidget {
         ),
     };
 
+    final details = [if (lang.nativeName != lang.name) lang.name, ?lang.note];
     return ListTile(
       title: Text(lang.nativeName),
-      subtitle: lang.nativeName == lang.name ? null : Text(lang.name),
+      subtitle: details.isEmpty ? null : Text(details.join('\n')),
+      isThreeLine: details.length > 1,
       trailing: trailing,
     );
   }
