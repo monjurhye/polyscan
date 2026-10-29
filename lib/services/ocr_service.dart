@@ -21,7 +21,7 @@ class OcrService {
     final tessdata = (await models.directory()).path;
     for (var i = 0; i < pages.length; i++) {
       onPage?.call(i);
-      final path = await renderer.render(pages[i]);
+      final path = await renderer.renderForOcr(pages[i]);
       pages[i].ocr = await PolyscanOcr.recognize(
         imagePath: path,
         tessdataDir: tessdata,

@@ -62,7 +62,8 @@ List<double>? filterMatrix(PageFilter filter) {
     case PageFilter.grayscale:
       return [r, g, b, 0, 0, r, g, b, 0, 0, r, g, b, 0, 0, 0, 0, 0, 1, 0];
     case PageFilter.blackWhite:
-      // Grayscale with very high contrast around the renderer's 0.55 threshold.
+      // Grayscale with very high contrast. The renderer also evens out the light
+      // first, so shadows look darker here than in the saved page.
       const k = 6.0, t = -0.55 * 255 * k + 127.5;
       return [r * k, g * k, b * k, 0, t, r * k, g * k, b * k, 0, t, r * k, g * k, b * k, 0, t, 0, 0, 0, 1, 0];
   }

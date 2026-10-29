@@ -63,6 +63,54 @@ void main() {
       expect(() => PageRenderer.renderFile(bad.path, '${tmp.path}/o.jpg', PageFilter.original, 0),
           throwsFormatException);
     });
+
+    // A page whose right half is in shadow: paper 230 on the left, 110 on the right,
+    // with a dark "letter" (ink 40 / 20) in each half.
+    img.Image shadowedPage() {
+      final image = img.Image(width: 400, height: 300)..clear(img.ColorRgb8(230, 230, 230));
+      img.fillRect(image, x1: 200, y1: 0, x2: 399, y2: 299, color: img.ColorRgb8(110, 110, 110));
+      img.fillRect(image, x1: 50, y1: 100, x2: 58, y2: 130, color: img.ColorRgb8(40, 40, 40));
+      img.fillRect(image, x1: 300, y1: 100, x2: 308, y2: 130, color: img.ColorRgb8(20, 20, 20));
+      return image;
+    }
+
+    test('flattenLight makes shadowed paper white and keeps ink dark', () {
+      final flat = PageRenderer.flattenLight(shadowedPage());
+      int at(int x, int y) => flat.getPixel(x, y).r.toInt();
+      expect(at(120, 250), greaterThan(240)); // lit paper
+      expect(at(320, 250), greaterThan(240)); // shadowed paper
+      expect(at(54, 115), lessThan(100)); // ink in the light
+      expect(at(304, 115), lessThan(100)); // ink in the shadow
+      final p = flat.getPixel(320, 250);
+      expect([p.g, p.b], [p.r, p.r], reason: 'gray must be stored in all three channels');
+    });
+
+    test('black & white keeps text readable under a shadow', () {
+      final bw = PageRenderer.applyFilter(shadowedPage(), PageFilter.blackWhite);
+      expect(bw.getPixel(320, 250).r, 255, reason: 'shadowed paper must not turn black');
+      expect(bw.getPixel(304, 115).r, 0);
+    });
+
+    test('enhanceForOcr enlarges small pages up to 2x, keeping the aspect ratio', () {
+      final small = PageRenderer.enhanceForOcr(img.Image(width: 600, height: 800));
+      expect([small.width, small.height], [1200, 1600]);
+      final medium = PageRenderer.enhanceForOcr(img.Image(width: 1500, height: 2000));
+      expect([medium.width, medium.height], [1650, PageRenderer.ocrMinLongSide]);
+      final large = PageRenderer.enhanceForOcr(img.Image(width: 2400, height: 3000));
+      expect([large.width, large.height], [2400, 3000]);
+    });
+
+    test('the OCR render ignores the filter but follows rotation', () async {
+      final renderer = PageRenderer(cacheDir: () async => tmp);
+      final page = ScanPage(imagePath: writeImage(300, 200), filter: PageFilter.blackWhite);
+      final first = await renderer.renderForOcr(page);
+      page.filter = PageFilter.color;
+      expect(await renderer.renderForOcr(page), first);
+      expect(first, isNot(await renderer.render(page)));
+      page.quarterTurns = 1;
+      final turned = img.decodeJpg(File(await renderer.renderForOcr(page)).readAsBytesSync())!;
+      expect(turned.width, lessThan(turned.height));
+    });
   });
 
   group('PdfBuilder', () {

@@ -89,7 +89,8 @@ class PdfBuilder {
 class PdfPageInput {
   const PdfPageInput(this.imagePath, this.ocr);
 
-  /// The rendered page (see PageRenderer), the same image OCR read.
+  /// The rendered page (see PageRenderer). OCR read a cleaned-up copy with the same
+  /// aspect ratio, so the word boxes are scaled by the OCR image's own width.
   final String imagePath;
   final OcrResult? ocr;
 }
