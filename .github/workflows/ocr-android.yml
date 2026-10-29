@@ -61,8 +61,10 @@ jobs:
           arch: x86_64
           disable-animations: true
           working-directory: packages/polyscan_ocr/example
+          # On fab2b13 the run hung mid-test until the 30-min limit (same test passed on 65c7a08);
+          # cap each attempt and retry once after a hang, like the app's emulator job.
           script: |
-            bash -c 'set -o pipefail; flutter test integration_test -d emulator-5554 --reporter expanded 2>&1 | tee "$GITHUB_WORKSPACE/integration-test.log"'
+            bash -c 'set -o pipefail; for try in 1 2; do timeout 600 flutter test integration_test -d emulator-5554 --reporter expanded 2>&1 | tee -a "$GITHUB_WORKSPACE/integration-test.log"; s=$?; [ $s -eq 124 ] && [ $try -eq 1 ] && { echo "::warning title=retry::flutter test hung for 10 min; retrying once"; continue; }; exit $s; done'
 
       - name: OCR summary
         if: always()
