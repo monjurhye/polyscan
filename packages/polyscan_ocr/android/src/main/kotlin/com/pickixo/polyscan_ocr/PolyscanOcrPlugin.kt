@@ -69,6 +69,8 @@ class PolyscanOcrPlugin :
                     }
                 }
             }
+            // Apple Vision is iOS only; null tells Dart to use Tesseract.
+            "recognizeSystem" -> result.success(null)
             else -> result.notImplemented()
         }
     }

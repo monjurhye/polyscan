@@ -30,4 +30,12 @@ abstract class PolyscanOcrPlatform extends PlatformInterface {
   }) {
     throw UnimplementedError('recognize() has not been implemented.');
   }
+
+  /// Reads the image with the system's own OCR (Apple Vision on iOS). Returns null
+  /// when the system can't read all of [languages] (Tesseract codes), or on Android.
+  Future<Map<String, dynamic>?> recognizeSystem({
+    required String imagePath,
+    required List<String> languages,
+  }) async =>
+      null;
 }

@@ -34,7 +34,7 @@ class SampleRun {
   @override
   String toString() =>
       '${sample.asset} [${sample.languages.join('+')}] accuracy ${(accuracy * 100).toStringAsFixed(1)}% '
-      'conf ${result.meanConfidence} words ${result.words.length} in ${elapsed.inMilliseconds} ms';
+      'conf ${result.meanConfidence} words ${result.words.length} in ${elapsed.inMilliseconds} ms (${result.engine})';
 }
 
 /// Copies bundled models into a real folder, the way downloaded models will live.
@@ -54,12 +54,12 @@ Future<String> _copyAsset(String asset) async {
   return file.path;
 }
 
-Future<SampleRun> runSample(OcrSample sample, String tessdataDir, {bool fixDigits = true}) async {
+Future<SampleRun> runSample(OcrSample sample, String tessdataDir, {bool fixDigits = true, bool preferSystem = true}) async {
   final truth = (jsonDecode(await rootBundle.loadString('assets/samples.json')) as Map)[sample.groundTruthKey]['text'] as String;
   final path = await _copyAsset(sample.asset);
   final watch = Stopwatch()..start();
   final result = await PolyscanOcr.recognize(
-      imagePath: path, tessdataDir: tessdataDir, languages: sample.languages, fixDigits: fixDigits);
+      imagePath: path, tessdataDir: tessdataDir, languages: sample.languages, fixDigits: fixDigits, preferSystem: preferSystem);
   watch.stop();
   return SampleRun(sample, result, accuracy(result.text, truth), watch.elapsed);
 }

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 import 'polyscan_ocr_platform_interface.dart';
 import 'src/digit_fix.dart';
 
@@ -43,6 +45,7 @@ class OcrResult {
     required this.words,
     required this.imageWidth,
     required this.imageHeight,
+    this.engine = 'tesseract',
   });
 
   factory OcrResult.fromMap(Map<String, dynamic> map) => OcrResult(
@@ -51,6 +54,7 @@ class OcrResult {
         words: [for (final w in map['words'] as List) OcrWord.fromMap(w as Map)],
         imageWidth: map['imageWidth'] as int,
         imageHeight: map['imageHeight'] as int,
+        engine: map['engine'] as String? ?? 'tesseract',
       );
 
   final String text;
@@ -60,6 +64,9 @@ class OcrResult {
   final List<OcrWord> words;
   final int imageWidth;
   final int imageHeight;
+
+  /// Which engine read the text: `vision` (Apple, iOS) or `tesseract`.
+  final String engine;
 }
 
 /// Page segmentation modes used by the app (subset of Tesseract's PSM values).
@@ -72,6 +79,10 @@ abstract final class PageSegMode {
 
 class PolyscanOcr {
   const PolyscanOcr._();
+
+  /// Tests run on the host, not iOS; set this to try the system OCR anyway.
+  @visibleForTesting
+  static bool? debugOnIOS;
 
   static Future<String> tesseractVersion() => PolyscanOcrPlatform.instance.tesseractVersion();
 
@@ -87,6 +98,12 @@ class PolyscanOcr {
   /// digits). This needs `eng.traineddata` in [tessdataDir] and is skipped
   /// without it.
   ///
+  /// With [preferSystem] (default), iOS first tries Apple Vision, which reads
+  /// photos of English, European and some Asian languages better than Tesseract.
+  /// It is used only when Vision on that iOS version reads every language in
+  /// [languages]; otherwise (Bangla, Hindi, Urdu…, or Android) Tesseract reads
+  /// the page. [OcrResult.engine] says which one did.
+  ///
   /// Throws a `PlatformException` with code `bad_image`, `init_failed` or
   /// `recognize_failed`.
   static Future<OcrResult> recognize({
@@ -96,8 +113,13 @@ class PolyscanOcr {
     int pageSegMode = PageSegMode.auto,
     Map<String, String> variables = const {},
     bool fixDigits = true,
+    bool preferSystem = true,
   }) async {
     if (languages.isEmpty) throw ArgumentError.value(languages, 'languages', 'must not be empty');
+    if (preferSystem && (debugOnIOS ?? Platform.isIOS)) {
+      final system = await PolyscanOcrPlatform.instance.recognizeSystem(imagePath: imagePath, languages: languages);
+      if (system != null) return OcrResult.fromMap(system);
+    }
     final map = await PolyscanOcrPlatform.instance.recognize(
       imagePath: imagePath,
       tessdataDir: tessdataDir,

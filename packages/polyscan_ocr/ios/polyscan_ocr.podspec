@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
   s.name             = 'polyscan_ocr'
   s.version          = '0.1.0'
   s.summary          = 'On-device Tesseract OCR for Polyscan.'
-  s.description      = 'Runs Tesseract 5 (LSTM) on device with language models loaded from any folder.'
+  s.description      = 'Runs Tesseract 5 (LSTM) on device with language models loaded from any folder, and Apple Vision for the languages it reads.'
   s.homepage         = 'https://github.com/pickixo/polyscan'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Pickixo' => 'monjurhye@gmail.com' }
@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
   # Built by ios/scripts/build_tesseract.sh; not checked in.
   s.vendored_frameworks = 'polyscan_ocr/TesseractC.xcframework'
   s.libraries = 'c++'
+  s.frameworks = 'Vision'
 
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'

@@ -1,6 +1,7 @@
 import Flutter
 import TesseractC
 import UIKit
+import Vision
 
 public class PolyscanOcrPlugin: NSObject, FlutterPlugin {
   private let queue = DispatchQueue(label: "com.pickixo.polyscan_ocr", qos: .userInitiated)
@@ -36,9 +37,97 @@ public class PolyscanOcrPlugin: NSObject, FlutterPlugin {
           }
         }
       }
+    case "recognizeSystem":
+      guard let args = call.arguments as? [String: Any],
+            let imagePath = args["imagePath"] as? String,
+            let languages = args["languages"] as? [String]
+      else {
+        result(FlutterError(code: "bad_args", message: "imagePath and languages are required", details: nil))
+        return
+      }
+      queue.async {
+        let outcome = Self.recognizeWithVision(imagePath: imagePath, languages: languages)
+        DispatchQueue.main.async {
+          switch outcome {
+          case .success(let map): result(map)
+          case .failure(let error): result(FlutterError(code: error.code, message: error.message, details: nil))
+          }
+        }
+      }
     default:
       result(FlutterMethodNotImplemented)
     }
+  }
+
+  /// Tesseract codes and the Apple Vision languages that read the same text.
+  static let visionLanguages: [String: String] = [
+    "eng": "en-US", "spa": "es-ES", "fra": "fr-FR", "deu": "de-DE", "por": "pt-BR", "ita": "it-IT",
+    "nld": "nl-NL", "pol": "pl-PL", "ces": "cs-CZ", "dan": "da-DK", "nor": "nb-NO", "swe": "sv-SE",
+    "ron": "ro-RO", "tur": "tr-TR", "ind": "id-ID", "msa": "ms-MY", "vie": "vi-VT", "rus": "ru-RU",
+    "ukr": "uk-UA", "tha": "th-TH", "ara": "ar-SA", "chi_sim": "zh-Hans", "chi_tra": "zh-Hant",
+    "jpn": "ja-JP", "kor": "ko-KR",
+  ]
+
+  /// Reads [imagePath] with Apple Vision when this iOS version supports every language
+  /// asked for. Returns nil (not an error) when it doesn't, so the caller uses Tesseract.
+  static func recognizeWithVision(imagePath: String, languages: [String]) -> Result<[String: Any]?, OcrError> {
+    guard let image = UIImage(contentsOfFile: imagePath), let cgImage = image.cgImage else {
+      return .failure(OcrError(code: "bad_image", message: "Cannot read image at \(imagePath)"))
+    }
+
+    let request = VNRecognizeTextRequest()
+    request.recognitionLevel = .accurate
+    request.usesLanguageCorrection = true
+
+    // Which languages this device's Vision reads differs by iOS version, so ask it.
+    guard let supported = try? request.supportedRecognitionLanguages() else { return .success(nil) }
+    var codes: [String] = []
+    for language in languages {
+      guard let wanted = visionLanguages[language] else { return .success(nil) }
+      let base = wanted.split(separator: "-").first.map(String.init) ?? wanted
+      guard let match = supported.first(where: { $0 == wanted }) ?? supported.first(where: { $0.hasPrefix(base) })
+      else { return .success(nil) }
+      codes.append(match)
+    }
+    request.recognitionLanguages = codes
+
+    let width = cgImage.width, height = cgImage.height
+    do {
+      try VNImageRequestHandler(cgImage: cgImage, orientation: .up, options: [:]).perform([request])
+    } catch {
+      // Some simulators and older devices can't run Vision's text model; Tesseract still can.
+      NSLog("polyscan_ocr: Vision failed (\(error)); falling back to Tesseract")
+      return .success(nil)
+    }
+
+    var lines: [String] = []
+    var words: [[String: Any]] = []
+    var confidenceSum: Float = 0
+    for observation in request.results ?? [] {
+      guard let candidate = observation.topCandidates(1).first else { continue }
+      let line = candidate.string
+      lines.append(line)
+      confidenceSum += candidate.confidence
+      line.enumerateSubstrings(in: line.startIndex..<line.endIndex, options: .byWords) { word, range, _, _ in
+        guard let word = word, let box = try? candidate.boundingBox(for: range)?.boundingBox else { return }
+        // Vision boxes are normalized with the origin at the bottom left.
+        words.append([
+          "text": word,
+          "left": Int(box.minX * CGFloat(width)), "top": Int((1 - box.maxY) * CGFloat(height)),
+          "right": Int(box.maxX * CGFloat(width)), "bottom": Int((1 - box.minY) * CGFloat(height)),
+          "confidence": Double(candidate.confidence * 100),
+        ])
+      }
+    }
+    let mean = lines.isEmpty ? 0 : Int(confidenceSum / Float(lines.count) * 100)
+    return .success([
+      "text": lines.joined(separator: "\n") + (lines.isEmpty ? "" : "\n"),
+      "meanConfidence": mean,
+      "words": words,
+      "imageWidth": width,
+      "imageHeight": height,
+      "engine": "vision",
+    ])
   }
 
   struct OcrError: Error {
@@ -127,6 +216,7 @@ public class PolyscanOcrPlugin: NSObject, FlutterPlugin {
         "words": words,
         "imageWidth": width,
         "imageHeight": height,
+        "engine": "tesseract",
       ])
     }
   }

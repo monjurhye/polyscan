@@ -22,6 +22,16 @@ class _FakePlatform with MockPlatformInterfaceMixin implements PolyscanOcrPlatfo
     'imageHeight': 100,
   };
 
+  /// What the system OCR returns; null means "can't read these languages".
+  Map<String, dynamic>? systemResult;
+  final List<List<String>> systemCalls = [];
+
+  @override
+  Future<Map<String, dynamic>?> recognizeSystem({required String imagePath, required List<String> languages}) async {
+    systemCalls.add(languages);
+    return systemResult;
+  }
+
   @override
   Future<String> tesseractVersion() async => '5.5.3';
 
@@ -124,6 +134,46 @@ void main() {
       expect(noEng.words[1].text, '6');
 
       expect(fake.calls, ['hin', 'eng', 'ben', 'hin']);
+    });
+  });
+
+  group('system OCR on iOS', () {
+    tearDown(() => PolyscanOcr.debugOnIOS = null);
+
+    test('Vision result is used when it reads the languages', () async {
+      final fake = _FakePlatform()
+        ..systemResult = {..._result('Invoice 4471\n', [('Invoice', 0, 100, 97), ('4471', 110, 160, 97)]), 'engine': 'vision'};
+      PolyscanOcrPlatform.instance = fake;
+      PolyscanOcr.debugOnIOS = true;
+
+      final result = await PolyscanOcr.recognize(imagePath: 'p.png', tessdataDir: '/t', languages: ['eng']);
+      expect(result.engine, 'vision');
+      expect(result.text, 'Invoice 4471\n');
+      expect(fake.systemCalls, [['eng']]);
+      expect(fake.calls, isEmpty, reason: 'Tesseract must not run');
+    });
+
+    test('falls back to Tesseract when Vision cannot read a language', () async {
+      final fake = _FakePlatform(); // systemResult stays null
+      PolyscanOcrPlatform.instance = fake;
+      PolyscanOcr.debugOnIOS = true;
+
+      final result = await PolyscanOcr.recognize(imagePath: 'p.png', tessdataDir: '/t', languages: ['ben', 'eng']);
+      expect(result.engine, 'tesseract');
+      expect(fake.systemCalls, [['ben', 'eng']]);
+      expect(fake.calls, ['ben+eng']);
+    });
+
+    test('preferSystem: false and other platforms skip Vision', () async {
+      final fake = _FakePlatform()..systemResult = {..._FakePlatform.defaultResult, 'engine': 'vision'};
+      PolyscanOcrPlatform.instance = fake;
+
+      PolyscanOcr.debugOnIOS = true;
+      await PolyscanOcr.recognize(imagePath: 'p.png', tessdataDir: '/t', languages: ['eng'], preferSystem: false);
+      PolyscanOcr.debugOnIOS = false;
+      await PolyscanOcr.recognize(imagePath: 'p.png', tessdataDir: '/t', languages: ['eng']);
+      expect(fake.systemCalls, isEmpty);
+      expect(fake.calls, ['eng', 'eng']);
     });
   });
 }

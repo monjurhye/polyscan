@@ -26,7 +26,8 @@ let package = Package(
                 .process("PrivacyInfo.xcprivacy")
             ],
             linkerSettings: [
-                .linkedLibrary("c++")
+                .linkedLibrary("c++"),
+                .linkedFramework("Vision"),
             ]
         ),
     ]

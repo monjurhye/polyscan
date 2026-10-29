@@ -29,4 +29,15 @@ class MethodChannelPolyscanOcr extends PolyscanOcrPlatform {
     });
     return result!;
   }
+
+  @override
+  Future<Map<String, dynamic>?> recognizeSystem({
+    required String imagePath,
+    required List<String> languages,
+  }) {
+    return methodChannel.invokeMapMethod<String, dynamic>('recognizeSystem', {
+      'imagePath': imagePath,
+      'languages': languages,
+    });
+  }
 }
