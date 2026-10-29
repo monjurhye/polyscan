@@ -89,6 +89,9 @@ class PolyscanOcr {
 
   static Future<String> tesseractVersion() => PolyscanOcrPlatform.instance.tesseractVersion();
 
+  /// Languages Apple Vision reads on this iOS version (e.g. `en-US`); empty on Android.
+  static Future<List<String>> systemLanguages() => PolyscanOcrPlatform.instance.systemLanguages();
+
   /// Reads the text in [imagePath].
   ///
   /// [tessdataDir] is a folder holding `<lang>.traineddata` files, e.g. models

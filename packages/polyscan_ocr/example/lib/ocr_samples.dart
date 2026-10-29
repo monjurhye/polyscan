@@ -21,6 +21,13 @@ const ocrSamples = [
   OcrSample('assets/images/hin-clean.png', ['hin'], 'hin'),
 ];
 
+/// Languages the plugin maps to Apple Vision; `assets/vision/<code>.jpg` and `.txt` hold a
+/// phone-quality page in each.
+const visionSamples = [
+  'eng', 'spa', 'fra', 'deu', 'por', 'ita', 'nld', 'pol', 'ces', 'dan', 'nor', 'swe', 'ron', //
+  'tur', 'ind', 'msa', 'vie', 'rus', 'ukr', 'tha', 'ara', 'chi_sim', 'chi_tra', 'jpn', 'kor',
+];
+
 class SampleRun {
   SampleRun(this.sample, this.result, this.accuracy, this.elapsed);
 
@@ -47,7 +54,7 @@ Future<String> prepareTessdata() async {
   return dir.path;
 }
 
-Future<String> _copyAsset(String asset) async {
+Future<String> copyAsset(String asset) async {
   final data = await rootBundle.load(asset);
   final file = File('${Directory.systemTemp.path}/polyscan_ocr_test/${asset.split('/').last}');
   file.writeAsBytesSync(data.buffer.asUint8List());
@@ -56,7 +63,7 @@ Future<String> _copyAsset(String asset) async {
 
 Future<SampleRun> runSample(OcrSample sample, String tessdataDir, {bool fixDigits = true, bool preferSystem = true}) async {
   final truth = (jsonDecode(await rootBundle.loadString('assets/samples.json')) as Map)[sample.groundTruthKey]['text'] as String;
-  final path = await _copyAsset(sample.asset);
+  final path = await copyAsset(sample.asset);
   final watch = Stopwatch()..start();
   final result = await PolyscanOcr.recognize(
       imagePath: path, tessdataDir: tessdataDir, languages: sample.languages, fixDigits: fixDigits, preferSystem: preferSystem);

@@ -38,4 +38,8 @@ abstract class PolyscanOcrPlatform extends PlatformInterface {
     required List<String> languages,
   }) async =>
       null;
+
+  /// Languages the system OCR reads on this device (Vision identifiers like `en-US`); empty
+  /// where there is none.
+  Future<List<String>> systemLanguages() async => const [];
 }

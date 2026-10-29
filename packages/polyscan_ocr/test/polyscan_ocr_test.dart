@@ -35,6 +35,9 @@ class _FakePlatform with MockPlatformInterfaceMixin implements PolyscanOcrPlatfo
   @override
   Future<String> tesseractVersion() async => '5.5.3';
 
+  @override
+  Future<List<String>> systemLanguages() async => const [];
+
   final List<int> modes = [];
 
   @override

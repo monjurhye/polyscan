@@ -82,6 +82,30 @@ void main() {
     expect(ben.result.engine, 'tesseract');
   });
 
+  // Phone-quality photos of UDHR Article 1 after the app's OCR filter; desktop Tesseract
+  // read these at 97–100%. Only reports: a language this iOS's Vision lacks falls back to
+  // Tesseract, which has no model for it here.
+  testWidgets('Apple Vision accuracy per language', (tester) async {
+    // ignore: avoid_print
+    print('OCR_RESULT vision languages: ${(await PolyscanOcr.systemLanguages()).join(' ')}');
+    for (final code in visionSamples) {
+      final truth = await rootBundle.loadString('assets/vision/$code.txt');
+      final path = await copyAsset('assets/vision/$code.jpg');
+      final watch = Stopwatch()..start();
+      try {
+        final result = await PolyscanOcr.recognize(imagePath: path, tessdataDir: tessdata, languages: [code]);
+        // ignore: avoid_print
+        print('OCR_RESULT vision $code: ${result.engine} ${(accuracy(result.text, truth) * 100).toStringAsFixed(1)}% '
+            '${watch.elapsed.inMilliseconds} ms');
+        // ignore: avoid_print
+        print('OCR_TEXT vision $code: ${result.text.replaceAll('\n', ' ⏎ ')}');
+      } on PlatformException catch (e) {
+        // ignore: avoid_print
+        print('OCR_RESULT vision $code: not read by Vision (${e.code})');
+      }
+    }
+  }, skip: !Platform.isIOS);
+
   testWidgets('missing language fails with init_failed', (tester) async {
     final path = '${tessdata.replaceAll('/tessdata', '')}/eng-clean.png';
     await expectLater(

@@ -54,6 +54,8 @@ public class PolyscanOcrPlugin: NSObject, FlutterPlugin {
           }
         }
       }
+    case "systemLanguages":
+      result((try? VNRecognizeTextRequest().supportedRecognitionLanguages()) ?? [])
     default:
       result(FlutterMethodNotImplemented)
     }

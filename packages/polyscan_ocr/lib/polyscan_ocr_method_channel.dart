@@ -40,4 +40,8 @@ class MethodChannelPolyscanOcr extends PolyscanOcrPlatform {
       'languages': languages,
     });
   }
+
+  @override
+  Future<List<String>> systemLanguages() async =>
+      await methodChannel.invokeListMethod<String>('systemLanguages') ?? const [];
 }
