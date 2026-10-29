@@ -14,6 +14,9 @@ import 'languages.dart';
 import 'library_store.dart';
 
 /// App state. Documents and settings are saved to [LibraryStore] shortly after each change.
+///
+/// Polyscan is a paid app: the App Store price unlocks everything, so there is no
+/// free tier, no in-app purchase and no ads in the code.
 class AppState extends ChangeNotifier {
   AppState({ModelStore? models, PageRenderer? renderer, PageImporter? importer, LibraryStore? library})
       : models = models ?? ModelStore(),
@@ -24,9 +27,6 @@ class AppState extends ChangeNotifier {
     ocr = OcrService(this.models, this.renderer);
     exporter = Exporter(this.renderer);
   }
-
-  /// Placeholder rule: free users can add this many paid-tier languages.
-  static const freeDownloadLimit = 2;
 
   final ModelStore models;
   final PageRenderer renderer;
@@ -39,7 +39,6 @@ class AppState extends ChangeNotifier {
   final List<OcrLanguage> languages;
   final Map<String, double> downloadProgress = {};
 
-  bool isPro = false;
   Settings settings = Settings();
 
   bool get onboardingDone => settings.onboardingDone;
@@ -84,12 +83,6 @@ class AppState extends ChangeNotifier {
   }
 
   List<OcrLanguage> get readyLanguages => languages.where((l) => l.isReady).toList();
-
-  /// Downloaded languages that count toward the free limit.
-  int get downloadedCount =>
-      languages.where((l) => l.status == LanguageStatus.downloaded && !l.free).length;
-
-  bool canDownload(OcrLanguage lang) => isPro || lang.free || downloadedCount < freeDownloadLimit;
 
   OcrLanguage? language(String code) {
     for (final l in languages) {
@@ -138,11 +131,6 @@ class AppState extends ChangeNotifier {
   void addPages(ScanDocument doc, List<ScanPage> pages) {
     doc.pages.addAll(pages);
     _changed();
-  }
-
-  void setPro(bool value) {
-    isPro = value;
-    notifyListeners();
   }
 
   void setOnboardingDone(bool value) {

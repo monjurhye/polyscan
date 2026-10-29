@@ -4,11 +4,11 @@ import '../models/ocr_language.dart';
 /// models downloaded on demand. Sizes are the tessdata_fast file sizes (checked 2026-10-07).
 List<OcrLanguage> languageCatalog() => [
       OcrLanguage(code: 'eng', name: 'English', nativeName: 'English', sizeMb: 3.9, status: LanguageStatus.builtIn),
-      OcrLanguage(code: 'spa', name: 'Spanish', nativeName: 'Español', sizeMb: 2.2, free: true),
-      OcrLanguage(code: 'fra', name: 'French', nativeName: 'Français', sizeMb: 1.1, free: true),
-      OcrLanguage(code: 'deu', name: 'German', nativeName: 'Deutsch', sizeMb: 1.5, free: true),
-      OcrLanguage(code: 'por', name: 'Portuguese', nativeName: 'Português', sizeMb: 1.9, free: true),
-      OcrLanguage(code: 'ita', name: 'Italian', nativeName: 'Italiano', sizeMb: 2.6, free: true),
+      OcrLanguage(code: 'spa', name: 'Spanish', nativeName: 'Español', sizeMb: 2.2),
+      OcrLanguage(code: 'fra', name: 'French', nativeName: 'Français', sizeMb: 1.1),
+      OcrLanguage(code: 'deu', name: 'German', nativeName: 'Deutsch', sizeMb: 1.5),
+      OcrLanguage(code: 'por', name: 'Portuguese', nativeName: 'Português', sizeMb: 1.9),
+      OcrLanguage(code: 'ita', name: 'Italian', nativeName: 'Italiano', sizeMb: 2.6),
       OcrLanguage(code: 'hin', name: 'Hindi', nativeName: 'हिन्दी', sizeMb: 1.1),
       OcrLanguage(code: 'ben', name: 'Bengali', nativeName: 'বাংলা', sizeMb: 0.8),
       OcrLanguage(code: 'ara', name: 'Arabic', nativeName: 'العربية', sizeMb: 1.4),

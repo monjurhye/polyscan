@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../data/app_state.dart';
 import '../models/ocr_language.dart';
-import 'pro_screen.dart';
 
 class LanguagesScreen extends StatefulWidget {
   const LanguagesScreen({super.key});
@@ -40,20 +39,6 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
               onChanged: (v) => setState(() => _query = v),
             ),
           ),
-          if (!state.isPro)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-              child: Card(
-                color: theme.colorScheme.primaryContainer,
-                child: ListTile(
-                  leading: Icon(Icons.workspace_premium_outlined, color: theme.colorScheme.onPrimaryContainer),
-                  title: Text('${state.downloadedCount} of ${AppState.freeDownloadLimit} free downloads used'),
-                  subtitle: const Text('Pro unlocks every language'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProScreen())),
-                ),
-              ),
-            ),
           _Header('On this phone'),
           for (final l in ready) _LanguageTile(lang: l),
           _Header('Download'),
@@ -110,25 +95,15 @@ class _LanguageTile extends StatelessWidget {
           child: CircularProgressIndicator(value: progress, strokeWidth: 3),
         ),
       LanguageStatus.available => TextButton.icon(
-          onPressed: () {
-            if (state.canDownload(lang)) {
-              _download(context, state, lang);
-            } else {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProScreen()));
-            }
-          },
-          icon: Icon(state.canDownload(lang) ? Icons.download_outlined : Icons.lock_outline, size: 18),
+          onPressed: () => _download(context, state, lang),
+          icon: const Icon(Icons.download_outlined, size: 18),
           label: Text('${lang.sizeMb.toStringAsFixed(1)} MB'),
         ),
     };
 
-    final subtitle = [
-      if (lang.nativeName != lang.name) lang.name,
-      if (lang.free && lang.status == LanguageStatus.available && !state.isPro) 'Free',
-    ].join(' · ');
     return ListTile(
       title: Text(lang.nativeName),
-      subtitle: subtitle.isEmpty ? null : Text(subtitle),
+      subtitle: lang.nativeName == lang.name ? null : Text(lang.name),
       trailing: trailing,
     );
   }

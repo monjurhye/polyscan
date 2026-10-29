@@ -161,7 +161,7 @@ class Library {
   final List<ScanDocument> documents;
 }
 
-/// User preferences that survive restarts. (Pro status will come from the store receipt, not from here.)
+/// User preferences that survive restarts.
 class Settings {
   Settings({
     this.onboardingDone = false,

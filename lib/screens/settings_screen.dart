@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../data/app_state.dart';
 import '../models/document.dart';
 import 'languages_screen.dart';
-import 'pro_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -21,20 +20,6 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-            child: Card(
-              color: state.isPro ? theme.colorScheme.secondaryContainer : theme.colorScheme.primaryContainer,
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                leading: const Icon(Icons.workspace_premium, size: 32),
-                title: Text(state.isPro ? 'Polyscan Pro' : 'Upgrade to Pro', style: const TextStyle(fontWeight: FontWeight.w600)),
-                subtitle: Text(state.isPro ? 'Thank you for your support!' : 'No ads, every language. Pay once.'),
-                trailing: state.isPro ? null : const Icon(Icons.chevron_right),
-                onTap: state.isPro ? null : () => push(const ProScreen()),
-              ),
-            ),
-          ),
           const _Section('Text recognition'),
           ListTile(
             leading: const Icon(Icons.translate),
@@ -80,11 +65,6 @@ class SettingsScreen extends StatelessWidget {
             subtitle: Text('No account, no cloud. Scans and text are never uploaded.'),
           ),
           const _Section('About'),
-          ListTile(
-            leading: const Icon(Icons.restore),
-            title: const Text('Restore purchases'),
-            onTap: () => soon('Restore'),
-          ),
           ListTile(
             leading: const Icon(Icons.policy_outlined),
             title: const Text('Privacy policy'),
