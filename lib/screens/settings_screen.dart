@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../data/app_state.dart';
 import '../models/document.dart';
 import 'languages_screen.dart';
+import 'unlock_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -20,6 +21,23 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+            child: Card(
+              color: state.unlocked ? theme.colorScheme.secondaryContainer : theme.colorScheme.primaryContainer,
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                leading: Icon(state.unlocked ? Icons.verified_outlined : Icons.lock_open, size: 32),
+                title: Text(state.unlocked ? 'Polyscan is unlocked' : 'Unlock Polyscan',
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: Text(state.unlocked
+                    ? 'Unlimited scans. Thank you!'
+                    : '${state.freeScansLeft} of ${AppState.freeScans} free scans left. Pay once for unlimited.'),
+                trailing: state.unlocked ? null : const Icon(Icons.chevron_right),
+                onTap: state.unlocked ? null : () => push(const UnlockScreen()),
+              ),
+            ),
+          ),
           const _Section('Text recognition'),
           ListTile(
             leading: const Icon(Icons.translate),
@@ -65,6 +83,13 @@ class SettingsScreen extends StatelessWidget {
             subtitle: Text('No account, no cloud. Scans and text are never uploaded.'),
           ),
           const _Section('About'),
+          if (!state.unlocked)
+            ListTile(
+              leading: const Icon(Icons.restore),
+              title: const Text('Restore purchase'),
+              subtitle: state.unlockError == null ? null : Text(state.unlockError!),
+              onTap: state.restoreUnlock,
+            ),
           ListTile(
             leading: const Icon(Icons.policy_outlined),
             title: const Text('Privacy policy'),

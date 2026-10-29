@@ -8,6 +8,8 @@ import 'package:polyscan/models/document.dart';
 import 'package:polyscan/services/model_store.dart';
 import 'package:polyscan_ocr/polyscan_ocr.dart';
 
+import 'fake_unlock_store.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late Directory tmp;
@@ -118,6 +120,7 @@ void main() {
     AppState newState() => AppState(
           library: store,
           models: ModelStore(baseDir: () async => tmp),
+          store: FakeUnlockStore(),
         );
 
     final first = newState();

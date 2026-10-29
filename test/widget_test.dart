@@ -3,6 +3,8 @@ import 'package:polyscan/data/app_state.dart';
 import 'package:polyscan/data/library_store.dart';
 import 'package:polyscan/main.dart';
 
+import 'fake_unlock_store.dart';
+
 /// Real saves use an isolate, which never finishes inside testWidgets' fake time.
 class _NoopLibrary extends LibraryStore {
   int saves = 0;
@@ -14,7 +16,7 @@ class _NoopLibrary extends LibraryStore {
 void main() {
   testWidgets('onboarding leads to the document list', (tester) async {
     final library = _NoopLibrary();
-    final state = AppState(library: library);
+    final state = AppState(library: library, store: FakeUnlockStore());
     await tester.pumpWidget(PolyscanApp(state: state));
     expect(find.text('Scan without strings'), findsOneWidget);
 

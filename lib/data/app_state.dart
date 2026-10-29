@@ -10,28 +10,40 @@ import '../services/model_store.dart';
 import '../services/ocr_service.dart';
 import '../services/page_importer.dart';
 import '../services/page_renderer.dart';
+import '../services/unlock_store.dart';
 import 'languages.dart';
 import 'library_store.dart';
 
 /// App state. Documents and settings are saved to [LibraryStore] shortly after each change.
 ///
-/// Polyscan is a paid app: the App Store price unlocks everything, so there is no
-/// free tier, no in-app purchase and no ads in the code.
+/// Polyscan is free to download with [freeScans] free scans; one in-app purchase
+/// ([UnlockStore]) unlocks unlimited scans forever. No subscription, no ads.
 class AppState extends ChangeNotifier {
-  AppState({ModelStore? models, PageRenderer? renderer, PageImporter? importer, LibraryStore? library})
-      : models = models ?? ModelStore(),
+  AppState({
+    ModelStore? models,
+    PageRenderer? renderer,
+    PageImporter? importer,
+    LibraryStore? library,
+    UnlockStore? store,
+  })  : models = models ?? ModelStore(),
         renderer = renderer ?? PageRenderer(),
         importer = importer ?? PageImporter(),
         library = library ?? LibraryStore(),
+        store = store ?? AppStoreUnlock(),
         languages = languageCatalog() {
     ocr = OcrService(this.models, this.renderer);
     exporter = Exporter(this.renderer);
   }
 
+  /// New documents a user can scan or import before unlocking. Documents already
+  /// made can always be opened, read, re-read and exported.
+  static const freeScans = 10;
+
   final ModelStore models;
   final PageRenderer renderer;
   final PageImporter importer;
   final LibraryStore library;
+  final UnlockStore store;
   late final OcrService ocr;
   late final Exporter exporter;
 
@@ -46,11 +58,22 @@ class AppState extends ChangeNotifier {
   ExportFormat get defaultExport => settings.defaultExport;
   List<String> get lastLanguageCodes => settings.lastLanguageCodes;
 
+  bool get unlocked => settings.unlocked;
+  int get freeScansLeft => (freeScans - settings.scansUsed).clamp(0, freeScans);
+
+  /// Whether a new scan or import may start (adding pages to a document counts too).
+  bool get canScan => unlocked || freeScansLeft > 0;
+
+  /// The latest purchase error from the store, for the unlock screen to show.
+  String? unlockError;
+
   Timer? _saveTimer;
   Future<void> _lastSave = Future.value();
+  StreamSubscription<UnlockEvent>? _storeEvents;
 
   /// Loads saved documents and settings, and marks the models already on the phone as downloaded.
   Future<void> load() async {
+    _storeEvents ??= store.events.listen(_onStoreEvent);
     final saved = await library.load();
     settings = saved.settings;
     documents
@@ -102,8 +125,39 @@ class AppState extends ChangeNotifier {
     );
     documents.insert(0, doc);
     if (codes.isNotEmpty) settings.lastLanguageCodes = codes;
+    if (!unlocked) settings.scansUsed++;
     _changed();
     return doc;
+  }
+
+  void _onStoreEvent(UnlockEvent event) {
+    switch (event) {
+      case Unlocked():
+        settings.unlocked = true;
+        unlockError = null;
+      case UnlockFailed(:final message):
+        unlockError = message;
+    }
+    _changed();
+  }
+
+  Future<void> buyUnlock() {
+    unlockError = null;
+    notifyListeners();
+    return store.buy();
+  }
+
+  Future<void> restoreUnlock() {
+    unlockError = null;
+    notifyListeners();
+    return store.restore();
+  }
+
+  @override
+  void dispose() {
+    _storeEvents?.cancel();
+    _saveTimer?.cancel();
+    super.dispose();
   }
 
   /// Runs OCR on every page of [doc]. Throws a PlatformException if Tesseract fails.

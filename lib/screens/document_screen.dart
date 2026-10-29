@@ -72,6 +72,7 @@ class DocumentScreen extends StatelessWidget {
   }
 
   Future<void> _addPages(BuildContext context) async {
+    if (!await ensureCanScan(context) || !context.mounted) return;
     final pages = await pickPages(context, ScanSource.photos);
     if (pages.isEmpty || !context.mounted) return;
     AppScope.read(context).addPages(doc, pages);
