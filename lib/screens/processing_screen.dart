@@ -7,10 +7,11 @@ import 'document_screen.dart';
 
 /// Prepares the pages (rotation, filter) and reads their text, showing progress.
 class ProcessingScreen extends StatefulWidget {
-  const ProcessingScreen({super.key, required this.pages, required this.languageCodes});
+  const ProcessingScreen({super.key, required this.pages, required this.languageCodes, this.type = DocType.auto});
 
   final List<ScanPage> pages;
   final List<String> languageCodes;
+  final DocType type;
 
   @override
   State<ProcessingScreen> createState() => _ProcessingScreenState();
@@ -59,7 +60,7 @@ class _ProcessingScreenState extends State<ProcessingScreen> with SingleTickerPr
       return;
     }
     if (!mounted) return;
-    final doc = state.addDocument(widget.pages, readFailed ? const [] : widget.languageCodes);
+    final doc = state.addDocument(widget.pages, readFailed ? const [] : widget.languageCodes, type: widget.type);
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => DocumentScreen(doc: doc)));
   }
 

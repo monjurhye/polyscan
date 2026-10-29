@@ -25,12 +25,14 @@ class DocumentScreen extends StatelessWidget {
               onSelected: (v) => switch (v) {
                 'rename' => _rename(context),
                 'add' => _addPages(context),
+                'type' => _chooseType(context),
                 'delete' => _delete(context),
                 _ => null,
               },
               itemBuilder: (_) => const [
                 PopupMenuItem(value: 'rename', child: ListTile(leading: Icon(Icons.edit_outlined), title: Text('Rename'))),
                 PopupMenuItem(value: 'add', child: ListTile(leading: Icon(Icons.add_a_photo_outlined), title: Text('Add pages'))),
+                PopupMenuItem(value: 'type', child: ListTile(leading: Icon(Icons.aspect_ratio), title: Text('Page size'))),
                 PopupMenuItem(value: 'delete', child: ListTile(leading: Icon(Icons.delete_outline), title: Text('Delete'))),
               ],
             ),
@@ -77,6 +79,41 @@ class DocumentScreen extends StatelessWidget {
     if (pages.isEmpty || !context.mounted) return;
     AppScope.read(context).addPages(doc, pages);
     if (doc.languageCodes.isNotEmpty) await readText(context, doc, doc.languageCodes);
+  }
+
+  /// Sets the document type, which decides the PDF page size and layout.
+  Future<void> _chooseType(BuildContext context) async {
+    final state = AppScope.read(context);
+    final type = await showModalBottomSheet<DocType>(
+      context: context,
+      builder: (sheet) => SafeArea(
+        child: RadioGroup<DocType>(
+          groupValue: doc.type,
+          onChanged: (t) => Navigator.pop(sheet, t),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const ListTile(title: Text('Page size for PDF')),
+              for (final t in DocType.values)
+                RadioListTile<DocType>(
+                  value: t,
+                  secondary: Icon(t.icon),
+                  title: Text(t.label),
+                  subtitle: Text(switch (t) {
+                    DocType.auto => 'Each page the size of its scan',
+                    DocType.a4 => '210 × 297 mm',
+                    DocType.letter => '8.5 × 11 in',
+                    DocType.legal => '8.5 × 14 in',
+                    DocType.idCard => 'Front and back on one A4 page, real card size',
+                    DocType.photo => 'Each photo the size of its image',
+                  }),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (type != null) state.setDocumentType(doc, type);
   }
 
   Future<void> _rename(BuildContext context) async {

@@ -19,6 +19,19 @@ class _ScanReviewScreenState extends State<ScanReviewScreen> {
   late final List<ScanPage> _pages = [...widget.pages];
   final _controller = PageController(viewportFraction: 0.86);
   int _current = 0;
+  DocType _type = DocType.auto;
+
+  void _setType(DocType type) {
+    setState(() {
+      // Photos keep their own colors; switching back gives pages the document look again.
+      if (type.isPhoto != _type.isPhoto) {
+        for (final p in _pages) {
+          p.filter = type.isPhoto ? PageFilter.original : PageFilter.color;
+        }
+      }
+      _type = type;
+    });
+  }
 
   ScanPage get _page => _pages[_current];
 
@@ -67,10 +80,11 @@ class _ScanReviewScreenState extends State<ScanReviewScreen> {
   }
 
   Future<void> _save() async {
-    final codes = await pickRecognitionLanguages(context);
+    // Photos aren't read as text.
+    final codes = _type.isPhoto ? <String>[] : await pickRecognitionLanguages(context);
     if (codes == null || !mounted) return;
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => ProcessingScreen(pages: _pages, languageCodes: codes)),
+      MaterialPageRoute(builder: (_) => ProcessingScreen(pages: _pages, languageCodes: codes, type: _type)),
     );
   }
 
@@ -116,6 +130,31 @@ class _ScanReviewScreenState extends State<ScanReviewScreen> {
                 ),
               ),
             ),
+            SizedBox(
+              height: 48,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                children: [
+                  for (final t in DocType.values)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 8),
+                      child: ChoiceChip(
+                        avatar: Icon(t.icon, size: 18),
+                        label: Text(t.label),
+                        selected: _type == t,
+                        onSelected: (_) => _setType(t),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (_type == DocType.idCard)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+                child: Text('Scan the front, then the back. Each pair goes on one A4 page at real size.',
+                    style: Theme.of(context).textTheme.bodySmall),
+              ),
             SizedBox(
               height: 48,
               child: ListView(

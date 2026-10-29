@@ -114,14 +114,15 @@ class AppState extends ChangeNotifier {
     return null;
   }
 
-  ScanDocument addDocument(List<ScanPage> pages, List<String> codes) {
+  ScanDocument addDocument(List<ScanPage> pages, List<String> codes, {DocType type = DocType.auto}) {
     final now = DateTime.now();
     final doc = ScanDocument(
       id: 'd${now.microsecondsSinceEpoch}',
-      title: 'Scan ${formatDate(now)} ${_two(now.hour)}:${_two(now.minute)}',
+      title: '${type == DocType.auto ? 'Scan' : type.label} ${formatDate(now)} ${_two(now.hour)}:${_two(now.minute)}',
       createdAt: now,
       pages: pages,
       languageCodes: codes,
+      type: type,
     );
     documents.insert(0, doc);
     if (codes.isNotEmpty) settings.lastLanguageCodes = codes;
@@ -165,6 +166,11 @@ class AppState extends ChangeNotifier {
     await ocr.recognizePages(doc.pages, codes, onPage: onPage);
     doc.languageCodes = codes;
     settings.lastLanguageCodes = codes;
+    _changed();
+  }
+
+  void setDocumentType(ScanDocument doc, DocType type) {
+    doc.type = type;
     _changed();
   }
 

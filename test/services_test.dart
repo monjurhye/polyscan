@@ -142,6 +142,29 @@ void main() {
       expect(pdf, contains('297.5'));
       File('${tmp.path}/../polyscan_test_out.pdf').writeAsBytesSync(bytes);
     });
+
+    int pageCount(String pdf) => RegExp(r'/Type\s*/Page\b').allMatches(pdf).length;
+
+    test('A4, Letter and Legal use their own page size whatever the image', () async {
+      final pages = [PdfPageInput(writeImage(800, 400, name: 'wide.png'), null)];
+      for (final (type, size) in [
+        (DocType.a4, '595.28 841.89'),
+        (DocType.letter, '612 792'),
+        (DocType.legal, '612 1008'),
+      ]) {
+        final pdf = String.fromCharCodes(await PdfBuilder(fonts: () async => fonts).build(pages, type: type));
+        expect(pdf, contains('/MediaBox[0 0 $size]'), reason: type.name);
+      }
+    });
+
+    test('ID cards go two to an A4 page', () async {
+      final cards = [
+        for (var i = 0; i < 3; i++) PdfPageInput(writeImage(856, 540, name: 'card$i.png'), null),
+      ];
+      final pdf = String.fromCharCodes(await PdfBuilder(fonts: () async => fonts).build(cards, type: DocType.idCard));
+      expect(pageCount(pdf), 2, reason: 'front+back on page 1, the third card on page 2');
+      expect(pdf, contains('/MediaBox[0 0 595.28 841.89]'));
+    });
   });
 
   group('ModelStore', () {

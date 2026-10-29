@@ -86,6 +86,7 @@ class LibraryStore {
         'title': doc.title,
         'createdAt': doc.createdAt.toIso8601String(),
         'languages': doc.languageCodes,
+        'type': doc.type.name,
         'pages': [
           for (final p in doc.pages)
             {
@@ -102,6 +103,7 @@ class LibraryStore {
         title: json['title'] as String,
         createdAt: DateTime.parse(json['createdAt'] as String),
         languageCodes: (json['languages'] as List? ?? const []).cast<String>(),
+        type: DocType.values.asNameMap()[json['type']] ?? DocType.auto,
         pages: [
           for (final p in (json['pages'] as List).cast<Map<String, dynamic>>())
             ScanPage(

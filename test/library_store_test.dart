@@ -32,6 +32,7 @@ void main() {
         title: 'বিদ্যুৎ বিল',
         createdAt: DateTime.utc(2026, 10, 7, 9, 30),
         languageCodes: ['ben', 'eng'],
+        type: DocType.idCard,
         pages: [
           ScanPage(imagePath: pageFile('a.jpg'), filter: PageFilter.blackWhite, quarterTurns: 3)
             ..ocr = const OcrResult(
@@ -59,6 +60,7 @@ void main() {
     expect(doc.title, 'বিদ্যুৎ বিল');
     expect(doc.createdAt, DateTime.utc(2026, 10, 7, 9, 30));
     expect(doc.languageCodes, ['ben', 'eng']);
+    expect(doc.type, DocType.idCard);
     expect(doc.pages, hasLength(2));
     expect(File(doc.pages[0].imagePath).existsSync(), isTrue);
     expect(doc.pages[0].filter, PageFilter.blackWhite);

@@ -37,7 +37,7 @@ class Exporter {
       for (final page in doc.pages) PdfPageInput(await renderer.render(page), page.ocr),
     ];
     final file = File('${(await _outDir()).path}/${fileName(doc.title)}.pdf');
-    return file.writeAsBytes(await pdf.build(inputs, title: doc.title), flush: true);
+    return file.writeAsBytes(await pdf.build(inputs, title: doc.title, type: doc.type), flush: true);
   }
 
   Future<File> _writeText(ScanDocument doc) async {
