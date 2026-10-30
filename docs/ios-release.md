@@ -19,9 +19,13 @@ You can't set a price until these are done. Approval can take a few days.
 
 ## 1b. AdMob (do this before the first TestFlight build)
 
-- [ ] In AdMob, **add the app** (iOS, not yet listed in the store; name Polyscan). Copy its **App ID** (`ca-app-pub-…~…`).
-- [ ] Create three ad units: **Banner** (adaptive), **Interstitial** and **App open**. Copy each ID (`ca-app-pub-…/…`).
-- [ ] In Codemagic › polyscan › Environment variables, make the group **`admob`** with `ADMOB_IOS_APP_ID`, `ADMOB_IOS_BANNER`, `ADMOB_IOS_INTERSTITIAL`, `ADMOB_IOS_APP_OPEN`. The `ios-release` workflow refuses to build without them, or with Google's test IDs.
+- [x] AdMob app **Polyscan** (iOS, not listed yet), in the AdMob account of monjurhai@gmail.com (2026-10-30). The monjurhye@gmail.com AdMob account is closed; don't use it.
+  - `ADMOB_IOS_APP_ID` = `ca-app-pub-8399549130025066~6002983673`
+  - `ADMOB_IOS_BANNER` = `ca-app-pub-8399549130025066/8437575325` (Polyscan Banner)
+  - `ADMOB_IOS_INTERSTITIAL` = `ca-app-pub-8399549130025066/2090612642` (Polyscan Interstitial)
+  - `ADMOB_IOS_APP_OPEN` = `ca-app-pub-8399549130025066/4971926854` (Polyscan App Open)
+- [ ] After the App Store release, AdMob › Polyscan › **Add store**, so "Limited ad serving" is lifted.
+- [x] (Done 2026-10-30.) In Codemagic › polyscan › Environment variables, make the group **`admob`** with `ADMOB_IOS_APP_ID`, `ADMOB_IOS_BANNER`, `ADMOB_IOS_INTERSTITIAL`, `ADMOB_IOS_APP_OPEN`. The `ios-release` workflow refuses to build without them, or with Google's test IDs.
 - [ ] AdMob › Privacy & messaging: create a **GDPR (European regulations) message** for the app, and an **IDFA explainer** if you want one. The app shows them through Google's UMP SDK.
 - [ ] **app-ads.txt:** AdMob asks for it on the developer website. Put the line AdMob shows you at `https://<your site>/app-ads.txt`, and use that site as the app's **Marketing URL** in App Store Connect (ArchiveX lesson).
 - [ ] Never tap your own real ads. Debug and Appetize builds use Google's test ads, which are safe.
