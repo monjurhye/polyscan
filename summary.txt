@@ -1,0 +1,2 @@
+div: 16316 sentences, 1432818 chars, 0 dropped as evaluation overlap
+div: 30 jobs, 600 pages (30 held out, 52 skipped)
