@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
@@ -98,6 +99,30 @@ void main() {
       expect([medium.width, medium.height], [1650, PageRenderer.ocrMinLongSide]);
       final large = PageRenderer.enhanceForOcr(img.Image(width: 2400, height: 3000));
       expect([large.width, large.height], [2400, 3000]);
+    });
+
+    test('only grainy photos count as grainy', () {
+      final clean = shadowedPage();
+      final grainy = shadowedPage();
+      final noise = math.Random(1);
+      for (final p in grainy) {
+        final v = (p.r + noise.nextInt(41) - 20).clamp(0, 255);
+        p
+          ..r = v
+          ..g = v
+          ..b = v;
+      }
+      expect(PageRenderer.isGrainy(clean), isFalse);
+      expect(PageRenderer.isGrainy(grainy), isTrue);
+    });
+
+    test('OCR retries: smooth only for grainy pages, sharpen keeps the size', () async {
+      final renderer = PageRenderer(cacheDir: () async => tmp);
+      final page = ScanPage(imagePath: writeImage(300, 200));
+      expect(await renderer.renderForOcrRetry(page, OcrRetry.smooth), isNull);
+      final sharp = img.decodeJpg(File((await renderer.renderForOcrRetry(page, OcrRetry.sharpen))!).readAsBytesSync())!;
+      final normal = img.decodeJpg(File(await renderer.renderForOcr(page)).readAsBytesSync())!;
+      expect([sharp.width, sharp.height], [normal.width, normal.height]);
     });
 
     test('the OCR render ignores the filter but follows rotation', () async {

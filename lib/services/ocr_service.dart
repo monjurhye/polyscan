@@ -22,11 +22,31 @@ class OcrService {
     for (var i = 0; i < pages.length; i++) {
       onPage?.call(i);
       final path = await renderer.renderForOcr(pages[i]);
-      pages[i].ocr = await PolyscanOcr.recognize(
+      var best = await PolyscanOcr.recognize(
         imagePath: path,
         tessdataDir: tessdata,
         languages: languageCodes,
       );
+      // A low-confidence Tesseract reading gets a second look at a smoothed (grainy
+      // photos) and a sharpened (blurry photos) copy; the most confident reading wins.
+      // Simulated phone scans, 27 pages x 7 conditions (2026-10-30): mean 93.9% -> 94.5%,
+      // Arabic in dim light 0% -> 82%, blurry fine print 63% -> 81%; 8% of pages read again.
+      if (best.engine == 'tesseract' && best.meanConfidence < retryBelowConfidence) {
+        for (final retry in OcrRetry.values) {
+          final retryPath = await renderer.renderForOcrRetry(pages[i], retry);
+          if (retryPath == null) continue;
+          final again = await PolyscanOcr.recognize(
+            imagePath: retryPath,
+            tessdataDir: tessdata,
+            languages: languageCodes,
+          );
+          if (again.meanConfidence > best.meanConfidence) best = again;
+        }
+      }
+      pages[i].ocr = best;
     }
   }
+
+  /// Tesseract mean confidence (0–100) under which a page is read again.
+  static const retryBelowConfidence = 60;
 }

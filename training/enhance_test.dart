@@ -9,8 +9,11 @@ import 'package:polyscan/services/page_renderer.dart';
 void main() {
   test('enhance', () {
     final out = Directory(Platform.environment['OCR_OUT']!)..createSync(recursive: true);
+    // OCR_RETRY=smooth|sharpen writes the second-pass images instead.
+    final retry = OcrRetry.values.where((r) => r.name == Platform.environment['OCR_RETRY']).firstOrNull;
     for (final f in Directory(Platform.environment['OCR_IN']!).listSync().whereType<File>()) {
-      PageRenderer.renderOcrFile(f.path, '${out.path}/${f.uri.pathSegments.last.replaceAll('.png', '.jpg')}', 0);
+      final name = f.uri.pathSegments.last.replaceAll('.png', '.jpg');
+      PageRenderer.renderOcrFile(f.path, '${out.path}/$name', 0, retry: retry);
     }
   }, timeout: const Timeout(Duration(minutes: 30)));
 }

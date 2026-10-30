@@ -8,6 +8,15 @@ import 'package:path_provider/path_provider.dart';
 
 import '../models/document.dart';
 
+/// A second way to clean a page for OCR, tried when the first reading had low confidence.
+enum OcrRetry {
+  /// Blur away sensor grain first (only for grainy pages, see [PageRenderer.isGrainy]).
+  smooth,
+
+  /// Sharpen soft, out-of-focus text first.
+  sharpen,
+}
+
 /// Turns a page's original image into what the user sees: upright, filtered, and
 /// at most [maxSide] pixels on its long side. The PDF uses this image.
 ///
@@ -42,6 +51,16 @@ class PageRenderer {
     return _cached(page, 'ocr', (out) => renderOcrFile(input, out, turns));
   }
 
+  /// The image for a second OCR pass with [retry], for pages whose normal OCR image
+  /// read with low confidence. Null when that retry would not change the image
+  /// ([OcrRetry.smooth] on a page without grain).
+  Future<String?> renderForOcrRetry(ScanPage page, OcrRetry retry) async {
+    final turns = page.quarterTurns % 4;
+    final input = page.imagePath;
+    final path = await _cached(page, 'ocr-${retry.name}', (out) => renderOcrFile(input, out, turns, retry: retry));
+    return File(path).existsSync() ? path : null;
+  }
+
   Future<String> _cached(ScanPage page, String variant, void Function(String out) work) async {
     final dir = Directory('${(await _cacheDir()).path}/rendered')..createSync(recursive: true);
     final source = File(page.imagePath);
@@ -61,10 +80,12 @@ class PageRenderer {
     File(output).writeAsBytesSync(img.encodeJpg(image, quality: 88));
   }
 
-  /// Pure function so it can run in an isolate and in tests.
-  static void renderOcrFile(String input, String output, int quarterTurns) {
-    final image = enhanceForOcr(_upright(input, quarterTurns));
-    File(output).writeAsBytesSync(img.encodeJpg(image, quality: 92));
+  /// Pure function so it can run in an isolate and in tests. With [OcrRetry.smooth]
+  /// on a page without grain nothing is written (see [renderForOcrRetry]).
+  static void renderOcrFile(String input, String output, int quarterTurns, {OcrRetry? retry}) {
+    final upright = _upright(input, quarterTurns);
+    if (retry == OcrRetry.smooth && !isGrainy(upright)) return;
+    File(output).writeAsBytesSync(img.encodeJpg(enhanceForOcr(upright, retry: retry), quality: 92));
   }
 
   /// Decodes [input], applies EXIF orientation and [quarterTurns], and caps the size at [maxSide].
@@ -92,33 +113,74 @@ class PageRenderer {
       };
 
   /// The image OCR reads: small pages enlarged (see [ocrMinLongSide]), then [flattenLight].
+  /// A [retry] smooths or sharpens the enlarged page before flattening.
   ///
   /// On simulated phone scans this took English from 0–64% to 91–100% character
   /// accuracy under shadows and in low light (test of 2026-10-29).
-  static img.Image enhanceForOcr(img.Image image) {
+  static img.Image enhanceForOcr(img.Image image, {OcrRetry? retry}) {
     final longSide = math.max(image.width, image.height);
+    var factor = 1.0;
     if (longSide < ocrMinLongSide) {
       // Enlarged before flattening, so the denoise and the stretch work on the
       // bigger letters. Linear: a cubic resize took ~12 s per page.
-      final factor = math.min(2.0, ocrMinLongSide / longSide);
+      factor = math.min(2.0, ocrMinLongSide / longSide);
       image = img.copyResize(image,
           width: (image.width * factor).round(),
           height: (image.height * factor).round(),
           interpolation: img.Interpolation.linear);
     }
-    return flattenLight(image);
+    final w = image.width, h = image.height;
+    var lum = _luma(image);
+    switch (retry) {
+      case null:
+        break;
+      case OcrRetry.smooth:
+        // Blur measured at the original size, so scale it with the enlargement.
+        lum = _gaussian(lum, w, h, 1.2 * factor);
+      case OcrRetry.sharpen:
+        // Unsharp mask: add back the detail a blur removes.
+        final blurred = _gaussian(lum, w, h, 1.5);
+        for (var k = 0; k < lum.length; k++) {
+          lum[k] = (2 * lum[k] - blurred[k]).clamp(0, 255);
+        }
+    }
+    return _flatten(lum, w, h);
+  }
+
+  /// Whether [image] has visible sensor grain (photos in dim light): the typical
+  /// difference between a pixel and its 3x3 median, robustly estimated, is over 4 levels.
+  /// Clean and normal phone scans measured 0–3, dim-room photos 7.
+  static bool isGrainy(img.Image image) {
+    final lum = _luma(image);
+    final med = _median3(lum, image.width, image.height);
+    final histogram = List<int>.filled(511, 0);
+    for (var k = 0; k < lum.length; k++) {
+      histogram[lum[k] - med[k] + 255]++;
+    }
+    // Median absolute residual (the residual's own median is ~0 on a page).
+    var seen = histogram[255], mad = 0;
+    while (seen < lum.length / 2 && mad < 255) {
+      mad++;
+      seen += histogram[255 + mad] + histogram[255 - mad];
+    }
+    return 1.4826 * mad > 4;
   }
 
   /// A grayscale copy of [image] with even lighting: shadows, dim corners and grey
   /// paper become white, ink becomes black, and sensor noise is smoothed.
-  static img.Image flattenLight(img.Image image) {
-    final w = image.width, h = image.height;
+  static img.Image flattenLight(img.Image image) => _flatten(_luma(image), image.width, image.height);
+
+  /// Rec. 601 luma of every pixel, in fixed point.
+  static Uint8List _luma(img.Image image) {
     final rgb = image.convert(format: img.Format.uint8, numChannels: 3).getBytes(order: img.ChannelOrder.rgb);
-    var lum = Uint8List(w * h);
+    final lum = Uint8List(image.width * image.height);
     for (var k = 0, j = 0; k < lum.length; k++, j += 3) {
-      // Rec. 601 luma in fixed point.
       lum[k] = (rgb[j] * 77 + rgb[j + 1] * 150 + rgb[j + 2] * 29) >> 8;
     }
+    return lum;
+  }
+
+  static img.Image _flatten(Uint8List lum, int w, int h) {
     lum = _median3(lum, w, h);
 
     // The paper's brightness: the brightest nearby pixel, smoothed, on a small copy.
@@ -257,6 +319,34 @@ class PageRenderer {
           m = math.max(m, tmp[k * w + x]);
         }
         dst[y * w + x] = m;
+      }
+    }
+    return dst;
+  }
+
+  /// Separable Gaussian blur.
+  static Uint8List _gaussian(Uint8List src, int w, int h, double sigma) {
+    final r = (3 * sigma).ceil();
+    final weights = [for (var i = -r; i <= r; i++) math.exp(-i * i / (2 * sigma * sigma))];
+    final total = weights.reduce((a, b) => a + b);
+    final k = [for (final v in weights) v / total];
+    final tmp = Float32List(w * h), dst = Uint8List(w * h);
+    for (var y = 0; y < h; y++) {
+      for (var x = 0; x < w; x++) {
+        var acc = 0.0;
+        for (var i = -r; i <= r; i++) {
+          acc += src[y * w + (x + i).clamp(0, w - 1)] * k[i + r];
+        }
+        tmp[y * w + x] = acc;
+      }
+    }
+    for (var y = 0; y < h; y++) {
+      for (var x = 0; x < w; x++) {
+        var acc = 0.0;
+        for (var i = -r; i <= r; i++) {
+          acc += tmp[(y + i).clamp(0, h - 1) * w + x] * k[i + r];
+        }
+        dst[y * w + x] = acc.round().clamp(0, 255);
       }
     }
     return dst;
