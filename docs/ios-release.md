@@ -5,6 +5,8 @@ Polyscan is **free to download** with **10 free scans**. One in-app purchase
 unlimited scans forever. No subscription and no ads. Documents already made can
 always be opened, re-read and shared, even after the free scans run out.
 
+App icon: `assets/icon/icon.png` (1024 px) is the source for every iOS and Android size.
+
 ## 1. App Store Connect: getting paid (do this first)
 
 You can't set a price until these are done. Approval can take a few days.
@@ -38,6 +40,14 @@ You can't set a price until these are done. Approval can take a few days.
 - [ ] No competitor names, and no "best/#1" claims.
 - [ ] An **App Preview video** (15–30 s) helps a lot: show a Hindi or Arabic page turning into text.
 
+## 4b. Building on Codemagic
+
+- [ ] In Codemagic, add this repo (`monjurhye/polyscan`) to the same team as ArchiveX, so it can use the **App Store Connect API key integration `app_store_key`** and the **Apple Distribution certificate** already uploaded under Code signing identities.
+- [ ] The Apple Developer account needs the App ID `com.pickixo.polyscan` (Codemagic can register it, or add it at developer.apple.com › Identifiers). In-App Purchase is on by default.
+- [ ] Run **iOS simulator build (Appetize)** first (`ios-simulator`). Upload `Polyscan-simulator.zip` to Appetize and click through: import a photo, read text, share as PDF and Word.
+- [ ] Run **iOS release (TestFlight)** (`ios-release`). It builds Tesseract, signs with an App Store profile for `com.pickixo.polyscan`, checks the IPA and uploads it to App Store Connect. The build number is Codemagic's counter; the version (1.0.0) is in `pubspec.yaml`.
+- [ ] In App Store Connect › TestFlight, add yourself as an internal tester. Test the unlock purchase there (it needs the Paid Apps Agreement to be Active).
+
 ## 5. App Review notes
 
 - Say: "Free app with 10 free scans. One non-consumable IAP, Unlock Polyscan, unlocks unlimited scans. Settings › Unlock Polyscan, and Settings › Restore purchase. No account, works offline. Sample documents: <link>."
@@ -55,3 +65,4 @@ You can't set a price until these are done. Approval can take a few days.
 
 - 2026-10-28: removed `ProScreen`, `AdBannerPlaceholder`, `isPro` and the 2-language download limit. Every language can be downloaded, with no lock. No AdMob.
 - 2026-10-29: free download with 10 free scans, then the one-time unlock (`in_app_purchase`, `lib/services/unlock_store.dart`, `lib/screens/unlock_screen.dart`). A scan counts when a new document is saved; adding pages to a document needs a free scan left or the unlock.
+- 2026-10-30: Word (.docx) export; privacy and support pages; licenses page; Tools tab hidden for v1; own app icon; Codemagic `ios-release` and `ios-simulator` workflows.

@@ -44,3 +44,83 @@ workflows:
       - tesseract-build.log
       - integration-test.log
       - ocr-summary.txt
+
+  # Signed App Store build, uploaded to App Store Connect (TestFlight). Started by hand.
+  # Needs, in the Codemagic team: the App Store Connect API key integration
+  # "app_store_key" and an Apple Distribution certificate (with private key) under
+  # Code signing identities. Codemagic fetches or creates the App Store
+  # provisioning profile for com.pickixo.polyscan itself. The app must already
+  # exist in App Store Connect for the upload.
+  ios-release:
+    name: iOS release (TestFlight)
+    instance_type: mac_mini_m2
+    max_build_duration: 90
+    integrations:
+      app_store_connect: app_store_key
+    environment:
+      xcode: latest
+      flutter: stable
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.pickixo.polyscan
+    scripts:
+      - name: Build Tesseract xcframework
+        script: |
+          set -o pipefail
+          chmod +x packages/polyscan_ocr/ios/scripts/build_tesseract.sh
+          packages/polyscan_ocr/ios/scripts/build_tesseract.sh 2>&1 | tee tesseract-build.log
+      - name: Get packages
+        script: flutter pub get
+      - name: Use provisioning profiles
+        script: xcode-project use-profiles
+      - name: Build signed IPA
+        script: |
+          # Codemagic's per-workflow counter always grows, so TestFlight never sees a repeat.
+          # The version (1.0.0) comes from pubspec.yaml; raise it by hand for each App Store release.
+          echo "Build number: $BUILD_NUMBER"
+          flutter build ipa --release \
+            --build-number="$BUILD_NUMBER" \
+            --export-options-plist=/Users/builder/export_options.plist
+      - name: Check the IPA
+        script: |
+          IPA=$(ls build/ios/ipa/*.ipa)
+          unzip -l "$IPA" | tail -1
+          # The bundled English model must be inside, or OCR fails offline on first launch.
+          unzip -l "$IPA" | grep -q "eng.traineddata" || { echo "eng.traineddata missing from the IPA"; exit 1; }
+          # Test-only sample images must never ship.
+          if unzip -l "$IPA" | grep -q "integration_test"; then echo "integration_test files in the IPA"; exit 1; fi
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - tesseract-build.log
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false
+
+  # Unsigned simulator build, zipped for Appetize.io (upload Polyscan-simulator.zip
+  # there). The simulator has no camera: test with "Import" and photos dragged in.
+  ios-simulator:
+    name: iOS simulator build (Appetize)
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      xcode: latest
+      flutter: stable
+    scripts:
+      - name: Build Tesseract xcframework
+        script: |
+          set -o pipefail
+          chmod +x packages/polyscan_ocr/ios/scripts/build_tesseract.sh
+          # Appetize may run Intel simulators, so include the x86_64 slice.
+          SIM_X86_64=1 packages/polyscan_ocr/ios/scripts/build_tesseract.sh 2>&1 | tee tesseract-build.log
+      - name: Build for the simulator
+        script: |
+          flutter pub get
+          # Flutter builds simulator apps only in debug mode.
+          flutter build ios --simulator --debug
+          cd build/ios/iphonesimulator
+          zip -qr "$CM_BUILD_DIR/Polyscan-simulator.zip" Runner.app
+    artifacts:
+      - Polyscan-simulator.zip
+      - tesseract-build.log
