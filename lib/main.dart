@@ -13,7 +13,7 @@ Future<void> main() async {
   final state = AppState();
   // Load before the first frame so returning users don't see onboarding flash by.
   await state.load();
-  final scene = screenshotScene();
+  final scene = await screenshotScene();
   if (scene != null) {
     // App Store screenshots: sample documents, no ads, nothing saved.
     runApp(PolyscanApp(state: state, home: await prepareScreenshot(state, scene)));

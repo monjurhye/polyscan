@@ -14,14 +14,18 @@ import 'screens/home_shell.dart';
 import 'screens/languages_screen.dart';
 import 'screens/page_viewer_screen.dart';
 
-/// App Store screenshots: the ios-screenshots workflow launches the app once per
-/// scene with `POLYSCAN_SCREENSHOT=<scene>` in the environment. Sample documents are
-/// drawn at launch, so nothing extra ships in the app. Ignored in release builds.
+/// App Store screenshots: before each launch, the ios-screenshots workflow writes
+/// the scene name to `Documents/screenshot_scene.txt` in the app's simulator
+/// container (simctl doesn't reliably pass environment variables to the app).
+/// Sample documents are drawn at launch, so nothing extra ships in the app.
+/// Ignored in release builds.
 const screenshotScenes = ['documents', 'bangla', 'page', 'arabic', 'languages'];
 
-String? screenshotScene() {
+Future<String?> screenshotScene() async {
   if (kReleaseMode) return null;
-  final scene = Platform.environment['POLYSCAN_SCREENSHOT'];
+  final file = File('${(await getApplicationDocumentsDirectory()).path}/screenshot_scene.txt');
+  if (!file.existsSync()) return null;
+  final scene = file.readAsStringSync().trim();
   return screenshotScenes.contains(scene) ? scene : null;
 }
 
