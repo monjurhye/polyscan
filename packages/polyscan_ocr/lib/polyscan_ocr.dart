@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import 'polyscan_ocr_platform_interface.dart';
 import 'src/digit_fix.dart';
+import 'src/thaana_fix.dart';
 
 /// One recognized word and where it sits in the image (pixels, top-left origin).
 class OcrWord {
@@ -137,7 +138,8 @@ class PolyscanOcr {
       pageSegMode: pageSegMode,
       variables: variables,
     );
-    final result = OcrResult.fromMap(map);
+    var result = OcrResult.fromMap(map);
+    if (languages.contains('div')) result = fixThaanaMarkOrder(result);
     if (!fixDigits || !needsDigitFix(languages)) return result;
     if (!File('$tessdataDir/eng.traineddata').existsSync()) return result;
     return _fixDigits(result, imagePath, tessdataDir);

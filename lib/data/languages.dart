@@ -2,10 +2,11 @@ import '../models/ocr_language.dart';
 
 /// Languages offered for OCR: every tessdata_fast model except `equ` (math), `osd`
 /// (page orientation), the empty `frk` and `tat`, whose model returns Latin letters
-/// for Tatar's Cyrillic text (0% in our 2026-10-29 test). Dhivehi stays, flagged: its model
-/// drops vowel marks (about 55% with a print font, no better with tessdata_best or other
-/// page modes). English ships with the app; the rest are
-/// downloaded on demand. Sizes in MB are the tessdata_fast file sizes (checked 2026-10-29).
+/// for Tatar's Cyrillic text (0% in our 2026-10-29 test). Dhivehi and Urdu use models we
+/// fine-tuned (training/, models/; see ModelStore.ownModels): Dhivehi phone photos went from
+/// ~51% to ~93% with Noto Sans Thaana, Urdu Nastaliq from ~66% to ~71% (held-out pages).
+/// Both stay flagged. English ships with the app; the rest are downloaded on demand.
+/// Sizes in MB are the downloaded file sizes (checked 2026-10-29).
 List<OcrLanguage> languageCatalog() => [
       OcrLanguage(code: 'eng', name: 'English', nativeName: 'English', sizeMb: 3.9, status: LanguageStatus.builtIn),
       OcrLanguage(code: 'afr', name: 'Afrikaans', nativeName: 'Afrikaans', sizeMb: 2.5),
@@ -36,7 +37,7 @@ List<OcrLanguage> languageCatalog() => [
       OcrLanguage(code: 'ces', name: 'Czech', nativeName: 'Čeština', sizeMb: 3.6),
       OcrLanguage(code: 'dan', name: 'Danish', nativeName: 'Dansk', sizeMb: 2.5),
       OcrLanguage(code: 'div', name: 'Dhivehi', nativeName: 'ދިވެހި', sizeMb: 1.7,
-          note: 'Low accuracy: often misses vowel marks'),
+          note: 'Less accurate than most languages, more so with decorative fonts'),
       OcrLanguage(code: 'nld', name: 'Dutch', nativeName: 'Nederlands', sizeMb: 5.8),
       OcrLanguage(code: 'dzo', name: 'Dzongkha', nativeName: 'རྫོང་ཁ', sizeMb: 0.4),
       OcrLanguage(code: 'epo', name: 'Esperanto', nativeName: 'Esperanto', sizeMb: 4.5),

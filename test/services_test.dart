@@ -177,7 +177,7 @@ void main() {
       HttpOverrides.global = null;
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
       server.listen((req) {
-        if (req.uri.path.endsWith('/ben.traineddata')) {
+        if (req.uri.path == '/tessdata_fast/ben.traineddata' || req.uri.path == '/own/urd.traineddata') {
           req.response
             ..contentLength = model.length
             ..add(model);
@@ -189,6 +189,7 @@ void main() {
       store = ModelStore(
         baseDir: () async => tmp,
         source: 'http://${server.address.host}:${server.port}/tessdata_fast',
+        ownSource: 'http://${server.address.host}:${server.port}/own',
       );
     });
     tearDown(() => server.close(force: true));
@@ -210,6 +211,11 @@ void main() {
       await store.remove('ben');
       await store.remove('eng'); // bundled: kept
       expect(await store.installed(), {'eng'});
+    });
+
+    test('fine-tuned languages download from our own models folder', () async {
+      await store.download('urd');
+      expect(await store.installed(), {'eng', 'urd'});
     });
 
     test('a failed download leaves nothing behind', () async {

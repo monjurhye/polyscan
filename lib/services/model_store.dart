@@ -6,17 +6,28 @@ import 'package:path_provider/path_provider.dart';
 /// Where Tesseract models live on the phone, and how they get there.
 ///
 /// English is bundled as an asset and copied out on first use; every other
-/// language is a tessdata_fast model downloaded once, then used offline.
+/// language is a tessdata_fast model downloaded once, then used offline. The
+/// languages in [ownModels] come from our repo instead: models we fine-tuned
+/// (training/) because the stock ones read them poorly.
 class ModelStore {
-  ModelStore({HttpClient? http, Future<Directory> Function()? baseDir, this.source = defaultSource})
-      : _http = http ?? HttpClient(),
+  ModelStore({
+    HttpClient? http,
+    Future<Directory> Function()? baseDir,
+    this.source = defaultSource,
+    this.ownSource = defaultOwnSource,
+  })  : _http = http ?? HttpClient(),
         _baseDir = baseDir ?? getApplicationSupportDirectory;
 
   static const bundled = {'eng'};
+  static const ownModels = {'div', 'urd'};
   static const defaultSource = 'https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/main';
+  static const defaultOwnSource = 'https://raw.githubusercontent.com/monjurhye/polyscan/main/models';
 
   /// Base URL the `<code>.traineddata` files are downloaded from.
   final String source;
+
+  /// Base URL for the languages in [ownModels].
+  final String ownSource;
   final HttpClient _http;
   final Future<Directory> Function() _baseDir;
   Directory? _dir;
@@ -51,7 +62,8 @@ class ModelStore {
     final dir = await directory();
     final target = File('${dir.path}/$code.traineddata');
     final part = File('${target.path}.part');
-    final request = await _http.getUrl(Uri.parse('$source/$code.traineddata'));
+    final base = ownModels.contains(code) ? ownSource : source;
+    final request = await _http.getUrl(Uri.parse('$base/$code.traineddata'));
     final response = await request.close();
     if (response.statusCode != HttpStatus.ok) {
       await response.drain<void>();
