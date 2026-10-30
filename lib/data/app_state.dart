@@ -116,6 +116,18 @@ class AppState extends ChangeNotifier {
     return null;
   }
 
+  /// Screenshot mode: shows [docs] and marks [readyCodes] as downloaded, without saving.
+  void showSamples(List<ScanDocument> docs, {required List<String> readyCodes}) {
+    documents
+      ..clear()
+      ..addAll(docs);
+    for (final lang in languages) {
+      if (readyCodes.contains(lang.code)) lang.status = LanguageStatus.downloaded;
+    }
+    settings.onboardingDone = true;
+    notifyListeners();
+  }
+
   ScanDocument addDocument(List<ScanPage> pages, List<String> codes, {DocType type = DocType.auto}) {
     final now = DateTime.now();
     final doc = ScanDocument(

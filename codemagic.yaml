@@ -140,3 +140,68 @@ workflows:
     artifacts:
       - Polyscan-simulator.zip
       - tesseract-build.log
+
+  # App Store screenshots for iPhone 6.9", iPhone 6.5" and iPad 13", plus the same
+  # simulator build zipped for Appetize. The app runs in screenshot mode
+  # (lib/screenshot_mode.dart): sample documents, no ads, one launch per scene.
+  ios-screenshots:
+    name: App Store screenshots
+    instance_type: mac_mini_m2
+    max_build_duration: 75
+    environment:
+      xcode: latest
+      flutter: stable
+    scripts:
+      - name: Build Tesseract xcframework
+        script: |
+          set -o pipefail
+          chmod +x packages/polyscan_ocr/ios/scripts/build_tesseract.sh
+          SIM_X86_64=1 packages/polyscan_ocr/ios/scripts/build_tesseract.sh 2>&1 | tee tesseract-build.log
+      - name: Build for the simulator
+        script: |
+          flutter pub get
+          flutter build ios --simulator --debug
+          cd build/ios/iphonesimulator
+          zip -qr "$CM_BUILD_DIR/Polyscan-simulator.zip" Runner.app
+      - name: Take screenshots
+        script: |
+          set -e
+          APP=build/ios/iphonesimulator/Runner.app
+          BUNDLE=com.pickixo.polyscan
+          OUT="$CM_BUILD_DIR/screenshots"
+          mkdir -p "$OUT"
+          RUNTIME=$(xcrun simctl list runtimes -j | python3 -c 'import json,sys; r=[x for x in json.load(sys.stdin)["runtimes"] if x["platform"]=="iOS" and x["isAvailable"]]; print(r[-1]["identifier"])')
+          pick() { xcrun simctl list devicetypes -j | python3 -c "import json,sys,re; t=[d for d in json.load(sys.stdin)['devicetypes'] if re.fullmatch(sys.argv[1], d['name'])]; t.sort(key=lambda d: [int(n) for n in re.findall(r'\d+', d['name'])]); print(t[-1]['identifier']); print('Using', t[-1]['name'], file=sys.stderr)" "$1"; }
+          launch() { SIMCTL_CHILD_POLYSCAN_SCREENSHOT="$2" xcrun simctl launch "$1" "$BUNDLE"; }
+          shoot() {
+            local label="$1" type="$2"
+            local udid=$(xcrun simctl create "$label" "$type" "$RUNTIME")
+            xcrun simctl boot "$udid"
+            xcrun simctl bootstatus "$udid" -b
+            xcrun simctl status_bar "$udid" override --time "9:41" --dataNetwork wifi --wifiMode active --wifiBars 3 \
+              --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
+            xcrun simctl install "$udid" "$APP"
+            # Warm-up: first-boot system banners appear and time out here, not on a screenshot.
+            launch "$udid" documents
+            sleep 60
+            local n=1
+            for scene in documents bangla page arabic languages; do
+              xcrun simctl terminate "$udid" "$BUNDLE" 2>/dev/null || true
+              launch "$udid" "$scene"
+              # Debug builds start slower (JIT); pages are drawn at launch.
+              sleep 15
+              xcrun simctl io "$udid" screenshot "$OUT/${label}-${n}-${scene}.png"
+              n=$((n+1))
+            done
+            xcrun simctl shutdown "$udid"
+          }
+          shoot iPhone-6.9 "$(pick 'iPhone \d+ Pro Max')"
+          shoot iPhone-6.5 "$(pick 'iPhone 11 Pro Max')"
+          shoot iPad-13 "$(pick 'iPad Pro 13-inch.*')"
+          for f in "$OUT"/*.png; do echo "$(basename "$f") $(sips -g pixelWidth -g pixelHeight "$f" | awk '/pixel/{printf "%s ", $2}')"; done
+          cd "$CM_BUILD_DIR" && zip -qr Polyscan-screenshots.zip screenshots
+    artifacts:
+      - Polyscan-screenshots.zip
+      - screenshots/*.png
+      - Polyscan-simulator.zip
+      - tesseract-build.log

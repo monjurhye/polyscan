@@ -9,15 +9,19 @@ import 'flows.dart';
 import 'page_viewer_screen.dart';
 
 class DocumentScreen extends StatelessWidget {
-  const DocumentScreen({super.key, required this.doc});
+  const DocumentScreen({super.key, required this.doc, this.initialTab = 0});
 
   final ScanDocument doc;
+
+  /// 0 shows the pages, 1 the recognized text.
+  final int initialTab;
 
   @override
   Widget build(BuildContext context) {
     AppScope.of(context); // rebuild on rename / recognize
     return DefaultTabController(
       length: 2,
+      initialIndex: initialTab,
       child: Scaffold(
         appBar: AppBar(
           title: GestureDetector(onTap: () => _rename(context), child: Text(doc.title)),
