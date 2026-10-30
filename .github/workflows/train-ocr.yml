@@ -53,6 +53,9 @@ jobs:
           sudo apt-get install -y -q tesseract-ocr tesseract-ocr-eng
           pip install -q numpy pillow rapidfuzz
           tesseract --version | head -1
+          # Also install the fonts for fontconfig: text2image did not find them via --fonts_dir alone.
+          mkdir -p ~/.local/share/fonts && cp training/fonts/*.ttf ~/.local/share/fonts/ && fc-cache -f
+          fc-list | grep -iE 'thaana|nastaliq|naskh|gulzar'
           text2image --fonts_dir training/fonts --list_available_fonts 2>&1 | tail -n 20
           echo "::notice title=fonts::$(text2image --fonts_dir training/fonts --list_available_fonts 2>&1 | grep -iE 'noto|gulzar' | tr '\n' ' ')"
 
