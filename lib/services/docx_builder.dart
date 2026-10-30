@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 
+import '../models/text_direction.dart';
+
 /// Builds a minimal Word document: one paragraph per text line, a page break
 /// between scanned pages. Right-to-left lines (Arabic, Urdu, Hebrew, Dhivehi)
 /// are marked so Word lays them out from the right.
@@ -25,17 +27,7 @@ class DocxBuilder {
     return Uint8List.fromList(ZipEncoder().encode(archive));
   }
 
-  static bool isRtl(String text) {
-    for (final r in text.runes) {
-      // Hebrew, Arabic (incl. supplements), Syriac, Thaana, NKo, Arabic presentation forms.
-      if ((r >= 0x0590 && r <= 0x08FF) || (r >= 0xFB1D && r <= 0xFDFF) || (r >= 0xFE70 && r <= 0xFEFF)) return true;
-      // The first letter of any other script decides it.
-      if (_isLetter(r)) return false;
-    }
-    return false;
-  }
-
-  static bool _isLetter(int r) => (r >= 0x41 && r <= 0x5A) || (r >= 0x61 && r <= 0x7A) || r >= 0xC0;
+  static bool isRtl(String text) => isRtlText(text);
 
   String _paragraph(String text, {required bool pageBreak}) {
     final rtl = isRtl(text);

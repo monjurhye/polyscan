@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../data/app_state.dart';
 import '../models/document.dart';
+import '../models/text_direction.dart';
 import '../widgets/page_preview.dart';
 import 'ad_banner.dart';
 import 'flows.dart';
@@ -328,7 +329,15 @@ class _TextTab extends StatelessWidget {
         Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: SelectableText(doc.recognizedText!, style: theme.textTheme.bodyLarge?.copyWith(height: 1.5)),
+            // Full width, so right-to-left text (Arabic, Urdu, Hebrew, Dhivehi) lines up on the right.
+            child: SizedBox(
+              width: double.infinity,
+              child: SelectableText(
+                doc.recognizedText!,
+                textDirection: isRtlText(doc.recognizedText!) ? TextDirection.rtl : TextDirection.ltr,
+                style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 12),
