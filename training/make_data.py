@@ -68,7 +68,7 @@ def run(i):
             continue
         page = page.convert('L')
         for b, img in ((f'{base}p{p}', page), (f'{base}p{p}d', degrade_page(page, rnd))):
-            img.save(b + '.tif')
+            img.save(b + '.tif', compression='tiff_lzw')  # text2image's Group 4 needs 1-bit pixels
             open(b + '.box', 'w', encoding='utf-8').writelines(boxes[p])
             try:
                 sh('tesseract', b + '.tif', b, 'lstm.train')
