@@ -36,12 +36,6 @@ def degrade_page(img, rnd):
     return Image.open(b).convert('L')
 
 
-def degrade(path, rnd):
-    # text2image writes one multi-page TIFF; the box file refers to its page numbers.
-    pages = [degrade_page(p.convert('L'), rnd) for p in ImageSequence.Iterator(Image.open(path))]
-    pages[0].save(path, save_all=True, append_images=pages[1:])
-
-
 def sh(*cmd):
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode:
@@ -61,21 +55,41 @@ def run(i):
                     f'--char_spacing={spacing}', '--strip_unrenderable_words', '--max_pages=0',
                     '--xsize=2550', '--ysize=3300', '--margin=100', '--resolution=300'])
     shutil.rmtree(f'{out}/fc{i}', ignore_errors=True)
-    shutil.copy(base + '.tif', base + 'd.tif')
-    shutil.copy(base + '.box', base + 'd.box')
-    degrade(base + 'd.tif', rnd)
-    made = []
-    for b in (base, base + 'd'):
-        sh('tesseract', b + '.tif', b, 'lstm.train')
-        made.append(b + '.lstmf')
-    return made
+    # Split text2image's multi-page TIFF into single pages (box lines end with the page
+    # number), add a degraded copy of each, and make one .lstmf per page. A page Tesseract
+    # rejects (for example "Empty page") is skipped rather than failing the whole run.
+    boxes = {}
+    for line in open(base + '.box', encoding='utf-8'):
+        head, page = line.rstrip('\n').rsplit(' ', 1)
+        boxes.setdefault(int(page), []).append(head + ' 0\n')
+    made, failed = [], 0
+    for p, page in enumerate(ImageSequence.Iterator(Image.open(base + '.tif'))):
+        if p not in boxes:
+            continue
+        page = page.convert('L')
+        for b, img in ((f'{base}p{p}', page), (f'{base}p{p}d', degrade_page(page, rnd))):
+            img.save(b + '.tif')
+            open(b + '.box', 'w', encoding='utf-8').writelines(boxes[p])
+            try:
+                sh('tesseract', b + '.tif', b, 'lstm.train')
+                if os.path.getsize(b + '.lstmf') > 0:
+                    made.append(b + '.lstmf')
+                    continue
+            except (RuntimeError, OSError):
+                pass
+            failed += 1
+    return made, failed
 
 
 with concurrent.futures.ThreadPoolExecutor(os.cpu_count()) as pool:
-    files = [f for made in pool.map(run, range(len(jobs))) for f in made]
+    results = list(pool.map(run, range(len(jobs))))
+files = [f for made, _ in results for f in made]
+failed = sum(n for _, n in results)
+if failed > len(files) / 10:
+    sys.exit(f'{failed} pages failed and only {len(files)} worked')
 
-# One job in twenty is held out to watch the error rate during training.
+# One page pair in twenty is held out to watch the error rate during training.
 evals = [f for i, f in enumerate(files) if (i // 2) % 20 == 0]
 open(os.path.join(out, 'train.txt'), 'w').write('\n'.join(f for f in files if f not in evals) + '\n')
 open(os.path.join(out, 'eval.txt'), 'w').write('\n'.join(evals) + '\n')
-print(f'{lang}: {len(jobs)} jobs, {len(files)} lstmf files ({len(evals)} held out)')
+print(f'{lang}: {len(jobs)} jobs, {len(files)} pages ({len(evals)} held out, {failed} skipped)')
