@@ -70,6 +70,11 @@ You can't set a price until these are done. Approval can take a few days.
 - Part 4 (external services): Google AdMob for ads, Google UMP for consent, StoreKit for the purchase.
 - Reviewers buy the IAP in the sandbox, so no promo code or test account is needed.
 - Add the Kobiton screen recording (see the ArchiveX lessons).
+- **Say plainly where the screenshots come from** (paste into App Review Information › Notes):
+
+  > About the screenshots: all App Store screenshots were captured from the real Polyscan app build running in the iOS Simulator (Xcode, on a Codemagic cloud Mac): iPhone 17 Pro Max (6.9"), iPhone 11 Pro Max (6.5") and iPad Pro 13-inch. Nothing was drawn or edited apart from the status bar, which was set to 9:41 with the standard simulator tool. The documents shown are sample documents (an English bill, a Bangla rental agreement, an Arabic certificate and a Hindi receipt) loaded by a debug-only screenshot mode; the text shown is what the app displays for them. Ads are switched off in that mode so they don't appear in the screenshots. The App Store build doesn't contain screenshot mode.
+
+  Check the device names against the Codemagic log ("Using …" lines) before pasting, and change them if Codemagic used other simulators.
 
 ## 6. After launch
 
