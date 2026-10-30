@@ -28,7 +28,7 @@ You can't set a price until these are done. Approval can take a few days.
 - [ ] **Export compliance:** the app uses only standard HTTPS. `ITSAppUsesNonExemptEncryption = false` is set in `ios/Runner/Info.plist`, so Apple won't ask on every build.
 - [ ] **Age rating:** 4+.
 - [ ] **Category:** Productivity (secondary: Business or Utilities).
-- [ ] Privacy Policy URL and Support URL are live. The app's Settings links to them still say "opens here" and need the real URLs.
+- [ ] Privacy Policy URL: `https://github.com/monjurhye/polyscan/blob/main/docs/privacy.md`. Support URL: `https://github.com/monjurhye/polyscan/blob/main/docs/support.md`. The app's Settings opens the same pages.
 
 ## 4. Store listing
 

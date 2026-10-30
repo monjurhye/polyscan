@@ -45,6 +45,8 @@ dependencies:
   pdf: ^3.13.1
   image: ^4.10.1
   in_app_purchase: ^3.3.1
+  archive: ^4.5.2
+  url_launcher: ^6.3.3
 
 dev_dependencies:
   flutter_test:
@@ -75,6 +77,8 @@ flutter:
     - assets/tessdata/eng.traineddata
     # Fonts for the searchable PDF's invisible text layer.
     - assets/fonts/
+    # Full license texts for the native libraries, models and fonts (see licenses.dart).
+    - assets/licenses/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

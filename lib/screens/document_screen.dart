@@ -176,12 +176,12 @@ class DocumentScreen extends StatelessWidget {
                 title: Text(f.label),
                 subtitle: Text(switch (f) {
                   ExportFormat.pdf => doc.hasText ? 'Text is selectable and searchable' : 'Image-only (recognize text first to search it)',
-                  ExportFormat.word => 'Coming soon',
+                  ExportFormat.word => 'Editable text, page by page',
                   ExportFormat.txt => 'Just the text',
                   ExportFormat.jpg => 'One image per page',
                 }),
                 trailing: f == state.defaultExport ? const Chip(label: Text('Default')) : null,
-                enabled: f != ExportFormat.word && (doc.hasText || f == ExportFormat.pdf || f == ExportFormat.jpg),
+                enabled: doc.hasText || f == ExportFormat.pdf || f == ExportFormat.jpg,
                 onTap: () {
                   Navigator.pop(sheet);
                   _export(context, doc, f);

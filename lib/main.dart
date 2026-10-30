@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'data/app_state.dart';
+import 'licenses.dart';
 import 'screens/home_shell.dart';
 import 'screens/onboarding_screen.dart';
 import 'theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  registerLicenses();
   final state = AppState();
   // Load before the first frame so returning users don't see onboarding flash by.
   await state.load();

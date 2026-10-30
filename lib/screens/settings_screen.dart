@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../data/app_state.dart';
 import '../models/document.dart';
 import 'languages_screen.dart';
 import 'unlock_screen.dart';
+
+const _docsUrl = 'https://github.com/monjurhye/polyscan/blob/main/docs';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -13,8 +16,12 @@ class SettingsScreen extends StatelessWidget {
     final state = AppScope.of(context);
     final theme = Theme.of(context);
     void push(Widget page) => Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
-    void soon(String what) =>
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$what opens here')));
+    Future<void> open(String url) async {
+      final opened = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+      if (!opened && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Could not open $url')));
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
@@ -69,13 +76,6 @@ class SettingsScreen extends StatelessWidget {
               onSelectionChanged: (s) => state.setThemeMode(s.first),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.language),
-            title: const Text('App language'),
-            subtitle: const Text('English'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => soon('Language list'),
-          ),
           const _Section('Privacy'),
           const ListTile(
             leading: Icon(Icons.shield_outlined),
@@ -94,13 +94,13 @@ class SettingsScreen extends StatelessWidget {
             leading: const Icon(Icons.policy_outlined),
             title: const Text('Privacy policy'),
             trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => soon('Privacy policy'),
+            onTap: () => open('$_docsUrl/privacy.md'),
           ),
           ListTile(
             leading: const Icon(Icons.help_outline),
             title: const Text('Support'),
             trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => soon('Support page'),
+            onTap: () => open('$_docsUrl/support.md'),
           ),
           ListTile(
             leading: const Icon(Icons.code),

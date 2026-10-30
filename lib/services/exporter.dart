@@ -5,10 +5,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../models/document.dart';
+import 'docx_builder.dart';
 import 'page_renderer.dart';
 import 'pdf_builder.dart';
 
-/// Writes a document out as PDF, text or images and opens the share sheet.
+/// Writes a document out as PDF, Word, text or images and opens the share sheet.
 class Exporter {
   Exporter(this.renderer, {PdfBuilder? pdf}) : pdf = pdf ?? PdfBuilder();
 
@@ -20,7 +21,7 @@ class Exporter {
         ExportFormat.pdf => [await writePdf(doc)],
         ExportFormat.txt => [await _writeText(doc)],
         ExportFormat.jpg => await _writeImages(doc),
-        ExportFormat.word => throw UnsupportedError('Word export is not built yet'),
+        ExportFormat.word => [await _writeWord(doc)],
       };
 
   /// Opens the share sheet. [origin] is where it points from; iPad requires it.
@@ -43,6 +44,12 @@ class Exporter {
   Future<File> _writeText(ScanDocument doc) async {
     final file = File('${(await _outDir()).path}/${fileName(doc.title)}.txt');
     return file.writeAsString(doc.recognizedText ?? '', flush: true);
+  }
+
+  Future<File> _writeWord(ScanDocument doc) async {
+    final pages = [for (final page in doc.pages) if (page.ocr != null) page.ocr!.text];
+    final file = File('${(await _outDir()).path}/${fileName(doc.title)}.docx');
+    return file.writeAsBytes(DocxBuilder().build(pages, title: doc.title), flush: true);
   }
 
   Future<List<File>> _writeImages(ScanDocument doc) async {
