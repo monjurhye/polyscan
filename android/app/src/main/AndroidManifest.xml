@@ -1,10 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Downloads OCR language models; scans themselves never leave the phone. -->
+    <!-- Downloads OCR language models and ads; scans themselves never leave the phone. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:label="Polyscan"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- AdMob app ID: Google's test ID unless the build sets ADMOB_ANDROID_APP_ID (see build.gradle.kts). -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${admobAppId}" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

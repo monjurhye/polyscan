@@ -37,33 +37,26 @@ void main() {
 
   void scan(AppState state) => state.addDocument([ScanPage(imagePath: '${tmp.path}/p.jpg')], const []);
 
-  test('the first ten scans are free, then scanning needs the unlock', () async {
+  test('scanning has no limit, and ads show only once the ad SDK is ready', () async {
     final state = await loadedState(FakeUnlockStore());
-    for (var i = 0; i < AppState.freeScans; i++) {
-      expect(state.canScan, isTrue, reason: 'scan ${i + 1}');
+    for (var i = 0; i < 25; i++) {
       scan(state);
     }
-    expect(state.freeScansLeft, 0);
-    expect(state.canScan, isFalse);
-    expect(state.documents, hasLength(AppState.freeScans), reason: 'existing documents stay');
+    expect(state.documents, hasLength(25));
+    // AdService.start() is never called in tests, so no ad is requested.
+    expect(state.showAds, isFalse);
   });
 
-  test('buying unlocks for good and survives a restart', () async {
+  test('buying removes ads for good and survives a restart', () async {
     final store = FakeUnlockStore();
     final state = await loadedState(store);
-    for (var i = 0; i < AppState.freeScans; i++) {
-      scan(state);
-    }
     await state.buyUnlock();
     expect(state.unlocked, isTrue);
-    expect(state.canScan, isTrue);
-    scan(state);
-    expect(state.settings.scansUsed, AppState.freeScans, reason: 'scans after unlocking are not counted');
+    expect(state.showAds, isFalse);
 
     await state.save();
     final reopened = await loadedState(FakeUnlockStore());
     expect(reopened.unlocked, isTrue);
-    expect(reopened.settings.scansUsed, AppState.freeScans);
   });
 
   test('a failed purchase shows its message and keeps the app locked', () async {
@@ -83,7 +76,7 @@ void main() {
     expect(owned.unlocked, isTrue);
   });
 
-  testWidgets('the unlock screen shows the store price and closes after buying', (tester) async {
+  testWidgets('the Remove ads screen shows the store price and closes after buying', (tester) async {
     final state = AppState(
         library: LibraryStore(baseDir: () async => tmp),
         models: ModelStore(baseDir: () async => tmp),
@@ -106,17 +99,16 @@ void main() {
     ));
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
-    expect(find.text('Unlock for ₹199'), findsOneWidget);
-    expect(find.text('10 of 10 free scans left.'), findsOneWidget);
+    expect(find.text('Remove ads for ₹199'), findsOneWidget);
 
-    await tester.tap(find.text('Unlock for ₹199'));
+    await tester.tap(find.text('Remove ads for ₹199'));
     await tester.pumpAndSettle();
     expect(state.unlocked, isTrue);
     expect(find.byType(UnlockScreen), findsNothing);
   });
 
-  test('older settings files without the new fields load as locked with no scans used', () {
-    final settings = Settings.fromJson({'onboardingDone': true});
-    expect([settings.unlocked, settings.scansUsed], [false, 0]);
+  test('older settings files load with ads on, and the old scan counter is ignored', () {
+    expect(Settings.fromJson({'onboardingDone': true}).unlocked, isFalse);
+    expect(Settings.fromJson({'scansUsed': 10, 'unlocked': true}).toJson(), isNot(contains('scansUsed')));
   });
 }

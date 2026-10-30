@@ -170,7 +170,6 @@ class Settings {
     this.themeMode = ThemeMode.system,
     this.defaultExport = ExportFormat.pdf,
     List<String>? lastLanguageCodes,
-    this.scansUsed = 0,
     this.unlocked = false,
   }) : lastLanguageCodes = lastLanguageCodes ?? ['eng'];
 
@@ -179,7 +178,6 @@ class Settings {
         themeMode: ThemeMode.values.asNameMap()[json['themeMode']] ?? ThemeMode.system,
         defaultExport: ExportFormat.values.asNameMap()[json['defaultExport']] ?? ExportFormat.pdf,
         lastLanguageCodes: (json['lastLanguages'] as List?)?.cast<String>(),
-        scansUsed: json['scansUsed'] as int? ?? 0,
         unlocked: json['unlocked'] as bool? ?? false,
       );
 
@@ -188,10 +186,7 @@ class Settings {
   ExportFormat defaultExport;
   List<String> lastLanguageCodes;
 
-  /// New documents scanned or imported before unlocking (see AppState.freeScans).
-  int scansUsed;
-
-  /// The one-time unlock was bought or restored. The store stays the source of truth:
+  /// The one-time "Remove ads" purchase was bought or restored. The store stays the source of truth:
   /// "Restore purchase" asks it again, for example after reinstalling.
   bool unlocked;
 
@@ -200,7 +195,6 @@ class Settings {
         'themeMode': themeMode.name,
         'defaultExport': defaultExport.name,
         'lastLanguages': lastLanguageCodes,
-        'scansUsed': scansUsed,
         'unlocked': unlocked,
       };
 }

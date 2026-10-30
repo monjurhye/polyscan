@@ -46,7 +46,9 @@ workflows:
       - ocr-summary.txt
 
   # Signed App Store build, uploaded to App Store Connect (TestFlight). Started by hand.
-  # Needs, in the Codemagic team: the App Store Connect API key integration
+  # Needs the environment variable group "admob" (ADMOB_IOS_APP_ID, ADMOB_IOS_BANNER,
+  # ADMOB_IOS_INTERSTITIAL, ADMOB_IOS_APP_OPEN from the AdMob console) and, in the
+  # Codemagic team: the App Store Connect API key integration
   # "app_store_key" and an Apple Distribution certificate (with private key) under
   # Code signing identities. Codemagic fetches or creates the App Store
   # provisioning profile for com.pickixo.polyscan itself. The app must already
@@ -63,7 +65,17 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.pickixo.polyscan
+      groups:
+        - admob
     scripts:
+      - name: Check AdMob IDs
+        script: |
+          # Release builds must show real ads; Google's test IDs would earn nothing.
+          for v in ADMOB_IOS_APP_ID ADMOB_IOS_BANNER ADMOB_IOS_INTERSTITIAL ADMOB_IOS_APP_OPEN; do
+            [ -n "${!v}" ] || { echo "Missing $v in the Codemagic group 'admob'"; exit 1; }
+            case "${!v}" in ca-app-pub-3940256099942544*) echo "$v is Google's test ID"; exit 1;; esac
+          done
+          /usr/libexec/PlistBuddy -c "Set :GADApplicationIdentifier $ADMOB_IOS_APP_ID" ios/Runner/Info.plist
       - name: Build Tesseract xcframework
         script: |
           set -o pipefail
@@ -80,6 +92,9 @@ workflows:
           echo "Build number: $BUILD_NUMBER"
           flutter build ipa --release \
             --build-number="$BUILD_NUMBER" \
+            --dart-define=ADMOB_IOS_BANNER="$ADMOB_IOS_BANNER" \
+            --dart-define=ADMOB_IOS_INTERSTITIAL="$ADMOB_IOS_INTERSTITIAL" \
+            --dart-define=ADMOB_IOS_APP_OPEN="$ADMOB_IOS_APP_OPEN" \
             --export-options-plist=/Users/builder/export_options.plist
       - name: Check the IPA
         script: |
@@ -100,6 +115,7 @@ workflows:
 
   # Unsigned simulator build, zipped for Appetize.io (upload Polyscan-simulator.zip
   # there). The simulator has no camera: test with "Import" and photos dragged in.
+  # It shows Google's test ads, which are safe to tap.
   ios-simulator:
     name: iOS simulator build (Appetize)
     instance_type: mac_mini_m2

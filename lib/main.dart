@@ -15,6 +15,8 @@ Future<void> main() async {
   // Write pending changes right away when the app is backgrounded; it may be killed there.
   AppLifecycleListener(onPause: state.save, onHide: state.save);
   runApp(PolyscanApp(state: state));
+  // Consent prompts and the ad SDK start after the first frame, so launch stays quick.
+  if (!state.unlocked) WidgetsBinding.instance.addPostFrameCallback((_) => state.ads.start());
 }
 
 class PolyscanApp extends StatelessWidget {

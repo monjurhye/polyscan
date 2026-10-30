@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../data/app_state.dart';
 import '../models/document.dart';
 import '../widgets/page_preview.dart';
+import 'ad_banner.dart';
 import 'document_screen.dart';
 import 'flows.dart';
 
@@ -81,6 +82,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                   ),
               ],
             ),
+      bottomNavigationBar: const AdBanner(),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,

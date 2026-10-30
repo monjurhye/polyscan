@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../data/app_state.dart';
 import '../models/document.dart';
 import '../widgets/page_preview.dart';
+import 'ad_banner.dart';
 import 'flows.dart';
 import 'page_viewer_screen.dart';
 
@@ -43,38 +44,45 @@ class DocumentScreen extends StatelessWidget {
           ]),
         ),
         body: TabBarView(children: [_PagesTab(doc: doc), _TextTab(doc: doc)]),
-        bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-                    onPressed: doc.hasText ? () => _copy(context, doc.recognizedText!) : null,
-                    icon: const Icon(Icons.copy),
-                    label: const Text('Copy text'),
-                  ),
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SafeArea(
+              // The banner below handles the bottom inset when it shows.
+              bottom: !AppScope.of(context).showAds,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+                        onPressed: doc.hasText ? () => _copy(context, doc.recognizedText!) : null,
+                        icon: const Icon(Icons.copy),
+                        label: const Text('Copy text'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+                        onPressed: () => _showExport(context),
+                        icon: const Icon(Icons.ios_share),
+                        label: const Text('Share'),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: FilledButton.icon(
-                    style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-                    onPressed: () => _showExport(context),
-                    icon: const Icon(Icons.ios_share),
-                    label: const Text('Share'),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            const AdBanner(),
+          ],
         ),
       ),
     );
   }
 
   Future<void> _addPages(BuildContext context) async {
-    if (!await ensureCanScan(context) || !context.mounted) return;
     final pages = await pickPages(context, ScanSource.photos);
     if (pages.isEmpty || !context.mounted) return;
     AppScope.read(context).addPages(doc, pages);
@@ -205,7 +213,9 @@ Future<void> _export(BuildContext context, ScanDocument doc, ExportFormat format
   try {
     final files = await state.exporter.write(doc, format);
     done();
-    await state.exporter.share(doc, files, origin: origin);
+    await state.ads.hold(() => state.exporter.share(doc, files, origin: origin));
+    // Sharing is done: a natural break for a full-screen ad.
+    if (state.showAds) await state.ads.showInterstitial();
   } on Exception catch (e) {
     messenger.showSnackBar(SnackBar(content: Text('Could not export: $e')));
   } finally {

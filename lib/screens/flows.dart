@@ -5,13 +5,13 @@ import '../data/app_state.dart';
 import '../models/document.dart';
 import 'languages_screen.dart';
 import 'scan_review_screen.dart';
-import 'unlock_screen.dart';
 
 /// Gets page images from [source]; shows an error and returns an empty list on failure.
 Future<List<ScanPage>> pickPages(BuildContext context, ScanSource source) async {
   final messenger = ScaffoldMessenger.of(context);
   try {
-    return await AppScope.read(context).importer.pick(source);
+    final state = AppScope.read(context);
+    return await state.ads.hold(() => state.importer.pick(source));
   } on PlatformException catch (e) {
     messenger.showSnackBar(SnackBar(
       content: Text(e.code.contains('denied') || e.code.contains('access')
@@ -22,18 +22,8 @@ Future<List<ScanPage>> pickPages(BuildContext context, ScanSource source) async 
   }
 }
 
-/// True if a new scan may start. When the free scans are used up, shows the unlock
-/// screen first and returns whether the user unlocked there.
-Future<bool> ensureCanScan(BuildContext context) async {
-  final state = AppScope.read(context);
-  if (state.canScan) return true;
-  await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const UnlockScreen()));
-  return state.canScan;
-}
-
 /// Picks pages, then opens the review screen.
 Future<void> startScan(BuildContext context, ScanSource source) async {
-  if (!await ensureCanScan(context) || !context.mounted) return;
   final pages = await pickPages(context, source);
   if (pages.isEmpty || !context.mounted) return;
   Navigator.of(context).push(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/app_state.dart';
 
-/// The one-time purchase. Shown when the free scans run out, and from Settings.
+/// The one-time "Remove ads" purchase, opened from Settings.
 class UnlockScreen extends StatefulWidget {
   const UnlockScreen({super.key});
 
@@ -46,26 +46,24 @@ class _UnlockScreenState extends State<UnlockScreen> {
               child: CircleAvatar(
                 radius: 40,
                 backgroundColor: scheme.primaryContainer,
-                child: Icon(Icons.lock_open, size: 40, color: scheme.onPrimaryContainer),
+                child: Icon(Icons.block, size: 40, color: scheme.onPrimaryContainer),
               ),
             ),
             const SizedBox(height: 16),
-            Text('Unlock Polyscan',
+            Text('Remove ads',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(height: 6),
             Text(
-              state.freeScansLeft == 0
-                  ? 'You have used your ${AppState.freeScans} free scans.'
-                  : '${state.freeScansLeft} of ${AppState.freeScans} free scans left.',
+              'Polyscan is free with ads. Pay once to remove them forever.',
               textAlign: TextAlign.center,
               style: theme.textTheme.titleMedium?.copyWith(color: scheme.onSurfaceVariant),
             ),
             const SizedBox(height: 28),
-            const _Feature(icon: Icons.all_inclusive, title: 'Unlimited scans', text: 'Scan and import as many documents as you need.'),
-            const _Feature(icon: Icons.payments_outlined, title: 'Pay once', text: 'No subscription, no ads, no watermark.'),
-            const _Feature(icon: Icons.shield_outlined, title: 'Still private', text: 'Everything stays on this phone. No account needed.'),
-            const _Feature(icon: Icons.description_outlined, title: 'Your documents stay free', text: 'Documents you already made can always be opened and shared.'),
+            const _Feature(icon: Icons.block, title: 'No more ads', text: 'No banners and no full-screen ads, anywhere in the app.'),
+            const _Feature(icon: Icons.payments_outlined, title: 'Pay once', text: 'No subscription. Yours forever.'),
+            const _Feature(icon: Icons.all_inclusive, title: 'Everything else stays the same', text: 'Unlimited scans, every language and every format, with or without ads.'),
+            const _Feature(icon: Icons.shield_outlined, title: 'Private', text: 'Your scans stay on this phone. No account needed.'),
             const SizedBox(height: 28),
             FutureBuilder<String?>(
               future: _price,
@@ -80,7 +78,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
                         ? 'Loading price…'
                         : price == null
                             ? 'App Store not available'
-                            : 'Unlock for $price',
+                            : 'Remove ads for $price',
                     style: const TextStyle(fontSize: 16),
                   ),
                 );

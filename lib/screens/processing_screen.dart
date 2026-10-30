@@ -62,6 +62,8 @@ class _ProcessingScreenState extends State<ProcessingScreen> with SingleTickerPr
     if (!mounted) return;
     final doc = state.addDocument(widget.pages, readFailed ? const [] : widget.languageCodes, type: widget.type);
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => DocumentScreen(doc: doc)));
+    // The scan is saved: a natural break for a full-screen ad, before the user starts reading.
+    if (state.showAds) state.ads.showInterstitial();
   }
 
   Future<void> _showError(String title, Exception error) => showDialog<void>(

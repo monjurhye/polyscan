@@ -1,6 +1,6 @@
 # Polyscan Support
 
-Polyscan scans documents, reads the text in 100+ languages on your phone, and makes searchable PDFs. No account, no subscription, no ads.
+Polyscan scans documents, reads the text in 100+ languages on your phone, and makes searchable PDFs. No account, no subscription, no scan limit. Free with ads; pay once to remove them.
 
 ## Get help
 
@@ -8,10 +8,13 @@ Report a problem or ask a question: **[open an issue](https://github.com/monjurh
 
 ## Common questions
 
-**How many scans are free?**
-The first 10 scans are free. After that, a one-time purchase unlocks unlimited scans. There is no subscription.
+**Is Polyscan free?**
+Yes. Every feature and every language is free, with no scan limit. The free version shows ads.
 
-**I bought the unlock on another phone. How do I get it back?**
+**How do I remove the ads?**
+Settings › Remove ads. It is a one-time purchase, not a subscription.
+
+**I bought "Remove ads" on another phone. How do I get it back?**
 Open Settings › Restore purchase while signed in with the same Apple ID (or Google account).
 
 **How do I add a language?**

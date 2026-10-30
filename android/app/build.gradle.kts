@@ -27,6 +27,9 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // AdMob app ID; Google's test ID unless the release build sets the environment variable.
+        manifestPlaceholders["admobAppId"] =
+            System.getenv("ADMOB_ANDROID_APP_ID") ?: "ca-app-pub-3940256099942544~3347511713"
     }
 
     buildTypes {

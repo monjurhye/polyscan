@@ -34,12 +34,10 @@ class SettingsScreen extends StatelessWidget {
               color: state.unlocked ? theme.colorScheme.secondaryContainer : theme.colorScheme.primaryContainer,
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                leading: Icon(state.unlocked ? Icons.verified_outlined : Icons.lock_open, size: 32),
-                title: Text(state.unlocked ? 'Polyscan is unlocked' : 'Unlock Polyscan',
+                leading: Icon(state.unlocked ? Icons.verified_outlined : Icons.block, size: 32),
+                title: Text(state.unlocked ? 'Ads removed' : 'Remove ads',
                     style: const TextStyle(fontWeight: FontWeight.w600)),
-                subtitle: Text(state.unlocked
-                    ? 'Unlimited scans. Thank you!'
-                    : '${state.freeScansLeft} of ${AppState.freeScans} free scans left. Pay once for unlimited.'),
+                subtitle: Text(state.unlocked ? 'Thank you for supporting Polyscan!' : 'Pay once, no ads forever.'),
                 trailing: state.unlocked ? null : const Icon(Icons.chevron_right),
                 onTap: state.unlocked ? null : () => push(const UnlockScreen()),
               ),
@@ -79,9 +77,15 @@ class SettingsScreen extends StatelessWidget {
           const _Section('Privacy'),
           const ListTile(
             leading: Icon(Icons.shield_outlined),
-            title: Text('Everything stays on this phone'),
+            title: Text('Your scans stay on this phone'),
             subtitle: Text('No account, no cloud. Scans and text are never uploaded.'),
           ),
+          if (state.ads.privacyOptionsRequired && !state.unlocked)
+            ListTile(
+              leading: const Icon(Icons.tune),
+              title: const Text('Ad privacy choices'),
+              onTap: state.ads.showPrivacyOptions,
+            ),
           const _Section('About'),
           if (!state.unlocked)
             ListTile(

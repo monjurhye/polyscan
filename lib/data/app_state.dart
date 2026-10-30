@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../models/document.dart';
 import '../models/ocr_language.dart';
+import '../services/ad_service.dart';
 import '../services/exporter.dart';
 import '../services/model_store.dart';
 import '../services/ocr_service.dart';
@@ -16,8 +17,8 @@ import 'library_store.dart';
 
 /// App state. Documents and settings are saved to [LibraryStore] shortly after each change.
 ///
-/// Polyscan is free to download with [freeScans] free scans; one in-app purchase
-/// ([UnlockStore]) unlocks unlimited scans forever. No subscription, no ads.
+/// Polyscan is free, with ads ([AdService]). One in-app purchase ([UnlockStore])
+/// removes the ads forever. No subscription and no scan limit.
 class AppState extends ChangeNotifier {
   AppState({
     ModelStore? models,
@@ -25,25 +26,26 @@ class AppState extends ChangeNotifier {
     PageImporter? importer,
     LibraryStore? library,
     UnlockStore? store,
+    AdService? ads,
   })  : models = models ?? ModelStore(),
         renderer = renderer ?? PageRenderer(),
         importer = importer ?? PageImporter(),
         library = library ?? LibraryStore(),
         store = store ?? AppStoreUnlock(),
+        ads = ads ?? AdService(),
         languages = languageCatalog() {
     ocr = OcrService(this.models, this.renderer);
     exporter = Exporter(this.renderer);
+    // Banners appear once the ad SDK is ready.
+    this.ads.addListener(notifyListeners);
   }
-
-  /// New documents a user can scan or import before unlocking. Documents already
-  /// made can always be opened, read, re-read and exported.
-  static const freeScans = 10;
 
   final ModelStore models;
   final PageRenderer renderer;
   final PageImporter importer;
   final LibraryStore library;
   final UnlockStore store;
+  final AdService ads;
   late final OcrService ocr;
   late final Exporter exporter;
 
@@ -58,11 +60,11 @@ class AppState extends ChangeNotifier {
   ExportFormat get defaultExport => settings.defaultExport;
   List<String> get lastLanguageCodes => settings.lastLanguageCodes;
 
+  /// The one-time "Remove ads" purchase was bought or restored.
   bool get unlocked => settings.unlocked;
-  int get freeScansLeft => (freeScans - settings.scansUsed).clamp(0, freeScans);
 
-  /// Whether a new scan or import may start (adding pages to a document counts too).
-  bool get canScan => unlocked || freeScansLeft > 0;
+  /// Ads show until the purchase, and only once the ad SDK has started.
+  bool get showAds => !unlocked && ads.ready;
 
   /// The latest purchase error from the store, for the unlock screen to show.
   String? unlockError;
@@ -126,7 +128,6 @@ class AppState extends ChangeNotifier {
     );
     documents.insert(0, doc);
     if (codes.isNotEmpty) settings.lastLanguageCodes = codes;
-    if (!unlocked) settings.scansUsed++;
     _changed();
     return doc;
   }
@@ -136,6 +137,7 @@ class AppState extends ChangeNotifier {
       case Unlocked():
         settings.unlocked = true;
         unlockError = null;
+        ads.stop();
       case UnlockFailed(:final message):
         unlockError = message;
     }
@@ -145,17 +147,18 @@ class AppState extends ChangeNotifier {
   Future<void> buyUnlock() {
     unlockError = null;
     notifyListeners();
-    return store.buy();
+    return ads.hold(store.buy);
   }
 
   Future<void> restoreUnlock() {
     unlockError = null;
     notifyListeners();
-    return store.restore();
+    return ads.hold(store.restore);
   }
 
   @override
   void dispose() {
+    ads.removeListener(notifyListeners);
     _storeEvents?.cancel();
     _saveTimer?.cancel();
     super.dispose();

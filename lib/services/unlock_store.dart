@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:in_app_purchase/in_app_purchase.dart';
 
-/// The one-time purchase that unlocks unlimited scans.
+/// The one-time "Remove ads" purchase.
 ///
 /// [AppState] listens to [events] and remembers the unlock in its settings, so the
 /// app works offline after buying. "Restore purchase" asks the store again.
 abstract class UnlockStore {
   /// The non-consumable product in App Store Connect and Google Play Console.
-  static const productId = 'com.pickixo.polyscan.unlock';
+  static const productId = 'com.pickixo.polyscan.removeads';
 
   /// Unlocks (bought or restored) and errors, as they arrive from the store.
   Stream<UnlockEvent> get events;
