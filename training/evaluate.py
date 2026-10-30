@@ -17,10 +17,17 @@ def norm(s):
 def score(args):
     name, tessdata, path = args
     key, cond = os.path.basename(path)[:-4].rsplit('-', 1)
-    got = subprocess.run(['tesseract', path, 'stdout', '-l', lang, '--tessdata-dir', tessdata],
-                         capture_output=True, text=True, encoding='utf-8').stdout
+    try:
+        # One thread per call: the pool already runs one call per core.
+        got = subprocess.run(['tesseract', path, 'stdout', '-l', lang, '--tessdata-dir', tessdata],
+                             capture_output=True, text=True, encoding='utf-8', timeout=300,
+                             env={**os.environ, 'OMP_THREAD_LIMIT': '1'}).stdout
+    except subprocess.TimeoutExpired:
+        print(f'timeout: {name} {path}', flush=True)
+        got = ''
     truth = norm(open(os.path.join(here, 'eval', 'truth', key + '.txt'), encoding='utf-8').read())
     acc = max(0.0, 1 - Levenshtein.distance(truth, norm(got)) / len(truth)) * 100
+    print(f'{name} {key}-{cond}: {acc:.1f}%', flush=True)
     return name, key, cond, acc
 
 

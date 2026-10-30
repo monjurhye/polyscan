@@ -26,6 +26,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: train-ocr
+  cancel-in-progress: true
+
 jobs:
   train:
     runs-on: ubuntu-latest
@@ -98,23 +102,25 @@ jobs:
           ls -la models/*
           echo "::notice title=$L training::$(grep -E 'At iteration' train.log | awk 'NR%10==0' | tail -n 12 | cut -c1-160 | awk '{gsub(/%/,"%25"); printf "%s%%0A", $0}')"
 
-      - name: Evaluate
-        run: |
-          python training/evaluate.py $L work/eval fast=models/fast new=models/new best=models/best | tee eval.txt
-          echo "::notice title=$L accuracy (fast = app today)::$(awk '{gsub(/%/,"%25"); printf "%s%%0A", $0}' eval.txt)"
-
       - name: Save models to branch ocr-models-${{ matrix.lang }}
         run: |
           mkdir -p out && cp models/new/$L.traineddata out/$L.traineddata && cp models/newfloat/$L.traineddata out/$L.float.traineddata
-          cp eval.txt eval-$L.json summary.txt out/ && tail -n 200 train.log > out/train-tail.log
+          cp summary.txt out/ && tail -n 200 train.log > out/train-tail.log
           cd out && git init -q -b ocr-models-$L && git add . \
             && git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -qm "Fine-tuned $L model (run ${{ github.run_id }})" \
             && git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ocr-models-$L
 
+      - name: Evaluate
+        # The first run sat in this step for 3 hours; models are saved before it now.
+        timeout-minutes: 45
+        run: |
+          python training/evaluate.py $L work/eval fast=models/fast new=models/new best=models/best | tee eval.txt
+          echo "::notice title=$L accuracy (fast = app today)::$(grep "^$L " eval.txt | awk '{gsub(/%/,"%25"); printf "%s%%0A", $0}')"
+
       - name: Log tails on failure
         if: failure()
         run: |
-          for f in summary.txt train.log; do
+          for f in summary.txt train.log eval.txt; do
             [ -f "$f" ] || continue
             echo "::warning title=$f tail::$(tail -n 30 "$f" | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", substr($0,1,200)}')"
           done
