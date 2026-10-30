@@ -1,0 +1,200 @@
+Can't encode transcription: '۔یکے ن )1926–1860( ررش میلحلا دبع ششوکی لہپ یکی لیدبت ںیم تئیہ یکم ظن ودرا' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 a7 da 91 d9 88 da be da 86 20 db 81 d9 86 20 d8 a7 da a9 20 da ba db 8c db 81 da a9 da ba 20 db 8c db 81 d9 86 d9 8f d8 a7 20 db 92 d9 86 20 db 8c d9 86 d8 a7 d9 85 d8 b3 d8 ac 20 d9 88 20 db 8c d9 86 db 81 d8 b0 20 d8 aa d8 a7 d9 85 d8 af d8 b5
+Can't encode transcription: '۔ےھت ےئگ نب ہچناھڈ اک ںویڈہ ےڑپ ےڑپ رپر تسب کتے نیہم ھچ ،اڑوھچ ہن اک ںیہکں یہنُا ےن ینامسج و ینہذ تامدص' in language ''
+Encoding of string failed! Failure bytes: 73
+Can't encode transcription: 's' in language ''
+Encoding of string failed! Failure bytes: ef b7 ba 20 d9 be d8 a2 d8 b1 20 d9 88 d8 a7
+Can't encode transcription: '۔ںیہر ںیم تقافرو تبحص یکﷺ پآر وا' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 db 92 db 81 20 d8 a7 da a9 d8 b3 d8 a7 d8 ac 20 d8 a7 db 8c da a9 da ba 20 db 8c db 81 d9 86 20 db 81 d8 b1 db 81 d8 a7 d8 b8 d9 85 20 d8 a7 da a9 20 d8 aa d8 a7 db 8c d8 b5 d9 88 d8 b5 d8 ae 20 db 8c d8 aa db 8c d8 a7 d9 88 d8 b1 20 db 8c d8 b1 d8 a7 d8 b3 20 d8 aa db 81 d8 a8 20 db 8c da a9 da ba 20 d9 88 db 8c d9 b9 d8 a6 d8 a7 d8 b3 d9 88 d8 b3 d8 b1 20 d9 b9 d8 b3 d9 86 d9 85 20 d9 81 db 8c da 86 20 da a9 d8 aa db 8c 20 da be d8 a8 d8 a7 20 db 81 da 86 d8 b1 da af d8 a7
+Can't encode transcription: 'کتی وسیع 1000 لیکشت یکہی فارشا ناسآن کیل ، ےہ اکساج ایکں یہن ہرہاظم اک تایصوصخ یتیاور یراس تہب یکں ویٹئاسوسر ٹسنم فیچ کتی ھبا ہچرگا' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 db 8c da be d8 aa 20 d8 b5 d9 82 d8 a7 d9 86 20 d8 b2 db 8c d8 b1 db 8c d8 b3 20 d9 b9 d8 b3 db 8c d9 b9 20 d9 81 d8 a7 d9 84 d8 ae 20 db 92 da a9 20 d8 a7 da a9 d9 86 d9 84 20 db 8c d8 b1 d8 b3 20 db 8c da a9 d8 b3 20 d8 a7 20 d8 8c 20 da ba db 8c d9 85 20 32 30 31 37 d8 b1 20 d8 a8 d9 85 d8 aa d8 b3
+Can't encode transcription: '۔ےکسانب یہ زنر 39 فرص ںیم ںوچیم ٹسیٹ 2 ہو ںاہج ، یھت صقان زیریس ٹسیٹ فالخ ےک اکنل یرس یکس ا ، ںیم 2017ر بمتس' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d9 86 d8 a7 d8 aa d8 b3 d9 88 d8 af d9 86 db 81 20 d8 aa d8 b9 d8 a7 d9 85 d8 ac 20 db 81 db 8c
+Can't encode transcription: '۔ےہ یئوہ یلیھپ ںیم ںوصح فلتخم ےک ہجراش روا ناتسکاپ ، ناتسودنہ تعامج ہی' in language ''
+At iteration 4632/9700/12361, mean rms=0.747%, delta=1.304%, BCER train=3.736%, BWER train=12.540%, skip ratio=27.700%, New worst BCER = 3.736 wrote checkpoint.
+Encoding of string failed! Failure bytes: d8 8c da ba d9 88 db 81 20 db 92 d8 b3 20 d8 a8 d8 a8 d8 b3 20 db 92 da a9 20 db 92 d9 86 d9 88 db 81 20 db 81 d9 86 20 d8 a7 d9 85 d9 86 20 d9 88 20 d9 88 d8 b4 d9 86 20 db 92 d8 b3 20 d8 a8 d8 a7 d8 b3 d8 ad 20 db 92 da a9 d8 b1 20 d9 85 d8 b9 20 db 92 da a9 20 d8 ba d8 a7 d9 85 d8 af d8 b1 20 da be d9 be 20 d8 a7 db 8c 20 da ba d9 88 db 81 20 d8 b1 d8 a7 da 86 d9 88 d8 af 20 db 92 d8 b3 20 d9 86 d9 88 d9 86 d8 ac 20 db 81 d9 88 20 db 92 db 81 d8 a7 da 86 20 d8 8c d9 86 db 8c d8 b1 d9 88 d8 b0 d8 b9 d9 85 20 db 8c d8 ba d8 a7 d9 85 d8 af
+Can't encode transcription: 'شیپہ رئاد عیسو انپا اک تایرورض ،ںوہ ےس ببس ےک ےنوہ ہن امن و وشن ےس باسح ےکر مع ےک غامدر ھپ ای ںوہ راچود ےس نونج ہو ےہاچ ،نیروذعم یغامد' in language ''
+Encoding of string failed! Failure bytes: 50 69 74 79 54 68 65 20 4e 61 74 69 6f 6e 20 d9 88 d8 ac 20 db 8c da be da a9 d9 84 20 db 8c da be d8 a8 20 d9 85 d8 b8 d9 86 20 d8 b1 d9 88 db 81 d8 b4 d9 85 20 da a9 db 8c d8 a7 20 db 92 d8 b1 d8 a7 d8 a8 20 d8 b3 d8 a7 20 db 92 d9 86 20 d9 86 d8 a7 d8 b1 d8 a8 d8 ac
+Can't encode transcription: '۔یئوہ عئاش ںیمر بماغیپن اتسلگ ےس ناونع ےک PityThe Nation وج یھکل یھب مظن روہشم کیا ےراب سا ےن ناربج' in language ''
+Encoding of string failed! Failure bytes: 50 69 74 79 54 68 65 20 4e 61 74 69 6f 6e 20 d9 88 d8 ac 20 db 8c da be da a9 d9 84 20 db 8c da be d8 a8 20 d9 85 d8 b8 d9 86 20 d8 b1 d9 88 db 81 d8 b4 d9 85 20 da a9 db 8c d8 a7 20 db 92 d8 b1 d8 a7 d8 a8 20 d8 b3 d8 a7 20 db 92 d9 86 20 d9 86 d8 a7 d8 b1 d8 a8 d8 ac
+Can't encode transcription: '۔یئوہ عئاش ںیمر بماغیپن اتسلگ ےس ناونع ےک PityThe Nation وج یھکل یھب مظن روہشم کیا ےراب سا ےن ناربج' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 a7 da be d8 aa 20 d8 a7 d8 aa d9 88 db 81 d8 b1 20 db 81 d8 a7 d8 b8 20 db 92 d8 b3 20 db 92 d9 86 d8 a7 d8 ae 20 d8 a8 d8 aa da a9 db 92 20 da a9 20 d8 b3 d8 a7 20 d9 82 d9 88 d8 b4 20 d9 88 da a9 d8 aa 20 d8 a8 d8 ad d9 85 20 db 92 d8 b3 20 d9 85 d9 84 d8 b9 20 db 8c da a9 d8 b3 20 d8 a7
+Can't encode transcription: '۔ ںیھت دوجوم ںیباتکب ایان ںیم سج ،اھت اتوہر ہاظ ےس ےناخ بتکے ک سا قوش وکت بحم ےس ملع یکس ا' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 da 88 db 8c d9 84 db 8c da 88 db 8c d8 a7 d8 b1 20 db 8c d9 86 da a9 d9 84 20 d8 ac
+Can't encode transcription: '۔ںیئوہ ادیپو ک1 956 تسگا ہلوس ںیم ایلیرٹسآ، ڈیلیڈیار ینکل ج' in language ''
+Encoding of string failed! Failure bytes: 65 66 66 65 63 74 69 76 65 22 20 db 81 d9 88 20 d8 8c db 92 db 81 20 d9 84 d8 a7 d9 85 d8 b9 d8 aa d8 b3 d8 a7 d9 84 d8 a7 20 d8 b1 db 8c d8 ab da a9 d8 b8 d9 81 20 d9 84 20 d9 88 d8 ac 20 db 92 db 8c d9 84 20 db 92 da a9 20 db 8c d8 b2 db 8c da af d9 86 d8 a7 20 d8 b1 d8 ab d8 a7 20 da ba db 8c d9 85
+Can't encode transcription: '۔ےہ "effective" ہو ،ےہ لامعتسالا ریثکظف ل وج ےیل ےک یزیگنا رثا ںیم' in language ''
+Encoding of string failed! Failure bytes: d8 8c
+Can't encode transcription: '۔ںیہ روکذم ےس طسب و حرش فقوم ےک رکف بتاکم مامت روا رظن ہطقن یعرش ںیم نج ںیہ یھب میخض روا لیوط تہب ںیباتکض عب 272-271 ص ،' in language ''
+Encoding of string failed! Failure bytes: d8 8c da 88 d9 b9 db 8c d9 85 d9 84 20 d8 b2 d8 b1 d9 b9 d9 88 d9 85 20 d9 88 d9 86 db 8c db 81 20 da ba db 8c d9 85 20 31 39 38 35 20 d9 86 d8 b3 20 d9 88 da a9 da 88 20 d9 b9 db 8c d9 85 d9 84 20 d8 b2 d8 b1 d9 b9 d9 88 d9 85 20 da a9 d8 a7 d9 be 20 d9 88 d9 86 db 8c db 81
+Can't encode transcription: '۔ایگای کم ئاق ےس کارتشا ےک وکاپ روا پورگم تفلا اٹویوٹ ،ڈٹیمل زرٹوم ونیہ ںیم 1985 نس وکڈ ٹیمل زرٹوم کاپ ونیہ' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 92 db 81 20 d9 81 d8 af d8 a7 d8 b1 d8 aa d9 85 20 db 92 da a9 20 db 92 d9 86 da 91 da a9 d9 be d9 88 20 da a9 db 92 d9 84 20 db 8c da be d8 aa 20 db 92 d8 b1 da be d8 a8 20 db 92 d8 b3 20 da ba d9 88 da a9 d8 b3 20 db 92 da a9 20 db 92 d9 86 d9 88 d8 b3 20 d9 84 da a9 d9 84 d8 a7 d8 a8 20 db 81 db 8c
+Can't encode transcription: '۔ےہ اتکس اچب ےس ےنوہ یروچ وکں وکس ےنپا ہو اگے لرکت امادقا یتظافح وکی مدآک یا ،ےہ فدارتم ےک ےنڑکپو کےل یھت ےرھب ےس ںوکس ےک ےنوس لکلاب ہی' in language ''
+Encoding of string failed! Failure bytes: d8 8c d9 86 d8 a7 d9 85 d8 a7 da a9
+Can't encode transcription: '۔ےہ عقاو رپ یدنلب ےس ردنمس حطسر ٹیم 1,100 یدابآی عومجم یکر ہش رق ،ناماک' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 da ba db 8c d9 85 20 d9 84 da a9 20 d8 b3 d8 a7
+Can't encode transcription: '۔ےھت "دیاش" قلعتم ےس دارفا راکش ےک ربج یزان کنارف سیوس نیلم 24 ، ںیم لک سا' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 db 92 db 81 20 db 8c da a9 20 d8 b2 db 8c d9 84 db 8c d8 b1 20 d8 b1 d9 88 d8 a7 20 db 8c d8 b1 d8 a7 db 8c d8 aa 20 db 8c da a9 20 da ba d9 88 d9 85 d9 84 d9 81 20 32 33 20 db 92 d9 86 20 d8 b2 d9 88 db 8c da 88 d9 88 d9 b9 d8 b3 d8 a7 20 d9 84 d9 88 d8 b1 d8 a7 d9 85 20 da ba db 8c d9 85 20 d8 aa d9 82 d9 88 20 d8 b3 d8 a7 20 d8 b1 d9 88 d8 a7 20 d8 8c 20 da ba db 8c db 81 20 db 8c d8 b1 d8 a7 d8 ac 20 db 92 d8 b3 20 d8 af d8 b9 d8 a8 20 db 92 da a9 20 32 30 30 37 20 da ba db 8c d9 85 d9 84 d9 81 20 db 81 db 8c
+Can't encode transcription: 'سج ، ےہ یک زیلیر روا یرایت یک ںوملف 23 ےن زویڈوٹسا لورام ںیم تقو سا روا ، ںیہ یراج ےس دعب ےک 2007 ںیملف ہی' in language ''
+Encoding of string failed! Failure bytes: 53 65 77 61 6c 6c 28 31 39 37 db 94 34 db 92 29 db 81 2c 20 20 d9 84 33 d9 85 32 d8 aa 31 d8 b4 2e 20 d9 85 20 d8 b1 d9 be 20 d8 af d8 a7 d8 b1 d9 81 d8 a7 20 34 36 2c 33 33 32 20 db 8c d8 af d8 a7 d8 a8 d8 a2 20 db 8c d8 b9 d9 88 d9 85 d8 ac d9 85 20 db 8c da a9 20 d8 b3 d8 a7 20 d8 b1 d9 88 d8 a7 20 db 92 db 81 20 d8 b1 d9 b9 db 8c d9 85 d9 88 d9 84 db 8c da a9 20 d8 b9 d8 a8 d8 b1 d9 85 20 32 34 36 2e 38 30 20 db 81 d8 a8 d9 82 d8 b1 20 d8 a7 da a9 20 db 8c d9 84 d8 a7 d9 85 d8 b4 20 d8 a4 d8 a7 d9 86 d8 a7 d9 84 20 d8 8c d8 af d9 88 d8 a8 d9 88 d8 aa
+Can't encode transcription: 'Sewall(197۔4ے)ہ,  ل3م2ت1ش. م رپ دارفا 46,332 یدابآ یعومجم یک سا روا ےہ رٹیمولیک عبرم 246.80 ہبقر اک یلامش ؤانال ،دوبوت' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d9 86 d8 a7 d8 aa d8 b3 d8 b1 d8 a7 d8 aa d8 a7 d8 aa 20 da ba db 8c d9 85 20 db 8c d8 a6 d8 a7 db 81 d8 af 20 db 8c da a9
+Can't encode transcription: '، ناتسراتات ںیم یئاہد یک' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 92 d8 a6 da af 20 db 92 d9 84 da 86 20 db 92 d8 a6 d9 88 db 81 20 db 92 d8 aa da be da a9 db 8c d8 af 20 d8 b1 d9 88 d8 a7 20 db 92 d8 b1 d8 b2 da af d9 85 20 d9 84 d8 b3 d9 88 20 db 81 db 8c d9 84 d8 b9 20 db 81 d9 84 d9 84 d8 a7 20 db 8c d9 84 d8 b5 20 d9 be d8 a2
+Can't encode transcription: '۔ایاپ ںیم تلاح یسا وکن ا یھب بت ےئآب یرق ےکر ہپود ،ےئگ ےلچ ےئوہ ےتھکید روا ےرزگم لسو ہیلع ہللا یلص پآ' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 92 d9 86 d8 a7 d8 b3 d9 81 d8 a7
+Can't encode transcription: '۔ںیہ ےتھکل یھب نیماضم یدیقنتر وا ےمارڈ ،ےناسفا' in language ''
+Encoding of string failed! Failure bytes: e2 80 98 e2 80 98 d9 86 d8 b4 db 8c da 88 d9 86 d8 a4 d8 a7 d9 81 20 d8 ad d8 a7 d9 84 d9 81 d9 84 d8 a7 e2 80 99 e2 80 99 20 db 81 d8 b1 d8 a7 d8 af d8 a7 20 db 8c db 81 d8 a7 d9 81 d8 b1 20 da a9 db 8c d8 a7 20 db 92 d9 86 20 d9 be d8 a2
+Can't encode transcription: '۔ںیہ یٰلعا تسرپرس پآے ک سج ےہ ایکم ئاق ےس مان ےک ‘‘نشیڈنؤاف حالفلا’’ ہرادا یہافر کیا ےن پآ' in language ''
+Encoding of string failed! Failure bytes: e2 80 93 31 39 35 38 28 20 d8 b1 d9 86 d8 b1 d9 88 da af d8 a7 da a9 20 20 db 92 d9 82 d8 a7 d9 84 d8 b9 20 db 81 da a9 d9 85 20 d8 8c db 81 d8 af d8 a7 d8 b2 db 81 d8 b4 20 db 8c d8 af d9 88 d8 b9 d8 b3 20 d8 8c d9 84 d8 a7 d8 b3 20 38 38 20 d8 8c
+Can't encode transcription: '۔)1961–1958( رنروگاک  ےقالع ہکم ،ہدازہش یدوعس ،لاس 88 ،' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 8c d8 af da a9 d9 86 d8 a8 d8 b3
+Can't encode transcription: '۔ےہ لمتشم رپ دارفا 509 یدابآی عومجم یکن یترب ،یدکنبس' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 a7 da a9 d9 86 d8 b2 20 db 92 d8 b2 d8 b1 d8 a8
+Can't encode transcription: '۔ےہ لمتشم رپ دارفا 120 یدابآی عومجم یکہب وص یئکسیزرکوٹییوس ،اکنز ےزرب' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d8 b3 db 8c d8 b1 20 db 8c da a9 da ba 20 d9 88 da 91 d9 88 da be da af d8 8c 20 20 d9 88 d9 b9 db 8c d9 b9 20 db 8c d8 ac d9 88 d9 81 20 da ba db 8c d9 85 20 d8 a7 da 88 db 8c d9 86 db 8c da a9
+Can't encode transcription: '۔ےھت ےئگ ےئاگل ےلپسڈ ےک یزابشتآر وا ڈیرپ ، سیر یکں وڑوھگ،  وٹیٹ یجوف ںیم اڈینیک' in language ''
+Encoding of string failed! Failure bytes: d8 8c da ba db 8c d8 a8 d8 a7 d8 aa da a9 db 8c 20 da a9 d8 a8 20 d8 b7 20 db 81 d8 aa d9 81 d8 b1 20 db 81 d8 aa d9 81 d8 b1 20 d8 b1 d9 88 d8 a7
+Can't encode transcription: '،ںیباتکی کب ط ہتفر ہتفر روا' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 a7 da be d8 aa da a9 db 8c 20 d8 b1 db 81 d8 b1 20 db 81 d8 a7 d9 85 20 d8 8c d8 b1 d8 a7 d9 82 db 8c d8 b3 d9 88 d9 85 20 d9 88 d8 ac 20 d8 8c da ba db 8c db 81 20 db 92 d8 b3 d8 a7 d9 88 d9 86 20 db 92 da a9 20 db 8c d8 b1 d9 b9 d8 b3 db 8c d8 b3 20 d8 a7 d9 86 d8 b4 d8 b1 da a9 db 92 20 da a9 20 d8 b1 d8 a2 d9 86 20 d8 a7 d8 b1 d8 af d8 a7 d8 b1 d8 a8 20 d9 85 d8 a7 d9 86 d9 b9 d9 be d8 a7 d8 b1 d8 af d8 b1
+Can't encode transcription: '،اھتکی رہر ہام ،راقیسوم وج ،ںیہ ےساون ےک یرٹسیس انشرکے ک رآن اردارب مانٹپاردر' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d9 85 db 81 d8 a7 d8 aa
+Can't encode transcription: '۔ےئوہ ںیہن دابآ ںاہو ہو ، مہات' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 b1 d9 88 d9 be d9 84 d8 a8 d8 ac 20 d8 8c 2c d8 ac d9 84 d8 a7 da a9 20 da af d9 86 d8 b1 db 8c d8 a6 d9 86 db 8c d8 ac d9 86 d8 a7 20 d8 b1 d9 88 d9 be 20 d9 84 d8 a8 d8 ac
+Can't encode transcription: '۔ہلآ اک ےنانب جیٹلوو ہدایز تہبدوجوم ںیم ناتسودنہ ،روپلبج ،,جلاک گنریئنیجنا روپ لبج' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 db 8c da be d8 aa 20 d8 aa db 8c d8 b1 d8 ab da a9 d8 a7 20 db 8c d8 b1 d8 a7 da be d8 a8 20 db 8c da a9 20 da ba d9 88 d9 b9 d9 88 d9 88 20 31 34 33 20 da ba db 8c d9 85 20 d9 82 d8 ad 20 db 92 da a9 20 d8 b3 d8 a7
+Can't encode transcription: '( ےئگ ےلاڈ ٹوو 4 فرص ہکبج ، یھت تیرثکا یراھب یک ںوٹوو 143 ںیم قح ےک سا' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 92 db 81 20 d8 b1 d9 b9 db 8c d9 85 d9 88 d9 84 db 8c da a9 20 d8 b9 d8 a8 d8 b1 d9 85 20 31 2c 37 38 39 2e 36 39 20 db 81 d8 a8 d9 82 d8 b1 20 d8 a7 da a9 20 d8 b3 d9 b9 d8 b3 d9 88 da 86 d8 a7 d8 b3 db 8c d9 85 20 d8 8c db 8c d9 b9 d9 86 d8 a4 d8 a7 da a9 20 d9 84 d9 b9 d8 b3 d8 b1 d8 a8
+Can't encode transcription: '۔ےہ ،ےہ رٹیمولیک عبرم 1,789.69 ہبقر اک سٹسوچاسیم ،یٹنؤاک لٹسرب' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 a7 d9 85 d9 86 20 d8 a8 d8 a7 d8 aa da a9 20 db 81 d9 85 d8 a7 d9 86 db 81 d8 a7 d9 85 20 db 92 d8 b3 d8 ac 20 db 92 db 81 20 db 8c da be da a9 d9 84 20 d8 aa d8 a7 db 8c d8 ad 20 d8 ad d9 86 d8 a7 d9 88 d8 b3 20 db 8c da a9 20 da ba d8 a7 d8 a8 d8 a7 d8 aa 20 db 92 d9 86 20 da ba d9 88 db 81 d9 86 d8 ac 20 da ba db 8c db 81 20 db 8c d8 af db 81 d9 85 20 db 8c d8 b1 d8 ba d8 b5 20 d8 b1 d9 88 d8 a7 20 db 8c d9 84 d8 a7 d9 85 d8 ac d8 a7 20 d9 84 d9 85 d8 ac d8 a7 20 d9 86 d9 92 d8 a7 db 8c d9 b9 db 8c d8 a8 20 d9 88 d8 af 20 d8 b1 da af db 8c d8 af
+Can't encode transcription: 'یئن ،امن باتک ہمانہام ےسج ےہ یھکل تایح حناوس یک ںابات ےن ںوہنج ںیہ یدہم یرغص روا یلامجا لمجا نْایٹیب ود رگید' in language ''
+Encoding of string failed! Failure bytes: d8 8c
+Can't encode transcription: '۔اھت ردنا ےک دودح یک رہش ہی ،' in language ''
+Encoding of string failed! Failure bytes: d8 8c 35 d8 ac 20 d8 8c d9 85 d8 a7 d9 84 d8 b3 d8 a7 d9 84 d8 a7 20 d8 ae db 8c d8 b1 d8 a7 d8 aa 20 d8 8c db 8c d8 a8 db 81 d8 b0 20 d9 86 db 8c d8 af d9 84 d8 a7 20 d8 b3 d9 85 d8 b4
+Can't encode transcription: '.15ص ،5ج ،مالسالا خیرات ،یبہذ نیدلا سمش' in language ''
+At iteration 4677/9800/12491, mean rms=0.760%, delta=1.376%, BCER train=3.944%, BWER train=12.720%, skip ratio=27.700%, New worst BCER = 3.944 wrote checkpoint.
+Encoding of string failed! Failure bytes: d8 8c d8 a7 d9 86 d8 b1 da a9 da ba 20 d8 a7 db 8c d8 b1 d8 a7 db 8c d8 aa 20 db 8c da a9 d8 a7 d8 ac 20 d9 88 d9 be 20 d8 8c d8 a7 d9 86 d8 a7 d9 84 d8 ac 20 db 92 db 8c d8 af 20 da ba db 8c d9 85 20 d9 85 d8 a7 d8 b4
+Can't encode transcription: 'انرکم امتہا اک “اجوپ یمشکل“ ںیم تار ،انرکں ایرایت یکاج وپ ،انالج ےید ںیم ماش' in language ''
+Encoding of string failed! Failure bytes: d8 8c d9 be d8 b4 20 d9 86 d8 a4 d8 a7 d9 b9 20 d9 84 db 8c d9 88 da 88 d9 84 d8 a7 da a9
+Can't encode transcription: 'یدابآی عومجم یکس ا روا ےہر ٹیمولیکع برم 92.2 ہبقر اک نگی شم ،پش نؤاٹ لیوڈلاک' in language ''
+Encoding of string failed! Failure bytes: d8 8c da ba d9 88 d8 b1 da be d8 aa d9 be d8 b1 20 da af db 8c d8 af 20 d8 b1 da a9 d9 86 da a9 d8 b1 20 d8 a7 d8 a8 20 db 8c d8 a6 da a9
+Can't encode transcription: '،ںورھتپر گید رکنکر اب یئک' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d8 b1 da a9 da 91 20 d9 88 da be da 86 20 d9 88 da a9 d9 be 20 d9 88 d8 b1 da af db 92 d9 86 20 d9 be d8 a7 20 d8 af d8 b9 d8 a8 20 db 92 da a9 20 db 92 d9 86 da 88 d9 86 d9 88 da be da 88 20 db 81 d8 aa d8 b3 d8 a7 d8 b1 20 db 8c d8 a6 d9 88 da a9 d8 a7 da a9 20 20 db 92 d9 86 d8 b1 da a9 d8 aa 20 d8 a7 d8 a8 20 db 92 d8 b3 20 d8 b3 d8 a7
+Can't encode transcription: 'وکو لرا ، رکڑ وھچ وکپ ورگےن پا دعب ےک ےنڈنوھڈ ہتسار یئوکاک  ےنرکت اب ےس سا' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d8 aa d8 b3 d8 a7 db 8c d8 b1 20 d9 86 db 8c d8 b4 d9 86 d8 a7 d8 ac 20 db 8c da a9
+Can't encode transcription: '۔ںیہ ہصح اک سور ، تسایر نیشناج یک' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 da 88 d9 b9 db 8c d9 85 d9 84 20 29 20 d9 b9 db 8c d9 88 db 8c d8 a6 d8 a7 d8 b1 d9 be 20 28 20 d8 a7 db 8c da 88 db 8c d9 85 20 db 92 d8 ac 20 db 92 d8 ac 20 d8 b1 d8 a7 d8 a8 d8 ac 20 d8 af db 8c d9 88 d8 a7 d8 ac 20 d8 aa d9 82 d9 88 20 d8 b3 d8 a7
+Can't encode transcription: 'فیچ روا نیمر یئچ ےک یچارک، ڈٹیمل ) ٹیویئارپ ( ایڈیم ےج ےج رابج دیواج تقو سا' in language ''
+Encoding of string failed! Failure bytes: 42 53 20 47 75 68 61 20 db 94 db 92 da be d8 aa 20 db 92 da be d9 b9 db 8c d8 a8 20 db 92 d8 a6 d8 a7 da af d9 84 20 d8 af db 8c d9 85 d8 a7 20 db 92 d8 b3 20 d8 a7 da be d8 aa 20 d8 a7 d8 aa d8 a7 d8 ac 20 d8 a7 db 81 da a9 22 20
+Can't encode transcription: 'BS Guha ۔ےھت ےھٹیب ےئاگل دیما ےس اھت اتاج اہک" ' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 8c d9 85 d8 a7 d9 84 d8 b3 d8 a7 20 db 81 d9 81 d8 b3 d9 84 d9 81 20 d8 8c d8 aa d8 a7 db 8c d8 b1 d8 b8 d9 86 20 d9 88 20 d8 af d8 a6 d8 a7 d9 82 d8 b9 20 d8 8c db 8c da af d8 af d9 86 d8 b2 20 d9 85 d8 a7 d8 b9 20 db 8c da a9 da ba 20 d9 88 d9 86 d8 a7 d9 85 d9 84 d8 b3 d9 85 20 db 92 d9 86 20 d9 86 d8 a2 d8 b1 d9 82
+Can't encode transcription: 'یمالسا ،یمالسا ہفسلف ،تایرظن و دئاقع ،یگدنز ماع یکں وناملسم ےن نآرق' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 da a9 d8 aa 20 d8 b1 d8 ae d8 a2 20 db 92 da a9 20 db 8c d8 af d8 b5 20 da ba db 8c d9 88 db 81 d8 b1 d8 af d9 86 d9 be
+Can't encode transcription: 'رپ تسایر سا کت لاس وس نیت ےلگا دعب ےک سا روا ےئآ ںیم کلم سا ساپ سآ ےک سا روا ساپ سآ ےک ہریکنم چولب ےلاو ےنھکر قلعت ےس نارکم ، کت رخآ ےک یدص ںیوہردنپ' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 81 db 8c d9 85 d8 a7 d8 b8 d8 aa d9 86 d8 a7 20 d8 8c d9 85 db 8c d9 84 d8 b9 d8 aa 20 db 92 d9 86 20 da ba d9 88 db 81 d9 86 d8 a7
+Can't encode transcription: '۔ایک مئاق وک یکرت ےس تیثیح یک موق دیدج کیا روا یدرک کرت تیاور ںیم ںوبعش ےک ہریغو بہذم ،ہیماظتنا ،میلعت ےن ںوہنا' in language ''
+Encoding of string failed! Failure bytes: e2 80 98 e2 80 98 db 81 db 8c d8 a7 d9 85 d8 b1 d8 b3 e2 80 99 e2 80 99 20 d9 84 20 d8 a7 d8 ab d9 85 20 da a9 db 8c d8 a7 20 db 8c da a9 20 da 86 d8 b1 d8 b3 db 8c d8 b1 20 db 8c d8 b1 db 81 da af 20 db 8c d9 84 d8 a7 d9 88 20 db 92 d9 86 20 d9 88 db 81 20 da ba 20 d9 88 da be d8 aa d8 a7 db 81 20 db 92 da a9 20 d8 b3 da a9 d8 b1 d8 a7 d9 85
+Can't encode transcription: '۔ےہ باب اک ناگل ےک نیمز ںیم موس دلج یک‘‘ہیامرس’’ ل اثم کیا یک چرسیر یرہگ یلاو ےن وہ ں وھتاہ ےک سکرام' in language ''
+Encoding of string failed! Failure bytes: d8 8c 38 36 20 db 92 da a9 20 db 92 d9 82 d8 a7 d9 84 d8 b9 20 db 8c d9 85 d9 88 d9 82 20 d9 88 d8 ac 20 db 92 db 81 20 d8 b9 d9 82 d8 a7 d9 88 20 da ba db 8c d9 85 20 d8 a8 d9 84 d9 82 20 db 92 da a9
+Can't encode transcription: '۔ےہ اترک یگدنئامن یک دصیف 18،86 ےک ےقالع یموق وج ےہ عقاو ںیم بلق ےک' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 92 db 81 20 d8 b1 d9 b9 db 8c d9 85 d9 88 d9 84 db 8c da a9 20 d8 b9 d8 a8 d8 b1 d9 85 20 33 2c 35 31 35 2e 32 35 32 36 20 db 81 d8 a8 d9 82 d8 b1 20 d8 a7 da a9 20 db 8c d9 b9 d9 86 d8 a4 d8 a7 da a9 20 da af d9 86 d9 88 d8 aa db 8c d8 a6 d8 a7 d8 aa
+Can't encode transcription: '۔ےہ لمتشم رپ دارفا 224,470 یدابآ یعومجم یک سا روا ،ےہ رٹیمولیک عبرم 3,515.2526 ہبقر اک یٹنؤاک گنوتیئات' in language ''
+Encoding of string failed! Failure bytes: d8 8c da af d9 86 d8 a7 d8 b3 20 d9 85 d9 b9 d8 a6 d8 a2 20 da ba db 8c d9 85 20 da af d9 86 d8 a8 d8 af 20 d9 85 d9 84 d9 81 20 db 92 d9 86 20 d8 aa da 88 d9 86 d9 be 20 d8 aa d9 84 d9 84 20 d8 b1 d9 b9 da a9 db 8c d8 b1 d8 a6 d8 a7 da 88 20 da a9 d8 b2 d9 88 db 8c d9 85 20 d9 88 da a9 20 d8 a7 d9 85 d8 b1 d8 b4 20 d8 a7 d8 aa d9 85 d9 85
+Can't encode transcription: '۔ایک بختنم ےیل ےک یئوہ ماندب ینم ،گناس مٹئآ ںیم گنبد ملف ےن تڈنپ تلل رٹکیرئاڈ کزویم وک امرش اتمم' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d9 85 d8 a7 d9 82 d9 85 20 d8 b3 d8 af d9 82 d9 85 20 db 92 d8 b3 20 d8 a8 d8 b3
+Can't encode transcription: '، ماقم سدقم ےس بس' in language ''
+Encoding of string failed! Failure bytes: d8 8c d9 85 d9 88 d8 ad d8 b1 d9 85
+Can't encode transcription: '۔یک لصاح ںیم ؤنھکل جنگ یولوم ،موحرم' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d8 a7 d9 84 d8 a7 da be d8 a8 d9 86 d8 b3 20 d9 84 d9 88 d8 b1 d9 b9 d9 86 da a9 20 da ba db 8c d9 85 20 db 8c d8 a6 d8 a7 db 81 d8 af 20 db 8c da a9 20 31 36 36 30 20 db 92 d9 86 20 d9 86 db 8c da 86
+Can't encode transcription: '۔اید جیھب وک ںوراک دابآ روا ، الاھبنس لورٹنک ںیم یئاہد یک 1660 ےن نیچ' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 db 8c d9 85 da 88 db 8c da a9 d8 a7 20 d9 81 db 8c d8 a7 20 db 8c d9 be 20 da ba db 8c d9 85
+Can't encode transcription: 'ےک یزازعا ریشمش روا یک رایتخا تیلومش ںیم روپلاسر، یمڈیکا فیا یپ ںیم' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 db 8c d8 b3 d8 b1 d8 a7 d9 81 20 d8 aa d9 82 d9 88 20 d8 b3 d8 a7 20 da ba db 8c d9 85 20 d8 aa d9 85 d9 88 da a9 d8 ad 20 db 8c da a9 20 db 8c d9 86 d9 be d9 85 da a9 20 da ba db 8c d9 85 20 d8 b1 db 8c d8 ba d8 b5 d8 b1 d8 a8
+Can't encode transcription: 'ہلاگنب روا یناتسودنہ ، یسراف تقو سا ںیم تموکح یک ینپمک ںیم ریغصرب' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 da ba d8 a7 db 8c d9 84 da be d9 be 20 da af d9 86 d9 88 d9 85 20 d8 b1 d8 ab da a9 d8 a7 20 d8 8c 20 d9 85 d8 a7 d8 b3 d9 82 d8 a7 20 da be da 86 da a9 20 db 8c da a9 20 d9 85 db 8c d8 b3
+Can't encode transcription: 'تزاجا یک نرکنا ںیم تالاح مرگ روا من ، ںایلھپ گنوم رثکا ، ماسقا ھچک یک میس' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 b1 d9 88 db 81 d8 b4 d9 85
+Can't encode transcription: '۔ےہ اتوہ بیرفلد روا ہدیسندپ ،روہشم' in language ''
+Encoding of string failed! Failure bytes: d8 8c da a9 d9 88 d8 b1 d8 a7 d9 88
+Can't encode transcription: '430 یدابآ یعومجم یک سا روا ےہ رٹیمولیک عبرم 2.1 ہبقر اک ایجراج ،کوراو' in language ''
+Encoding of string failed! Failure bytes: d8 8c da ba d9 88 db 8c da be d8 aa d8 a7 d8 b3 20 db 8c d8 af d8 a7 db 81 d8 ac 20 db 92 d9 86 d9 be d8 a7 20 d8 ad d8 b1 d8 b7 20 db 8c da a9 20 d8 b1 da 88 d9 86 d8 a7 d9 85 da a9 20 db 8c d8 ac d9 88 d9 81 20 da a9 db 8c d8 a7 20 db 81 d9 88
+Can't encode transcription: 'ےس نیدہاجم ےک ذاحم ،ںویھتاس یداہج ےنپا حرط یک رڈنامک یجوف کیا ہو' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 b1 d8 a8 d9 88 d8 aa da a9 d8 a7 20 31 37 20 d8 aa d8 af d8 a7 d9 84 d9 88 20 db 8c da a9 20 da ba d8 a7 d8 ae 20 d8 af d9 85 d8 ad d8 a7 20 d8 af db 8c d8 b3 20 d8 af d8 b9 d8 a8 20 d9 84 d8 a7 d8 b3 20 da 86 d9 86 d8 a7 d9 be 20 d8 b1 d8 a7 da 86 20 db 92 da a9
+Can't encode transcription: 'ںیم یلہد وک ء1817 ،ربوتکا 17 تدالو یک ںاخ دمحا دیس دعب لاس چناپ راچ ےک' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 ab db 8c d8 af d8 ad 20 d9 88 20 d9 86 d8 a2 d8 b1 d9 82 20 d8 8c d9 88 d8 af 20 db 92 d9 84 db 81 d9 be
+Can't encode transcription: '۔ںیہ ےتاج ےھجمس عئارذ یداینب ،ثیدح و نآرق ،ود ےلہپ' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 8c d8 b1 d9 88 d8 ae 20 db 81 d8 aa da be d8 a8 20 d8 8c d9 b9 db 8c d9 be 20 d8 b1 d8 a7 d9 85 20 d8 8c d8 af d8 af d8 b4 d8 aa 20 db 8c d8 b3 d9 86 d8 ac 20 d8 8c d9 84 d8 aa d9 82 20 d9 88 da a9 20 da ba d9 88 d9 86 d9 88 d8 aa d8 b4 d9 be 20 db 8c d9 84 d8 b3 d9 86 20 db 92 da a9 20 db 92 d9 82 d8 a7 d9 84 d8 b9 20 d8 b3 d8 a7
+Can't encode transcription: '۔اھت ایگ ایانب ہناشن اک ںویتدایز رپ ےنامیپ عیسو ےسیج رام ٹول روا ،یروخ ہتھب ،ٹیپ رام ،ددشت یسنج ،لتق وک ںونوتشپ یلسن ےک ےقالع سا' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 da ba db 8c d9 85 20 d9 86 d8 a7 d8 aa d8 b3 d9 86 d8 a7 d8 ba d9 81 d8 a7
+Can't encode transcription: '.ےہ راوگشوخ تہب ہی ےئل ےک ںونادتسایس ےک ناتسناغفا وج ےہ لیھک یموق یزاب ہچب ، ںیم ناتسناغفا' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 92 db 81 20 d8 a7 d8 aa d8 a7 d8 ac 20 d8 a7 db 81 da a9 22 d8 aa d8 a7 d8 af d8 a7 d8 b3 20 db 8c d8 af d8 b4 d8 a7 d8 b1 22 20 d9 88 da a9 20 db 92 d9 86 d8 a7 d8 b1 da be da af 20 d8 b3 d8 a7 20 db 92 da a9 20 d8 aa d8 a7 d8 af d8 a7 d8 b3 20 db 92 d8 b3 20 d8 aa d8 a8 d8 b3 d9 86 20 db 8c da a9 20 22 d8 af d8 b4 d8 a7 d8 b1 22 20 db 8c d9 85 d8 a7 d8 b1 da af 20 d9 85 d8 b3 d8 a7 20 db 8c d9 85 d8 a7 d9 86 20 d9 85 d8 a7 d9 86 20 db 92 da a9 20 db 8c db 81 20 d9 be d8 a2
+Can't encode transcription: '،ےہ اتاج اہک"تاداس یدشار" وک ےنارھگ سا ےک تاداس ےس تبسن یک "دشار" یمارگ مسا یمان مان ےک یہ پآ' in language ''
+Encoding of string failed! Failure bytes: d8 8c 32 20 d9 81 d8 b1 d8 b5 20 d9 86 d8 a7 d8 b1 d9 88 d8 af 20 db 8c d8 b3 d8 a7 20 da ba db 8c d9 85 20 db 8c d8 af d8 a7 d8 a8 d8 a2 20 db 8c da a9 20 da a9 d9 84 d9 85 20 db 81 da a9 20 d8 a8 d8 ac 20 db 92 db 81 20 d8 a7 d9 88 db 81 20 db 81 d9 81 d8 a7 d8 b6 d8 a7 20 d8 af d8 b5 20 db 8c d9 81 20 32 35 d8 8c 32 20 da ba db 8c d9 85 20 db 8c d8 af d8 a7 d8 a8 d8 a2 20 db 8c da a9 20 db 92 d9 82 d8 a7 d9 84 d8 b9 20 d8 b3 d8 a7 20 da a9 d8 aa
+Can't encode transcription: '۔اھت اوہ ہفاضا دص یف 13،2 فرص نارود یسا ںیم یدابآ یک کلم ہک بج ےہ اوہ ہفاضا دص یف 25،2 ںیم یدابآ یک ےقالع سا کت' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 a7 db 8c da af d8 a7 db 8c 20 da a9 d8 b4 20 d8 a7 d9 84 d8 aa 20 d9 84 d8 ad 20 db 8c d9 88 d8 b2 d8 ac 20 db 92 d8 b3 20 d8 aa d8 a7 d9 82 db 8c d9 82 d8 ad d8 aa
+Can't encode transcription: 'یراج دہج و دج ینپا نیکمے س دعب ےک سج ،ایگای کش الت لح یوزج ےس تاقیقحت' in language ''
+Encoding of string failed! Failure bytes: e2 80 98 d8 9f d8 a7 d8 aa db 8c d9 84 d8 b1 da a9 d9 84 20 d9 88 d8 a8 d9 82 20 db 92 d8 b3 db 8c da a9 d8 aa 20 d9 88 d8 b9 d8 af 20 db 81 db 8c d8 b1 20 da be d9 be 20 da ba db 8c d9 85
+Can't encode transcription: '‘؟اتیلرکل وبق ےسیکت وعد ہیر ھپ ںیم' in language ''
+Encoding of string failed! Failure bytes: e2 80 93 31 37 33 39 28 20 da be da af d9 86 d8 b3 20 d9 be d8 a7 d8 aa d8 b1 d9 be 20 db 81 d8 a7 d8 b4 d8 af d8 a7 d8 a8 20 db 81 d9 b9 db 81 d8 b1 d9 85 20 db 92 da a9
+Can't encode transcription: '۔یہر کلسنم ےس رابرد ےک )63–1739( ھگنس پاترپ ہاشداب ہٹہرم ےک' in language ''
+At iteration 4710/9900/12623, mean rms=0.751%, delta=1.337%, BCER train=3.896%, BWER train=12.609%, skip ratio=28.000%, New worst BCER = 3.896 wrote checkpoint.
+Encoding of string failed! Failure bytes: d8 8c
+Can't encode transcription: 'تخاس ایکں یہن رکذ اکد وجو ےک ردنم یھب یسکر پ ٹئاس ےن ٹھب وش روا اجرانوج ،' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 a7 d9 84 d9 88 da a9 d9 88 d8 b1 d8 a7 d8 ac
+Can't encode transcription: '۔ےہ لمتشم رپ دارفا 493 یدابآ یعومجم یکی ٹنؤاک وجرح ،الوکوراج' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 8c d9 84 d9 b9 d9 88 da a9 d8 a8 20 d8 ad d8 a7 d8 b5 20 d9 86 d8 a7 d8 ae 20 db 81 d9 88 d8 a7 d9 84 d8 b9 20 db 92 da a9 20 d8 b0 d8 a7 d8 ad d9 85 20 db 92 da a9 20 da be da 86 d9 86 d9 88 d9 be
+Can't encode transcription: 'یھب رپ ںوذاحم ےک یروجاررا ہاپرس ،یلٹوکب حاص ناخ ہوالع ےک ذاحم ےک ھچنوپ' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 8c d9 84 d9 b9 d9 88 da a9 d8 a8 20 d8 ad d8 a7 d8 b5 20 d9 86 d8 a7 d8 ae 20 db 81 d9 88 d8 a7 d9 84 d8 b9 20 db 92 da a9 20 d8 b0 d8 a7 d8 ad d9 85 20 db 92 da a9 20 da be da 86 d9 86 d9 88 d9 be
+Can't encode transcription: 'یھب رپ ںوذاحم ےک یروجاررا ہاپرس ،یلٹوکب حاص ناخ ہوالع ےک ذاحم ےک ھچنوپ' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 92 d9 84 d8 b2 d9 84 d8 b2 20 d8 8c da ba d8 a7 db 8c d9 84 d8 ac d8 a8 28 d8 b1 20 d8 b5 d8 a7 d9 86 d8 b9 20 d9 81 d9 84 d8 aa d8 ae d9 85 20 db 92 db 8c d9 84 20 db 92 da a9 20 db 8c db 81 d8 a7 d8 a8 d8 aa 20 db 8c da a9 da ba 20 d9 88 d9 86 d8 a7 d8 b3 d9 86 d8 a7 20 db 92 d9 86 20 d8 aa d8 b1 d8 af d9 82
+Can't encode transcription: 'مالآ ،ےلزلز ،ںایلجب(ر صانع فلتخم ےیل ےک یہابت یکں وناسنا ےن تردق' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 92 db 8c da a9 20 d8 b9 d9 88 d8 b1 d8 b4 20 d8 ad d8 b1 d8 b7 20 db 8c da a9 29 20 d9 b9 d9 86 db 8c d9 be 28 20 d8 b3 db 8c d9 88 d9 86 20 da af d9 86 d8 b1 20 da a9 db 8c d8 a7 20 db 8c da af d8 af d9 86 d8 b2 20 db 8c d9 86 d9 be d8 a7
+Can't encode transcription: 'بیبح“ وکن ا ےیل سا ،ےیک عورش حرط یک) ٹنیپ( سیون گنر کیا یگدنز ینپا' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d8 ae d8 b1 20 d8 8c 20 d8 ac d8 ae d8 b1 28 20 d9 88 da a9 d8 b1 20 d8 a7 da be d8 af d9 86 d9 82 20 d8 8c 20 da ba db 8c d9 85 20 d8 aa d8 a7 d8 b9 d9 82 d8 a7 d9 88 20 db 92 da a9 20 db 92 d9 86 d8 a7 d9 85 d8 b2
+Can't encode transcription: '۔ےہ اتاج اہک) خر ، خر ، جخر( وکر اھدنق ، ںیم تاعقاو ےک ےنامز' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 db 92 db 81 20 d8 b5 d8 a7 d8 ae 20 d8 a1 d8 b2 d8 ac 20 d8 a7 da a9 20 d8 b3 d9 90 d8 a7 20 db 8c da af d8 b7 d8 b5 d9 85
+Can't encode transcription: '۔ےہ موسوم ےس مان ےک یگطصم ہی ےیل یسِا ، ےہ صاخ ءزج اک سِا یگطصم' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d8 a7 db 8c d9 84 20 db 81 d8 b5 d8 ad 20 da ba db 8c d9 85 20 d9 85 db 81 d9 85
+Can't encode transcription: 'یمہارف یکپ ورگار حص جنیر گنال رھپ روا یسیسنارف یرف ںیم سج ، ایل ہصح ںیم مہم' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 b1 d8 a8 d9 85 d8 aa d8 b3 20 32 20 db 92 d8 b3 20 d8 a1 32 30 30 38 20 d8 8c db 8c d8 b1 d9 88 d9 86 d8 ac 20 32 30 20 d9 86 d8 b2 db 8c d8 b3 20 da 86 d9 86 d8 a7 d9 be 20 db 92 da a9 20 d9 88 d8 b4 20 d8 b3 d8 a7
+Can't encode transcription: 'میا ےا کتء 2013 ،ربمتس 2 ےس ء2008 ،یرونج 20 نزیس چناپ ےک وش سا' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 81 d8 b1 d9 82 d8 a8 20 db 81 d8 b1 d9 88 d8 b3
+Can't encode transcription: '.فارعا و نارمع لآ ،ہرقب ہروس' in language ''
+Encoding of string failed! Failure bytes: 65
+Can't encode transcription: 'e' in language ''
+Encoding of string failed! Failure bytes: d8 8c da ba db 8c d9 85 20 d8 a1 36 33 32 2f d9 82
+Can't encode transcription: '۔اوہ اڑگھج رکے ل وکت دایق یکم وق ،ںیم ء632/ق' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 a7 db 81 d8 b1 20 db 8c da be d8 a8 20 d8 aa d9 85 d9 88 da a9 d8 ad d9 84 d8 a7 20 d8 b1 d8 a7 d8 af 20 da a9 d8 aa
+Can't encode transcription: '،اہر یھب تموکحلا راد کت' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 a7 d8 b1 db 8c d8 b1 da 88 db 8c d9 be d8 a7 20
+Can't encode transcription: '۔ےہ لمتشم رپ دارفا 3,711 یدابآ یعومجم یکس انوزاما ،اریرڈیپا ' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d9 86 d8 b4 db 8c d9 b9 d8 b3 d8 a7 20 db 92 d9 88 d9 84 db 8c d8 b1 20 d8 ac d9 86 da af 20 d8 a7 d8 b9 d8 af 20 d8 b1 db 81
+Can't encode transcription: '، نشیٹسا ےولیر جنگ اعد رہ' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 8c d9 84 d9 be d9 85 d8 a7 d9 86 20 d8 b1 d9 be 20 d9 85 d8 a7 d9 82 d9 85 20 d9 84 d9 82 d8 aa d8 b3 d9 85 20 d9 86 d8 a7 d8 b1 d9 88 d8 af 20 db 92 da a9 20 d8 af d8 a7 d8 b9 db 8c d9 85 20 db 81 d8 b2 d9 88 d8 b1 2d 34 36 20 d9 88 d8 ac 20 db 92 db 81 20 db 81 d8 b9 d9 82 d8 a7 d9 88 20 d8 af d8 ad d8 a7 d9 88 20 d8 a7 db 8c d9 86 d8 af 20 db 8c d8 b1 d9 88 d9 be 20 d8 b4 d8 a6 d8 a7 d9 85 d9 86 20 db 81 db 8c
+Can't encode transcription: '۔ےہ اترک اوہ دقعنم ںیم دابآردیح ،یلپمان رپ ماقم لقتسم نارود ےک داعیم ہزور-46 وج ےہ ہعقاو دحاو ایند یروپ شئامن ہی' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d8 af db 8c d8 b2 d9 85 20 d8 b1 d9 be 20 db 8c d8 aa d9 86 d9 88 d9 88 d8 a7 20 d9 86 da a9 db 8c d9 84
+Can't encode transcription: '۔اید اگھب ےسا ےن اٹھباگان ، دیزم رپ یتنووا نکیل' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 d8 af db 8c d8 b2 d9 85 20 d8 b1 d9 be 20 db 8c d8 aa d9 86 d9 88 d9 88 d8 a7 20 d9 86 da a9 db 8c d9 84
+Can't encode transcription: '۔اید اگھب ےسا ےن اٹھباگان ، دیزم رپ یتنووا نکیل' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 b1 d9 81 d8 a7 d8 b3 d9 85 20 34 32 28 20 d8 b1 d9 81 d8 a7 d8 b3 d9 85 20 34 38 20 da ba db 8c d9 85 20 d8 b2 d8 a7 d9 88 d8 b1 d9 be 20 d8 b3 d8 a7 20 d9 82 d8 a8 d8 a7 d8 b7 d9 85 20 db 92 da a9 20 d8 b9 d8 a6 d8 a7 d8 b1 d8 b0 20 db 8c d8 b1 d8 a7 da a9 d8 b1 d8 b3
+Can't encode transcription: 'رئنیجنا ڈنؤارگک یا ،رفاسم 42( رفاسم 48 ںیم زاورپ سا قباطم ےک عئارذ یراکرس' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 92 db 8c 20 d8 a7 da a9 d8 b2 20 d8 a7 d8 af d9 86 d8 a7
+Can't encode transcription: '۔ںیہ یئگی کا یہم ںیتلوہس مامت یکے نرازگی گدنز شیعترپ ںیم نج ،ےی اکز ادنا' in language ''
+Encoding of string failed! Failure bytes: ef b7 ba db 8c d8 a8 d9 86 20 d8 ad d8 b1 d8 b7 20 d9 88 d8 af d8 b1 20 db 81 20 db 8c d8 b1 db 8c d8 b1 d8 ad d8 aa 20 d8 a7 db 8c 20 db 8c d9 86 d8 a7 d8 a8 d8 b2 20 d9 88 da a9 db 81 d8 a8 20 d8 a7 d8 ad d8 b5 20 db 92 d9 86 20 d8 b3 d8 a7 20 d8 8c 20 d8 a7 d8 b0 db 81 d9 84
+Can't encode transcription: 'لقن وکل اوقا ےک ﷺیبن حرط ودر ہ یریرحت ای ینابز وکہب احص ےن سا ، اذہل' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 da ba db 8c d9 85 20 db 92 d8 b5 d8 ad 20 db 92 d8 b1 d8 b3 d9 88 d8 af
+Can't encode transcription: 'یرہش یناتسودنہ ےسج ہکے ہ ایگای اتب وکع وضوم ےک تیرہش ، ںیم ےصح ےرسود' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 8c d8 b9 d8 ae d9 86 d9 84 d8 a7 20 d8 af db 8c d8 b2 db 8c 20 d9 86 d8 a8 20 d9 85 db 8c db 81 d8 a7 d8 b1 d8 a8 d8 a7 20 db 92 d9 86 20 d8 af d9 82 d8 b1 d9 81
+Can't encode transcription: '،یعخنلا دیزی نب میہاربا ےن دقرف' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 92 d8 a6 d9 84 20 db 92 da a9 20 d9 84 d9 85 d8 ad 20 d9 88 20 d9 84 d9 82 d9 86 20 db 8c d9 85 d8 a7 d9 82 d9 85
+Can't encode transcription: 'یکا شکر وٹآر وا یس یٹ رآ سیا یب ساپ ےک ںورفاسم ،ےئل ےک لمح و لقن یماقم' in language ''
+Encoding of string failed! Failure bytes: d8 8c d8 aa d9 85 d9 88 da a9 d8 ad 20 d9 86 d8 a7 d8 ba d9 81 d8 a7 20 db 81 d9 84 d9 85 d8 ad 20 db 81 db 8c
+Can't encode transcription: '،تموکح ناغفا ہلمح ہی' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 31 38 34 38 20 d8 8c 20 da ba d8 a7 db 8c d8 a7 d8 a8 20 db 8c d8 b1 d9 88 db 81 d9 85 d8 ac 20 da ba db 8c d9 85 20 db 8c d9 86 d9 85 d8 b1 d8 ac 22
+Can't encode transcription: '.دلج یرٹسہ نرڈام فآ لنرج "، 1848 ، ںایاب یروہمج ںیم ینمرج"' in language ''
+Encoding of string failed! Failure bytes: d8 8c db 92 db 81 d8 b1 20 d9 b9 db 8c d9 85 d9 88 d9 84 db 8c da a9 d8 b9 20 d8 a8 d8 b1 d9 85 20 36 31 34 2e 31 35 20 db 81 d8 a8 d9 82 d8 b1 20 d8 a7 da a9 20 db 8c d9 b9 d9 86 d8 a4 d8 a7 da a9 20 db 8c d9 88 d9 86 d9 88 da af
+Can't encode transcription: '34,293 یدابآ یعومجم یکس ا روا ،ےہر ٹیمولیکع برم 614.15 ہبقر اک یٹنؤاک یونوگ' in language ''
+Encoding of string failed! Failure bytes: d8 8c 20 20 da ba db 8c d9 85 20 d9 84 d8 a7 d9 85 d8 b4 20 d9 84 db 8c d9 85 20 da be d9 b9 d8 a7 d8 b3
+Can't encode transcription: '۔ یئگاھ کت سکش ںیم یئاڑل یکت ارجگ،  ںیم لامش لیم ھٹاس' in language ''
+At iteration 4760/10000/12752, mean rms=0.818%, delta=1.455%, BCER train=4.249%, BWER train=13.882%, skip ratio=28.500%, New worst BCER = 4.249 wrote checkpoint.
+Finished! Selected model with minimal training error rate (BCER) = 3.533

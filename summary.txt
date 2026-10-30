@@ -1,0 +1,2 @@
+urd: 90563 sentences, 6707188 chars, 21 dropped as evaluation overlap
+urd: 60 jobs, 2003 pages (102 held out, 11 skipped)
