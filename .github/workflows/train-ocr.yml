@@ -1,0 +1,117 @@
+# Fine-tunes Tesseract models for languages whose stock model reads poorly (Dhivehi, Urdu
+# Nastaliq), then compares them with the app's current tessdata_fast model on held-out pages
+# that went through the app's own OCR preprocessing. Scripts and notes are in training/.
+# The new models land on the branch ocr-models-<lang>; nothing ships until copied by hand.
+name: OCR model training
+
+on:
+  # Pushing a change to the training scripts retrains with the defaults below.
+  push:
+    branches: [main]
+    paths:
+      - 'training/**'
+      - '.github/workflows/train-ocr.yml'
+  workflow_dispatch:
+    inputs:
+      langs:
+        description: 'JSON list of languages'
+        default: '["div","urd"]'
+      iterations:
+        description: 'lstmtraining iterations'
+        default: '10000'
+      lines_per_job:
+        description: 'Text lines rendered per font/size/exposure job'
+        default: '300'
+
+permissions:
+  contents: write
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: ${{ fromJSON(inputs.langs || '["div","urd"]') }}
+    defaults:
+      run:
+        shell: bash
+    env:
+      L: ${{ matrix.lang }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install Tesseract and Python packages
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q tesseract-ocr tesseract-ocr-eng
+          pip install -q numpy pillow rapidfuzz
+          tesseract --version | head -1
+          text2image --fonts_dir training/fonts --list_available_fonts 2>&1 | tail -n 20
+          echo "::notice title=fonts::$(text2image --fonts_dir training/fonts --list_available_fonts 2>&1 | tr '\n' ' ' | tail -c 600)"
+
+      - name: Base models
+        run: |
+          mkdir -p models/fast models/best models/new models/newfloat
+          curl -sfL -o models/fast/$L.traineddata https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/main/$L.traineddata
+          curl -sfL -o models/best/$L.traineddata https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/main/$L.traineddata
+          ls -la models/*
+
+      - name: Evaluation pages (app preprocessing)
+        run: |
+          python training/degrade.py training/eval/clean work/eval-raw
+          flutter pub get
+          OCR_IN=work/eval-raw OCR_OUT=work/eval flutter test training/enhance_test.dart
+
+      - name: Training text and images
+        run: |
+          case $L in
+            div) FONTS=("Noto Sans Thaana") ;;
+            # Gulzar stays out of training: the evaluation checks an unseen Nastaliq font.
+            urd) FONTS=("Noto Nastaliq Urdu" "Noto Naskh Arabic") ;;
+          esac
+          python training/prepare_text.py $L work/text.txt | tee -a summary.txt
+          python training/make_data.py $L work/text.txt work/data ${{ inputs.lines_per_job || '300' }} "${FONTS[@]}" | tee -a summary.txt
+          echo "::notice title=$L data::$(cat summary.txt | tr '\n' ' ')"
+
+      - name: Fine-tune
+        run: |
+          combine_tessdata -e models/best/$L.traineddata work/$L.lstm
+          mkdir -p work/ckpt
+          lstmtraining --model_output work/ckpt/$L --continue_from work/$L.lstm \
+            --traineddata models/best/$L.traineddata \
+            --train_listfile work/data/train.txt --eval_listfile work/data/eval.txt \
+            --max_iterations ${{ inputs.iterations || '10000' }} --debug_interval 0 2>&1 | tee train.log | grep -E "At iteration|Finished|best" || true
+          lstmtraining --stop_training --continue_from work/ckpt/${L}_checkpoint \
+            --traineddata models/best/$L.traineddata --model_output models/newfloat/$L.traineddata
+          lstmtraining --stop_training --convert_to_int --continue_from work/ckpt/${L}_checkpoint \
+            --traineddata models/best/$L.traineddata --model_output models/new/$L.traineddata
+          ls -la models/*
+          echo "::notice title=$L training::$(grep -E 'At iteration' train.log | awk 'NR%10==0' | tail -n 12 | cut -c1-160 | awk '{gsub(/%/,"%25"); printf "%s%%0A", $0}')"
+
+      - name: Evaluate
+        run: |
+          python training/evaluate.py $L work/eval fast=models/fast new=models/new best=models/best | tee eval.txt
+          echo "::notice title=$L accuracy (fast = app today)::$(awk '{gsub(/%/,"%25"); printf "%s%%0A", $0}' eval.txt)"
+
+      - name: Save models to branch ocr-models-${{ matrix.lang }}
+        run: |
+          mkdir -p out && cp models/new/$L.traineddata out/$L.traineddata && cp models/newfloat/$L.traineddata out/$L.float.traineddata
+          cp eval.txt eval-$L.json summary.txt out/ && tail -n 200 train.log > out/train-tail.log
+          cd out && git init -q -b ocr-models-$L && git add . \
+            && git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -qm "Fine-tuned $L model (run ${{ github.run_id }})" \
+            && git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ocr-models-$L
+
+      - name: Log tails on failure
+        if: failure()
+        run: |
+          for f in train.log; do
+            [ -f "$f" ] || continue
+            echo "::warning title=$f tail::$(tail -n 30 "$f" | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", substr($0,1,200)}')"
+          done
