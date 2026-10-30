@@ -10,6 +10,8 @@ App icon: `assets/icon/icon.png` (1024 px) is the source for every iOS and Andro
 
 ## 1. App Store Connect: getting paid (do this first)
 
+> **Blocking (2026-10-30):** App Store Connect shows "Review the updated Paid Applications Schedule". The Account Holder must accept it in **Business** (after accepting the latest Apple Developer Program License Agreement on developer.apple.com). Until then Apple blocks new in-app purchases from going live and new app submissions.
+
 You can't set a price until these are done. Approval can take a few days.
 
 - [ ] **Business › Agreements:** accept the **Paid Apps Agreement**. In-app purchases need it; the free-apps agreement isn't enough.
@@ -32,9 +34,9 @@ You can't set a price until these are done. Approval can take a few days.
 
 ## 2. The app record
 
-- [ ] Create the app: name `Polyscan: Offline Scanner & OCR`, bundle ID `com.pickixo.polyscan`, SKU `polyscan-ios`.
+- [x] App ID (bundle) `com.pickixo.polyscan` registered, and the App Store Connect app created 2026-10-30: name **`Polyscan: Offline Scanner OCR`** (Apple's 30-character limit ruled out "& OCR"), SKU `polyscan-ios`, Apple ID **6828965979**, primary language English (U.S.).
 - [ ] **Pricing and Availability:** the app itself is **Free**, in every country.
-- [ ] **In-App Purchases:** create a **Non-Consumable** with product ID `com.pickixo.polyscan.removeads`, reference name `Remove ads`, price **$9.99** (base country USA; consider lowering it by hand for India, Pakistan and Bangladesh). Add a display name, a description and the **review screenshot** (the Remove ads screen). Attach it to the first app version, or Apple won't review it.
+- [x] (Created 2026-10-30, Apple ID 6828966619: $9.99 base USA, all 175 countries, English display name "Remove ads" / "Pay once and remove all ads forever.". Still missing: the review screenshot.) **In-App Purchases:** create a **Non-Consumable** with product ID `com.pickixo.polyscan.removeads`, reference name `Remove ads`, price **$9.99** (base country USA; consider lowering it by hand for India, Pakistan and Bangladesh). Add a display name, a description and the **review screenshot** (the Remove ads screen). Attach it to the first app version, or Apple won't review it.
 - [ ] **Small Business Program:** apply, so Apple keeps 15% instead of 30%.
 - [ ] Optional: turn on **pre-orders** before launch.
 
