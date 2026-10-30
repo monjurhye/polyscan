@@ -72,9 +72,10 @@ You can't set a price until these are done. Approval can take a few days.
 - Add the Kobiton screen recording (see the ArchiveX lessons).
 - **Say plainly where the screenshots come from** (paste into App Review Information › Notes):
 
-  > About the screenshots: all App Store screenshots were captured from the real Polyscan app build running in the iOS Simulator (Xcode, on a Codemagic cloud Mac): iPhone 17 Pro Max (6.9"), iPhone 11 Pro Max (6.5") and iPad Pro 13-inch. Nothing was drawn or edited apart from the status bar, which was set to 9:41 with the standard simulator tool. The documents shown are sample documents (an English bill, a Bangla rental agreement, an Arabic certificate and a Hindi receipt) loaded by a debug-only screenshot mode; the text shown is what the app displays for them. Ads are switched off in that mode so they don't appear in the screenshots. The App Store build doesn't contain screenshot mode.
+  > About the screenshots: all App Store screenshots were captured from the real Polyscan app build running in the iOS Simulator (Xcode, on a Codemagic cloud Mac): iPhone 17 Pro Max (6.9"), iPhone 11 Pro Max (6.5") and iPad Pro 13-inch (M5). Nothing was drawn or edited apart from the status bar, which was set to 9:41 with the standard simulator tool. The documents shown are sample documents (an English bill, a Bangla rental agreement, an Arabic certificate and a Hindi receipt) loaded by a debug-only screenshot mode; the text shown is what the app displays for them. Ads are switched off in that mode so they don't appear in the screenshots. The App Store build doesn't contain screenshot mode.
 
-  Check the device names against the Codemagic log ("Using …" lines) before pasting, and change them if Codemagic used other simulators.
+  Device names checked against the Codemagic log of build 3 (commit 1e0e4fd, 2026-10-30). If screenshots are retaken, check the "Using …" lines again.
+- Screenshots to upload: `store/ios-screenshots/` (5 per device: documents, bangla, page, arabic, languages; 1320×2868, 1242×2688, 2064×2752).
 
 ## 6. After launch
 
