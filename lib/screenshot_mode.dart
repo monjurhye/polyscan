@@ -89,30 +89,8 @@ const _fonts = {
 
 /// Loads sample documents into [state] (in memory only) and returns the screen for [scene].
 Future<Widget> prepareScreenshot(AppState state, String scene) async {
-  for (final entry in _fonts.entries) {
-    await (FontLoader(entry.key)..addFont(rootBundle.load(entry.value))).load();
-  }
   final dir = Directory('${(await getTemporaryDirectory()).path}/screenshot');
-  dir.createSync(recursive: true);
-  final now = DateTime.now();
-  final docs = <ScanDocument>[];
-  for (var i = 0; i < _samples.length; i++) {
-    final s = _samples[i];
-    final path = '${dir.path}/sample-$i.png';
-    final (width, height) = await _drawPage(s, path);
-    docs.add(ScanDocument(
-      id: 'sample$i',
-      title: s.title,
-      createdAt: now.subtract(Duration(hours: s.hoursAgo)),
-      languageCodes: [s.code],
-      type: DocType.a4,
-      pages: [
-        ScanPage(imagePath: path)
-          ..ocr = OcrResult(
-              text: s.lines.join('\n'), meanConfidence: 92, words: const [], imageWidth: width, imageHeight: height),
-      ],
-    ));
-  }
+  final docs = await _sampleDocuments(dir, readAll: true);
   state.showSamples(docs, readyCodes: const ['ben', 'hin', 'ara', 'spa', 'urd']);
 
   return switch (scene) {
@@ -122,6 +100,47 @@ Future<Widget> prepareScreenshot(AppState state, String scene) async {
     'languages' => const LanguagesScreen(),
     _ => const HomeShell(),
   };
+}
+
+/// The App Review video build (ios-devicefarm workflow, `--dart-define=POLYSCAN_DEMO=true`).
+/// A remote device in Kobiton has no documents to scan, so the first launch saves
+/// the samples as ordinary documents. The English bill is left unread, so the
+/// video can show text recognition running on the phone.
+const demoBuild = bool.fromEnvironment('POLYSCAN_DEMO');
+
+Future<void> seedDemoDocuments(AppState state) async {
+  if (state.documents.isNotEmpty) return;
+  final dir = Directory('${(await getApplicationDocumentsDirectory()).path}/pages');
+  state.addSamples(await _sampleDocuments(dir, readAll: false));
+}
+
+/// Draws the samples into [dir]. With [readAll] false, the English page has no text yet.
+Future<List<ScanDocument>> _sampleDocuments(Directory dir, {required bool readAll}) async {
+  for (final entry in _fonts.entries) {
+    await (FontLoader(entry.key)..addFont(rootBundle.load(entry.value))).load();
+  }
+  dir.createSync(recursive: true);
+  final now = DateTime.now();
+  final docs = <ScanDocument>[];
+  for (var i = 0; i < _samples.length; i++) {
+    final s = _samples[i];
+    final path = '${dir.path}/sample-$i.png';
+    final (width, height) = await _drawPage(s, path);
+    final page = ScanPage(imagePath: path);
+    if (readAll || s.code != 'eng') {
+      page.ocr = OcrResult(
+          text: s.lines.join('\n'), meanConfidence: 92, words: const [], imageWidth: width, imageHeight: height);
+    }
+    docs.add(ScanDocument(
+      id: 'sample$i',
+      title: s.title,
+      createdAt: now.subtract(Duration(hours: s.hoursAgo)),
+      languageCodes: page.ocr == null ? const [] : [s.code],
+      type: DocType.a4,
+      pages: [page],
+    ));
+  }
+  return docs;
 }
 
 /// Draws a printed A4 page (150 dpi) with [sample]'s lines and writes it as PNG.

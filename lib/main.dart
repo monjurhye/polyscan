@@ -19,6 +19,7 @@ Future<void> main() async {
     runApp(PolyscanApp(state: state, home: await prepareScreenshot(state, scene)));
     return;
   }
+  if (demoBuild) await seedDemoDocuments(state);
   // Write pending changes right away when the app is backgrounded; it may be killed there.
   AppLifecycleListener(onPause: state.save, onHide: state.save);
   runApp(PolyscanApp(state: state));

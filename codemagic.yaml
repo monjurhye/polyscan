@@ -211,3 +211,40 @@ workflows:
       - screenshots/*.png
       - Polyscan-simulator.zip
       - tesseract-build.log
+
+  # Signed App Store IPA for the App Review video on a real iPhone in Kobiton
+  # (Kobiton re-signs it). Same as ios-release except: Google's test ad units
+  # (no "admob" group), sample documents saved on first launch
+  # (POLYSCAN_DEMO, lib/screenshot_mode.dart), and nothing is uploaded.
+  ios-devicefarm:
+    name: iOS review-video build (Kobiton, test ads)
+    instance_type: mac_mini_m2
+    max_build_duration: 90
+    integrations:
+      app_store_connect: app_store_key
+    environment:
+      xcode: latest
+      flutter: stable
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.pickixo.polyscan
+    scripts:
+      - name: Build Tesseract xcframework
+        script: |
+          set -o pipefail
+          chmod +x packages/polyscan_ocr/ios/scripts/build_tesseract.sh
+          packages/polyscan_ocr/ios/scripts/build_tesseract.sh 2>&1 | tee tesseract-build.log
+      - name: Get packages
+        script: flutter pub get
+      - name: Use provisioning profiles
+        script: xcode-project use-profiles
+      - name: Build IPA with test ads and sample documents
+        script: |
+          # Info.plist keeps Google's test AdMob app ID; the Dart side falls back to test units.
+          flutter build ipa --release             --build-number="$BUILD_NUMBER"             --dart-define=POLYSCAN_DEMO=true             --export-options-plist=/Users/builder/export_options.plist
+          mv build/ios/ipa/*.ipa build/ios/ipa/Polyscan-review-video-testads.ipa
+          unzip -l build/ios/ipa/Polyscan-review-video-testads.ipa | tail -1
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - tesseract-build.log
+      - /tmp/xcodebuild_logs/*.log

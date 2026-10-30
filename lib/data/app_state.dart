@@ -128,6 +128,12 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Demo build: saves [docs] like scanned documents (see seedDemoDocuments).
+  void addSamples(List<ScanDocument> docs) {
+    documents.addAll(docs);
+    _changed();
+  }
+
   ScanDocument addDocument(List<ScanPage> pages, List<String> codes, {DocType type = DocType.auto}) {
     final now = DateTime.now();
     final doc = ScanDocument(
