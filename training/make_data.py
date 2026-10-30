@@ -55,6 +55,7 @@ def run(i):
     chunk = (lines + lines)[start:start + per_job]
     base = os.path.join(out, f'{lang}.{i:03d}')
     open(base + '.txt', 'w', encoding='utf-8').write('\n'.join(chunk) + '\n')
+    os.makedirs(f'{out}/fc{i}', exist_ok=True)
     sh('text2image', *[f'--fonts_dir={here}/fonts', f'--fontconfig_tmpdir={out}/fc{i}', f'--font={font}',
                     f'--text={base}.txt', f'--outputbase={base}', f'--ptsize={size}', f'--exposure={exposure}',
                     f'--char_spacing={spacing}', '--strip_unrenderable_words', '--max_pages=0',
