@@ -54,7 +54,7 @@ jobs:
           pip install -q numpy pillow rapidfuzz
           tesseract --version | head -1
           text2image --fonts_dir training/fonts --list_available_fonts 2>&1 | tail -n 20
-          echo "::notice title=fonts::$(text2image --fonts_dir training/fonts --list_available_fonts 2>&1 | tr '\n' ' ' | tail -c 600)"
+          echo "::notice title=fonts::$(text2image --fonts_dir training/fonts --list_available_fonts 2>&1 | grep -iE 'noto|gulzar' | tr '\n' ' ')"
 
       - name: Base models
         run: |
@@ -76,8 +76,8 @@ jobs:
             # Gulzar stays out of training: the evaluation checks an unseen Nastaliq font.
             urd) FONTS=("Noto Nastaliq Urdu" "Noto Naskh Arabic") ;;
           esac
-          python training/prepare_text.py $L work/text.txt | tee -a summary.txt
-          python training/make_data.py $L work/text.txt work/data ${{ inputs.lines_per_job || '300' }} "${FONTS[@]}" | tee -a summary.txt
+          python training/prepare_text.py $L work/text.txt 2>&1 | tee -a summary.txt
+          python training/make_data.py $L work/text.txt work/data ${{ inputs.lines_per_job || '300' }} "${FONTS[@]}" 2>&1 | tee -a summary.txt
           echo "::notice title=$L data::$(cat summary.txt | tr '\n' ' ')"
 
       - name: Fine-tune
@@ -111,7 +111,7 @@ jobs:
       - name: Log tails on failure
         if: failure()
         run: |
-          for f in train.log; do
+          for f in summary.txt train.log; do
             [ -f "$f" ] || continue
             echo "::warning title=$f tail::$(tail -n 30 "$f" | awk '{gsub(/%/,"%25"); gsub(/\r/,""); printf "%s%%0A", substr($0,1,200)}')"
           done

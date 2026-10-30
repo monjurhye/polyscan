@@ -42,6 +42,12 @@ def degrade(path, rnd):
     pages[0].save(path, save_all=True, append_images=pages[1:])
 
 
+def sh(*cmd):
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode:
+        raise RuntimeError(f'{cmd[0]} failed ({r.returncode}): {r.stderr[-1500:]}')
+
+
 def run(i):
     font, size, exposure, spacing = jobs[i]
     rnd = random.Random(i)
@@ -49,18 +55,17 @@ def run(i):
     chunk = (lines + lines)[start:start + per_job]
     base = os.path.join(out, f'{lang}.{i:03d}')
     open(base + '.txt', 'w', encoding='utf-8').write('\n'.join(chunk) + '\n')
-    subprocess.run(['text2image', f'--fonts_dir={here}/fonts', f'--fontconfig_tmpdir={out}/fc{i}', f'--font={font}',
+    sh('text2image', *[f'--fonts_dir={here}/fonts', f'--fontconfig_tmpdir={out}/fc{i}', f'--font={font}',
                     f'--text={base}.txt', f'--outputbase={base}', f'--ptsize={size}', f'--exposure={exposure}',
                     f'--char_spacing={spacing}', '--strip_unrenderable_words', '--max_pages=0',
-                    '--xsize=2550', '--ysize=3300', '--margin=100', '--resolution=300'],
-                   check=True, capture_output=True)
+                    '--xsize=2550', '--ysize=3300', '--margin=100', '--resolution=300'])
     shutil.rmtree(f'{out}/fc{i}', ignore_errors=True)
     shutil.copy(base + '.tif', base + 'd.tif')
     shutil.copy(base + '.box', base + 'd.box')
     degrade(base + 'd.tif', rnd)
     made = []
     for b in (base, base + 'd'):
-        subprocess.run(['tesseract', b + '.tif', b, 'lstm.train'], check=True, capture_output=True)
+        sh('tesseract', b + '.tif', b, 'lstm.train')
         made.append(b + '.lstmf')
     return made
 
