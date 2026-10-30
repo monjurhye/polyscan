@@ -5,7 +5,7 @@ spacing; every page is also saved as a degraded copy (blur, lost resolution, noi
 light, JPEG) so the model learns phone photos, not only crisp print.
   python make_data.py <lang> <text.txt> <out_dir> <lines_per_job> "<font>" ["<font>" ...]
 """
-import concurrent.futures, io, itertools, os, random, shutil, subprocess, sys
+import concurrent.futures, io, itertools, os, random, shutil, subprocess, sys, unicodedata
 import numpy as np
 from PIL import Image, ImageFilter, ImageSequence
 
@@ -58,10 +58,20 @@ def run(i):
     # Split text2image's multi-page TIFF into single pages (box lines end with the page
     # number), add a degraded copy of each, and make one .lstmf per page. A page Tesseract
     # rejects (for example "Empty page") is skipped rather than failing the whole run.
+    # A vowel mark gets its own box from text2image. Trained like that, the Dhivehi model
+    # wrote each mark before its letter (2026-10-29), so marks join their letter's box.
     boxes = {}
     for line in open(base + '.box', encoding='utf-8'):
         head, page = line.rstrip('\n').rsplit(' ', 1)
-        boxes.setdefault(int(page), []).append(head + ' 0\n')
+        text, *box = head.rsplit(' ', 4)
+        page_boxes = boxes.setdefault(int(page), [])
+        if text and unicodedata.category(text[0]) == 'Mn' and page_boxes:
+            prev, l, b, r, t = page_boxes[-1]
+            l2, b2, r2, t2 = map(int, box)
+            page_boxes[-1] = [prev + text, min(l, l2), min(b, b2), max(r, r2), max(t, t2)]
+        else:
+            page_boxes.append([text, *map(int, box)])
+    boxes = {p: [' '.join(map(str, b)) + ' 0\n' for b in bs] for p, bs in boxes.items()}
     made, failed = [], 0
     for p, page in enumerate(ImageSequence.Iterator(Image.open(base + '.tif'))):
         if p not in boxes:
