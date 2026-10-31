@@ -178,7 +178,6 @@ class _ScanReviewScreenState extends State<ScanReviewScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _Tool(icon: Icons.crop, label: 'Crop', onTap: () => _snack('Crop handles open here')),
                   _Tool(
                     icon: Icons.rotate_right,
                     label: 'Rotate',
@@ -228,9 +227,6 @@ class _ScanReviewScreenState extends State<ScanReviewScreen> {
       ),
     );
   }
-
-  void _snack(String text) =>
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text), duration: const Duration(seconds: 1)));
 }
 
 class _Tool extends StatelessWidget {
