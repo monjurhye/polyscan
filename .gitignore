@@ -55,3 +55,5 @@ app.*.map.json
 
 # Codemagic screenshot download; the PNGs live in store/ios-screenshots/
 Polyscan-screenshots.zip
+*.ipa
+store/review-video/*.mp4
