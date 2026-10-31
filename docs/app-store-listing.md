@@ -70,7 +70,7 @@ PRIVATE BY DESIGN
 
 FREE, WITH ADS
 • Every feature and every language is free, with no scan limit and no watermark on your PDFs.
-• The free version shows ads: a banner on the document screens and an occasional full-screen ad, for example after you share a file.
+• The free version shows ads: a banner on the document screens and an occasional full-screen ad, for example after you share a file or when you come back to the app.
 • Remove ads with a single one-time purchase. No subscription. Restore it any time on the same Apple ID.
 
 ALSO
