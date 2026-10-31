@@ -6,7 +6,8 @@ import '../models/document.dart';
 import 'languages_screen.dart';
 import 'unlock_screen.dart';
 
-const _docsUrl = 'https://github.com/monjurhye/polyscan/blob/main/docs';
+/// Hosted on pickixo.com (Pickixo repo: apps/web/public/polyscan/).
+const _siteUrl = 'https://pickixo.com/polyscan';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -98,13 +99,13 @@ class SettingsScreen extends StatelessWidget {
             leading: const Icon(Icons.policy_outlined),
             title: const Text('Privacy policy'),
             trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => open('$_docsUrl/privacy.md'),
+            onTap: () => open('$_siteUrl/privacy'),
           ),
           ListTile(
             leading: const Icon(Icons.help_outline),
             title: const Text('Support'),
             trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () => open('$_docsUrl/support.md'),
+            onTap: () => open('$_siteUrl/support'),
           ),
           ListTile(
             leading: const Icon(Icons.code),

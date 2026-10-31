@@ -1,10 +1,12 @@
+> The live copy is at https://pickixo.com/polyscan/support (Pickixo repo, apps/web/public/polyscan/). Change both together.
+
 # Polyscan Support
 
 Polyscan scans documents, reads the text in 100+ languages on your phone, and makes searchable PDFs. No account, no subscription, no scan limit. Free with ads; pay once to remove them.
 
 ## Get help
 
-Report a problem or ask a question: **[open an issue](https://github.com/monjurhye/polyscan/issues/new)**. Please include your phone model, the app version (shown at the bottom of Settings) and, if you can, the language of the document.
+Questions, problems or feature requests: **[support@pickixo.com](mailto:support@pickixo.com?subject=Polyscan%20Support)**. Please include your phone model, the app version (shown at the bottom of Settings) and, if you can, the language of the document.
 
 ## Common questions
 

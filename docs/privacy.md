@@ -1,3 +1,5 @@
+> The live copy is at https://pickixo.com/polyscan/privacy (Pickixo repo, apps/web/public/polyscan/). Change both together.
+
 # Polyscan Privacy Policy
 
 *Last updated: 30 October 2026*
@@ -54,4 +56,4 @@ If this policy changes, the new version will be posted on this page with a new d
 
 ## Contact
 
-Questions about privacy: see the [Polyscan support page](support.md).
+Questions about privacy: [support@pickixo.com](mailto:support@pickixo.com?subject=Polyscan%20Privacy). See also the [Polyscan support page](https://pickixo.com/polyscan/support).

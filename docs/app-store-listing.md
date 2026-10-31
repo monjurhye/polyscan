@@ -85,5 +85,5 @@ GOOD TO KNOW
 ## URLs
 
 - Marketing URL: https://pickixo.com
-- Support URL: https://github.com/monjurhye/polyscan/blob/main/docs/support.md
-- Privacy Policy URL: https://github.com/monjurhye/polyscan/blob/main/docs/privacy.md
+- Support URL: https://pickixo.com/polyscan/support
+- Privacy Policy URL: https://pickixo.com/polyscan/privacy

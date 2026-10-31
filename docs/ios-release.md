@@ -46,7 +46,7 @@ You can't set a price until these are done. Approval can take a few days.
 - [ ] **Export compliance:** the app uses only standard HTTPS. `ITSAppUsesNonExemptEncryption = false` is set in `ios/Runner/Info.plist`, so Apple won't ask on every build.
 - [ ] **Age rating:** 4+ is still possible with ads, but check "Advertising" honestly in the questionnaire. Do not mark the app as "Made for Kids" (that would forbid personalized ads).
 - [ ] **Category:** Productivity (secondary: Business or Utilities).
-- [ ] Privacy Policy URL: `https://github.com/monjurhye/polyscan/blob/main/docs/privacy.md`. Support URL: `https://github.com/monjurhye/polyscan/blob/main/docs/support.md`. The app's Settings opens the same pages.
+- [x] Privacy Policy URL: `https://pickixo.com/polyscan/privacy`. Support URL: `https://pickixo.com/polyscan/support` (contact support@pickixo.com). Marketing URL: `https://pickixo.com`. Live since 2026-10-30, served by nginx from the Pickixo repo (`apps/web/public/polyscan/`). The app's Settings opens the same pages.
 
 ## 4. Store listing
 
