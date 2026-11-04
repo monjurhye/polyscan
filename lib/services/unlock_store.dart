@@ -1,6 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:in_app_purchase/in_app_purchase.dart';
+
+/// The store and account names people see, which differ per platform.
+final storeName = Platform.isIOS ? 'App Store' : 'Google Play';
+final storeAccountName = Platform.isIOS ? 'Apple ID' : 'Google account';
 
 /// The one-time "Remove ads" purchase.
 ///
@@ -93,7 +98,7 @@ class AppStoreUnlock implements UnlockStore {
     _listen();
     final product = await _loadProduct();
     if (product == null) {
-      _events.add(const UnlockFailed('The App Store is not available right now. Try again later.'));
+      _events.add(UnlockFailed('$storeName is not available right now. Try again later.'));
       return;
     }
     await _iap.buyNonConsumable(purchaseParam: PurchaseParam(productDetails: product));
@@ -103,7 +108,7 @@ class AppStoreUnlock implements UnlockStore {
   Future<void> restore() async {
     _listen();
     if (!await _iap.isAvailable()) {
-      _events.add(const UnlockFailed('The App Store is not available right now. Try again later.'));
+      _events.add(UnlockFailed('$storeName is not available right now. Try again later.'));
       return;
     }
     await _iap.restorePurchases();

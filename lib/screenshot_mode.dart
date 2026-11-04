@@ -14,9 +14,9 @@ import 'screens/home_shell.dart';
 import 'screens/languages_screen.dart';
 import 'screens/page_viewer_screen.dart';
 
-/// App Store screenshots: before each launch, the ios-screenshots workflow writes
-/// the scene name to `Documents/screenshot_scene.txt` in the app's simulator
-/// container (simctl doesn't reliably pass environment variables to the app).
+/// Store screenshots: before each launch, the ios-screenshots and Play screenshots
+/// workflows write the scene name to `screenshot_scene.txt` in the app's documents
+/// folder (simctl doesn't reliably pass environment variables to the app).
 /// Sample documents are drawn at launch, so nothing extra ships in the app.
 /// Ignored in release builds.
 const screenshotScenes = ['documents', 'bangla', 'page', 'arabic', 'languages'];

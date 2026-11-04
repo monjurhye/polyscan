@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
@@ -32,11 +34,26 @@ android {
             System.getenv("ADMOB_ANDROID_APP_ID") ?: "ca-app-pub-3940256099942544~3347511713"
     }
 
+    // android/key.properties (git-ignored) holds the Play upload key. Without it, release
+    // builds use the debug keys so `flutter run --release` still works; Play refuses those.
+    val keyProperties = Properties().apply {
+        val file = rootProject.file("key.properties")
+        if (file.exists()) file.inputStream().use { load(it) }
+    }
+    signingConfigs {
+        if (!keyProperties.isEmpty) {
+            create("upload") {
+                storeFile = rootProject.file(keyProperties.getProperty("storeFile"))
+                storePassword = keyProperties.getProperty("storePassword")
+                keyAlias = keyProperties.getProperty("keyAlias")
+                keyPassword = keyProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("upload") ?: signingConfigs.getByName("debug")
         }
     }
 }

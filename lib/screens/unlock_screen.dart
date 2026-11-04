@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/app_state.dart';
+import '../services/unlock_store.dart';
 
 /// The one-time "Remove ads" purchase, opened from Settings.
 class UnlockScreen extends StatefulWidget {
@@ -77,7 +78,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
                     loading
                         ? 'Loading price…'
                         : price == null
-                            ? 'App Store not available'
+                            ? '$storeName not available'
                             : 'Remove ads for $price',
                     style: const TextStyle(fontSize: 16),
                   ),
@@ -95,7 +96,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
             ],
             const SizedBox(height: 8),
             Text(
-              'One-time purchase. Works on all your devices with the same Apple ID.',
+              'One-time purchase. Works on all your devices with the same $storeAccountName.',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
             ),
