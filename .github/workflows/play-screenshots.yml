@@ -1,10 +1,20 @@
 # Google Play screenshots from the real app on an Android emulator: phone (1080x1920) and
 # tablet (1600x2560). The debug app runs in screenshot mode (lib/screenshot_mode.dart):
-# sample documents, no ads, one launch per scene. Started by hand; download the artifact.
+# sample documents, no ads, one launch per scene. Runs when this workflow or its script
+# changes, or by hand. The PNGs go to the play-screenshots branch, which is readable
+# without signing in (artifact downloads need a GitHub login).
 name: Play screenshots
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/play-screenshots.yml'
+      - '.github/scripts/play_screenshots.sh'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   screenshots:
@@ -52,3 +62,15 @@ jobs:
         with:
           name: play-screenshots
           path: store/play/screenshots/
+
+      - name: Publish to the play-screenshots branch
+        run: |
+          cd store/play/screenshots
+          git init -q -b play-screenshots
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -q -m "Play screenshots from ${GITHUB_SHA::7}"
+          # The checkout's token, which actions/checkout stored in the repo's own config.
+          TOKEN_HEADER=$(git -C "$GITHUB_WORKSPACE" config --get-regexp '^http\..*\.extraheader$' | cut -d' ' -f2-)
+          git -c http.https://github.com/.extraheader="$TOKEN_HEADER" push -f "https://github.com/$GITHUB_REPOSITORY.git" play-screenshots
