@@ -1,0 +1,3 @@
+  mCurrentFocus=Window{731340f u0 com.pickixo.polyscan/com.pickixo.polyscan.MainActivity}
+  mFocusedApp=AppWindowToken{11d0fe9 token=Token{7ead070 ActivityRecord{a62b2b3 u0 com.pickixo.polyscan/.MainActivity t6}}}
+    mFocusedApp=Token{7ead070 ActivityRecord{a62b2b3 u0 com.pickixo.polyscan/.MainActivity t6}}

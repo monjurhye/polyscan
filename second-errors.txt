@@ -1,0 +1,9 @@
+11-05 18:13:44.112 I/AndroidRuntime( 6045): VM exiting with result code 0, cleanup skipped.
+11-05 18:13:44.994 D/AndroidRuntime( 6767): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-05 18:13:45.015 I/AndroidRuntime( 6767): Using default boot image
+11-05 18:13:45.015 I/AndroidRuntime( 6767): Leaving lock profiling enabled
+11-05 18:13:45.405 D/AndroidRuntime( 6767): Calling main entry com.android.commands.monkey.Monkey
+11-05 18:13:45.558 I/AndroidRuntime( 6767): VM exiting with result code 0.
+11-05 18:13:46.206 E/flutter ( 6795): [ERROR:flutter/impeller/toolkit/egl/egl.cc(56)] EGL Error: Success (12288) in ../../../flutter/impeller/toolkit/egl/display.cc:161
+11-05 18:13:46.206 E/flutter ( 6795): [ERROR:flutter/impeller/toolkit/egl/egl.cc(56)] EGL Error: Success (12288) in ../../../flutter/impeller/toolkit/egl/display.cc:161
+11-05 18:13:46.221 I/flutter ( 6795): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
