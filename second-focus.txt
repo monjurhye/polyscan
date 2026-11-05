@@ -1,0 +1,2 @@
+  mCurrentFocus=Window{41b04d2 u0 com.pickixo.polyscan/com.pickixo.polyscan.MainActivity}
+  mFocusedApp=ActivityRecord{c2fc55d u0 com.pickixo.polyscan/.MainActivity t9}

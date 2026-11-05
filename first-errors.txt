@@ -1,0 +1,18 @@
+11-05 18:10:49.789 D/AndroidRuntime( 3308): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-05 18:10:49.792 I/AndroidRuntime( 3308): Using default boot image
+11-05 18:10:49.793 I/AndroidRuntime( 3308): Leaving lock profiling enabled
+11-05 18:10:50.317 D/AndroidRuntime( 3308): Calling main entry com.android.commands.monkey.Monkey
+11-05 18:10:50.987 I/AndroidRuntime( 3308): VM exiting with result code 0.
+11-05 18:10:52.385 I/flutter ( 3422): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+11-05 18:10:53.420 E/TaskWorkerFactory( 1839): java.lang.NoSuchMethodException: com.android.devicelockcontroller.provision.worker.DeviceCheckInWorker.<init> [class android.content.Context, class androidx.work.WorkerParameters, interface com.google.common.util.concurrent.ListeningExecutorService]
+11-05 18:11:10.270 W/SliceDataConverter( 1062): Caused by: java.lang.NoSuchMethodException: com.android.settings.network.telephony.CallsDefaultSubscriptionController.<init> [class android.content.Context, class java.lang.String]
+11-05 18:11:10.286 W/SliceDataConverter( 1062): Caused by: java.lang.ClassNotFoundException: com.android.settings.applications.appinfo.ManageAppLocalePreferenceController
+11-05 18:11:10.286 W/SliceDataConverter( 1062): Caused by: java.lang.ClassNotFoundException: com.android.settings.applications.appinfo.ManageAppLocalePreferenceController
+11-05 18:11:10.294 W/SliceDataConverter( 1062): Caused by: java.lang.NoSuchMethodException: com.android.settings.network.telephony.CallsDefaultSubscriptionController.<init> [class android.content.Context, class java.lang.String]
+11-05 18:11:10.309 W/SliceDataConverter( 1062): Caused by: java.lang.NoSuchMethodException: com.android.settings.network.NetworkProviderSimsCategoryController.<init> [class android.content.Context, class java.lang.String]
+11-05 18:11:10.314 W/SliceDataConverter( 1062): Caused by: java.lang.ClassNotFoundException: com.android.settings.applications.appinfo.ManageAppLocalePreferenceController
+11-05 18:11:10.314 W/SliceDataConverter( 1062): Caused by: java.lang.ClassNotFoundException: com.android.settings.applications.appinfo.ManageAppLocalePreferenceController
+11-05 18:11:10.318 W/SliceDataConverter( 1062): Caused by: java.lang.NoSuchMethodException: com.android.settings.fuelgauge.batteryusage.BatteryChartPreferenceController.<init> [class android.content.Context, class java.lang.String]
+11-05 18:11:10.323 W/SliceDataConverter( 1062): Caused by: java.lang.ClassNotFoundException: com.android.settings.development.DevelopmentMemtagFooterPreferenceController
+11-05 18:11:10.323 W/SliceDataConverter( 1062): Caused by: java.lang.ClassNotFoundException: com.android.settings.development.DevelopmentMemtagFooterPreferenceController
+11-05 18:11:13.605 E/VS.BluetoothShim( 1650): java.lang.NoSuchMethodException: android.bluetooth.BluetoothHeadset.startScoUsingVirtualVoiceCall [class android.bluetooth.BluetoothDevice]

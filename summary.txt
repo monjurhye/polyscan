@@ -1,0 +1,2 @@
+first: alive=yes, focus:  mCurrentFocus=Window{fd17bea u0 com.pickixo.polyscan/com.pickixo.polyscan.MainActivity}
+second: alive=yes, focus:  mCurrentFocus=Window{41b04d2 u0 com.pickixo.polyscan/com.pickixo.polyscan.MainActivity}

@@ -1,0 +1,6 @@
+11-05 18:11:44.009 D/AndroidRuntime( 5892): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-05 18:11:44.070 I/AndroidRuntime( 5892): Using default boot image
+11-05 18:11:44.070 I/AndroidRuntime( 5892): Leaving lock profiling enabled
+11-05 18:11:44.658 D/AndroidRuntime( 5892): Calling main entry com.android.commands.monkey.Monkey
+11-05 18:11:44.785 I/AndroidRuntime( 5892): VM exiting with result code 0.
+11-05 18:11:45.510 I/flutter ( 5926): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
